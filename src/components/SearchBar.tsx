@@ -31,11 +31,13 @@ const SearchBar = ({ searchQuery, onSearchChange }: SearchBarProps) => {
     }
   }, []);
 
-  // Save search to history
+  // Save search to history - saves the search term only
   const saveToHistory = (term: string) => {
     if (!term.trim()) return;
     
-    const newHistory = [term, ...searchHistory.filter(h => h !== term)].slice(0, MAX_HISTORY);
+    // Save only the search term, not product names
+    const searchTerm = term.trim();
+    const newHistory = [searchTerm, ...searchHistory.filter(h => h.toLowerCase() !== searchTerm.toLowerCase())].slice(0, MAX_HISTORY);
     setSearchHistory(newHistory);
     localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(newHistory));
   };
@@ -67,9 +69,12 @@ const SearchBar = ({ searchQuery, onSearchChange }: SearchBarProps) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleSelectSuggestion = (name: string) => {
-    onSearchChange(name);
-    saveToHistory(name);
+  const handleSelectSuggestion = (productName: string) => {
+    // Save the current search query to history, not the product name
+    if (searchQuery.trim()) {
+      saveToHistory(searchQuery.trim());
+    }
+    onSearchChange('');
     setIsFocused(false);
   };
 

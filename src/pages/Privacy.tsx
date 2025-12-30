@@ -137,7 +137,7 @@ These service providers process your payment data in accordance with their own p
 
   return (
     <div className="min-h-screen bg-background">
-      <Header showSearch={false} />
+      <Header />
 
       <div className="container max-w-4xl mx-auto px-4 py-12">
         <div className="text-center mb-12">

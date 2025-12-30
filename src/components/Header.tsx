@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import { ShoppingBag, Heart, ShoppingCart, Menu, X, Globe } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { ShoppingBag, Heart, ShoppingCart, Menu, X, Globe, User, LogOut, ArrowLeft } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
@@ -8,22 +8,23 @@ import { useState } from 'react';
 import { useScrollHeader } from '@/hooks/useScrollHeader';
 import SearchBar from '@/components/SearchBar';
 
-interface HeaderProps {
-  searchQuery?: string;
-  onSearchChange?: (value: string) => void;
-  showSearch?: boolean;
-}
-
-const Header = ({ searchQuery = '', onSearchChange, showSearch = true }: HeaderProps) => {
+const Header = () => {
   const { t, language, setLanguage } = useLanguage();
   const { getItemCount } = useCart();
   const { favorites } = useFavorites();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [langHover, setLangHover] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const isVisible = useScrollHeader();
+  const location = useLocation();
   
   const cartCount = getItemCount();
+  const isHomePage = location.pathname === '/';
+
+  const handleLogout = async () => {
+    await signOut();
+  };
 
   return (
     <header 
@@ -34,15 +35,27 @@ const Header = ({ searchQuery = '', onSearchChange, showSearch = true }: HeaderP
       <div className="container max-w-6xl mx-auto px-4">
         {/* Main Header */}
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-              <ShoppingBag className="w-5 h-5 text-primary" />
-            </div>
-            <span className="text-2xl font-bold tracking-tight">Noor</span>
-          </Link>
+          <div className="flex items-center gap-3">
+            {/* Back Button */}
+            {!isHomePage && (
+              <Link 
+                to="/" 
+                className="icon-btn text-header-foreground hover:bg-header-foreground/10 mr-1"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </Link>
+            )}
+            
+            <Link to="/" className="flex items-center gap-3 group">
+              <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                <ShoppingBag className="w-5 h-5 text-primary" />
+              </div>
+              <span className="text-2xl font-bold tracking-tight">Noor</span>
+            </Link>
+          </div>
 
           {/* Icons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <Link 
               to="/favorites" 
               className="icon-btn text-header-foreground hover:bg-header-foreground/10 relative"
@@ -94,6 +107,25 @@ const Header = ({ searchQuery = '', onSearchChange, showSearch = true }: HeaderP
               )}
             </div>
 
+            {/* Auth Button */}
+            {user ? (
+              <button 
+                onClick={handleLogout}
+                className="icon-btn text-header-foreground hover:bg-header-foreground/10"
+                title={t('nav.logout')}
+              >
+                <LogOut className="w-5 h-5" />
+              </button>
+            ) : (
+              <Link 
+                to="/auth" 
+                className="icon-btn text-header-foreground hover:bg-header-foreground/10"
+                title={t('nav.login')}
+              >
+                <User className="w-5 h-5" />
+              </Link>
+            )}
+
             {/* Mobile Menu Toggle */}
             <button 
               onClick={() => setMenuOpen(!menuOpen)}
@@ -104,12 +136,10 @@ const Header = ({ searchQuery = '', onSearchChange, showSearch = true }: HeaderP
           </div>
         </div>
 
-        {/* Search Bar */}
-        {showSearch && onSearchChange && (
-          <div className="pb-3">
-            <SearchBar searchQuery={searchQuery} onSearchChange={onSearchChange} />
-          </div>
-        )}
+        {/* Search Bar - Always visible */}
+        <div className="pb-3">
+          <SearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+        </div>
 
         {/* Mobile Menu */}
         {menuOpen && (
