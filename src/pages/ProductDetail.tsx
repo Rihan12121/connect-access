@@ -21,7 +21,7 @@ const ProductDetail = () => {
   if (!product) {
     return (
       <div className="min-h-screen bg-background">
-        <Header showSearch={false} />
+        <Header />
         <div className="container max-w-6xl mx-auto px-4 py-12 text-center">
           <h1 className="text-2xl font-bold text-foreground">{t('products.notFound')}</h1>
           <Link to="/" className="text-primary hover:underline mt-4 inline-block">
@@ -45,7 +45,7 @@ const ProductDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header showSearch={false} />
+      <Header />
 
       <div className="container max-w-6xl mx-auto px-4 py-6">
         {/* Breadcrumb */}

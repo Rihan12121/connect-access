@@ -42,7 +42,7 @@ const Account = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header showSearch={false} />
+      <Header />
 
       <div className="container max-w-6xl mx-auto px-4 py-8">
         <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-8">{t('account.title')}</h1>

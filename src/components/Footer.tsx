@@ -68,12 +68,9 @@ const Footer = () => {
         
         {/* Bottom Bar */}
         <div className="border-t border-header-foreground/20 mt-10 pt-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex justify-center items-center">
             <p className="text-sm text-header-foreground/70">
-              © 2024 Noor. {t('footer.rights')}
-            </p>
-            <p className="text-xs text-header-foreground/50 text-center">
-              {t('footer.priceInfo')}
+              © 2025 Noor.
             </p>
           </div>
         </div>

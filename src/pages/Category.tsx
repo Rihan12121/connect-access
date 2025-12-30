@@ -13,7 +13,6 @@ type FilterOption = 'all' | 'deals' | 'inStock';
 const Category = () => {
   const { slug } = useParams();
   const category = categories.find(c => c.slug === slug);
-  const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('default');
   const [filter, setFilter] = useState<FilterOption>('all');
   const [showFilters, setShowFilters] = useState(false);
@@ -31,14 +30,6 @@ const Category = () => {
       result = result.filter(p => p.inStock);
     }
 
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      result = result.filter(p =>
-        p.name.toLowerCase().includes(query) ||
-        p.description.toLowerCase().includes(query)
-      );
-    }
-
     switch (sortBy) {
       case 'price-asc':
         result = [...result].sort((a, b) => a.price - b.price);
@@ -52,12 +43,12 @@ const Category = () => {
     }
 
     return result;
-  }, [slug, searchQuery, sortBy, filter]);
+  }, [slug, sortBy, filter]);
 
   if (!category) {
     return (
       <div className="min-h-screen bg-background">
-        <Header showSearch={false} />
+        <Header />
         <div className="container max-w-6xl mx-auto px-4 py-12 text-center">
           <h1 className="text-2xl font-bold text-foreground">{t('categories.notFound')}</h1>
           <Link to="/" className="text-primary hover:underline mt-4 inline-block">
@@ -71,11 +62,7 @@ const Category = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header 
-        searchQuery={searchQuery} 
-        onSearchChange={setSearchQuery} 
-        showSearch={true}
-      />
+      <Header />
 
       {/* Hero */}
       <div 
@@ -189,7 +176,7 @@ const Category = () => {
           </div>
         ) : (
           <div className="text-center py-12 text-muted-foreground">
-            <p>{t('search.noResults')} "{searchQuery}"</p>
+            <p>{t('search.noResults')}</p>
           </div>
         )}
       </div>

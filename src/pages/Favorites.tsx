@@ -13,7 +13,7 @@ const Favorites = () => {
   if (favorites.length === 0) {
     return (
       <div className="min-h-screen bg-background">
-        <Header showSearch={false} />
+        <Header />
         <div className="container max-w-6xl mx-auto px-4 py-16 text-center">
           <Heart className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-foreground mb-2">{t('favorites.empty')}</h1>
@@ -29,7 +29,7 @@ const Favorites = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header showSearch={false} />
+      <Header />
 
       <div className="container max-w-6xl mx-auto px-4 py-8">
         <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-8">

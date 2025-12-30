@@ -143,7 +143,7 @@ Should individual provisions of these terms and conditions be invalid, the valid
 
   return (
     <div className="min-h-screen bg-background">
-      <Header showSearch={false} />
+      <Header />
 
       <div className="container max-w-4xl mx-auto px-4 py-12">
         <div className="text-center mb-12">

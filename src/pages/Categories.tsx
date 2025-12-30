@@ -9,7 +9,7 @@ const Categories = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header showSearch={false} />
+      <Header />
 
       <div className="container max-w-6xl mx-auto px-4 py-8">
         <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-8">{t('categories.all')}</h1>
@@ -28,10 +28,7 @@ const Categories = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-3xl">{category.icon}</span>
-                  <span className="text-white font-bold text-lg">{tCategory(category.slug)}</span>
-                </div>
+                <span className="text-white font-bold text-lg">{tCategory(category.slug)}</span>
               </div>
             </Link>
           ))}
