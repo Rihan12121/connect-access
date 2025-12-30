@@ -29,21 +29,6 @@ const Footer = () => {
             </div>
           </div>
           
-          {/* Categories */}
-          <div>
-            <h4 className="font-semibold mb-4">{t('footer.categories')}</h4>
-            <div className="flex flex-col gap-2">
-              {categories.slice(0, 6).map(cat => (
-                <Link 
-                  key={cat.slug}
-                  to={`/category/${cat.slug}`} 
-                  className="text-header-foreground/70 hover:text-primary text-sm transition-colors"
-                >
-                  {tCategory(cat.slug)}
-                </Link>
-              ))}
-            </div>
-          </div>
           
           {/* Help */}
           <div>
