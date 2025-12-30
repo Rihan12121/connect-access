@@ -1,5 +1,5 @@
 import { Heart } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Product } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
@@ -14,10 +14,16 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const { addItem } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
   const { t } = useLanguage();
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    window.scrollTo(0, 0);
+    navigate(`/product/${product.id}`);
+  };
 
   return (
     <div className="product-card">
-      <Link to={`/product/${product.id}`} className="block">
+      <div onClick={handleClick} className="block cursor-pointer">
         <div className="relative aspect-square">
           <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
           {product.discount && (
@@ -35,13 +41,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
             <Heart className={`w-4 h-4 ${isFavorite(product.id) ? 'fill-favorite text-favorite' : 'text-muted-foreground'}`} />
           </button>
         </div>
-      </Link>
+      </div>
       <div className="p-4">
-        <Link to={`/product/${product.id}`}>
+        <div onClick={handleClick} className="cursor-pointer">
           <h3 className="font-medium text-foreground line-clamp-2 text-sm hover:text-primary transition-colors">
             {product.name}
           </h3>
-        </Link>
+        </div>
         <div className="flex items-center gap-2 mt-2">
           <span className="font-bold text-primary">{product.price.toFixed(2)} €</span>
           {product.originalPrice && (
