@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Heart, ShoppingCart, User, Menu, X, Globe } from 'lucide-react';
+import { ShoppingBag, Heart, ShoppingCart, Menu, X, Globe } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useAuth } from '@/context/AuthContext';
 import { useState } from 'react';
+import { useScrollHeader } from '@/hooks/useScrollHeader';
+import SearchBar from '@/components/SearchBar';
 
 interface HeaderProps {
   searchQuery?: string;
@@ -19,11 +21,16 @@ const Header = ({ searchQuery = '', onSearchChange, showSearch = true }: HeaderP
   const { user } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [langHover, setLangHover] = useState(false);
+  const isVisible = useScrollHeader();
   
   const cartCount = getItemCount();
 
   return (
-    <header className="sticky top-0 z-50 bg-header text-header-foreground shadow-elevated">
+    <header 
+      className={`sticky top-0 z-50 bg-header text-header-foreground shadow-elevated transition-transform duration-300 ${
+        isVisible ? 'translate-y-0' : '-translate-y-full'
+      }`}
+    >
       <div className="container max-w-6xl mx-auto px-4">
         {/* Main Header */}
         <div className="flex items-center justify-between h-16">
@@ -87,13 +94,6 @@ const Header = ({ searchQuery = '', onSearchChange, showSearch = true }: HeaderP
               )}
             </div>
 
-            <Link 
-              to={user ? "/account" : "/auth"} 
-              className="icon-btn text-header-foreground hover:bg-header-foreground/10"
-            >
-              <User className="w-5 h-5" />
-            </Link>
-
             {/* Mobile Menu Toggle */}
             <button 
               onClick={() => setMenuOpen(!menuOpen)}
@@ -107,13 +107,7 @@ const Header = ({ searchQuery = '', onSearchChange, showSearch = true }: HeaderP
         {/* Search Bar */}
         {showSearch && onSearchChange && (
           <div className="pb-3">
-            <input
-              type="text"
-              placeholder={t('search.placeholder')}
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full bg-header-foreground/10 rounded-xl px-4 py-3 text-header-foreground placeholder:text-header-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30"
-            />
+            <SearchBar searchQuery={searchQuery} onSearchChange={onSearchChange} />
           </div>
         )}
 

@@ -128,11 +128,18 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Hot Deals / Search Results */}
+{/* Hot Deals / Search Results */}
       <section className="container max-w-6xl mx-auto mt-12 px-4">
-        <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6">
-          {searchQuery ? `${t('search.resultsFor')} "${searchQuery}"` : t('products.hotDeals')}
-        </h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl md:text-2xl font-bold text-foreground">
+            {searchQuery ? `${t('search.resultsFor')} "${searchQuery}"` : t('products.hotDeals')}
+          </h2>
+          {!searchQuery && (
+            <Link to="/products?filter=deals" className="text-primary text-sm font-medium flex items-center gap-1 hover:underline">
+              {t('categories.viewAll')} <ChevronRight className="w-4 h-4" />
+            </Link>
+          )}
+        </div>
 
         {featuredProducts.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -177,14 +184,7 @@ const Index = () => {
         </section>
       )}
 
-      {/* VAT Notice */}
-      <section className="container max-w-6xl mx-auto mt-12 px-4">
-        <p className="text-center text-xs text-muted-foreground">
-          {t('footer.priceInfo')}
-        </p>
-      </section>
-
-      <Footer />
+<Footer />
     </div>
   );
 };
