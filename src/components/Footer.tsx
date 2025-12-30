@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
+import { categories } from '@/data/products';
 import { useLanguage } from '@/context/LanguageContext';
+import { Facebook, Instagram, Twitter } from 'lucide-react';
 
 const Footer = () => {
-  const { t } = useLanguage();
+  const { t, tCategory } = useLanguage();
 
   return (
     <footer className="bg-header text-header-foreground mt-12">
@@ -14,30 +16,32 @@ const Footer = () => {
             <p className="text-header-foreground/70 text-sm mt-2">
               {t('footer.description')} {t('footer.quality')}
             </p>
+            <div className="flex gap-3 mt-4">
+              <a href="#" className="p-2 bg-header-foreground/10 rounded-lg hover:bg-primary hover:text-primary-foreground transition-colors">
+                <Facebook className="w-4 h-4" />
+              </a>
+              <a href="#" className="p-2 bg-header-foreground/10 rounded-lg hover:bg-primary hover:text-primary-foreground transition-colors">
+                <Instagram className="w-4 h-4" />
+              </a>
+              <a href="#" className="p-2 bg-header-foreground/10 rounded-lg hover:bg-primary hover:text-primary-foreground transition-colors">
+                <Twitter className="w-4 h-4" />
+              </a>
+            </div>
           </div>
           
           {/* Categories */}
           <div>
             <h4 className="font-semibold mb-4">{t('footer.categories')}</h4>
             <div className="flex flex-col gap-2">
-              <Link to="/category/baby" className="text-header-foreground/70 hover:text-primary text-sm transition-colors">
-                Baby
-              </Link>
-              <Link to="/category/schoenheit" className="text-header-foreground/70 hover:text-primary text-sm transition-colors">
-                {t('category.schoenheit')}
-              </Link>
-              <Link to="/category/elektronik" className="text-header-foreground/70 hover:text-primary text-sm transition-colors">
-                {t('category.elektronik')}
-              </Link>
-              <Link to="/category/beleuchtung" className="text-header-foreground/70 hover:text-primary text-sm transition-colors">
-                {t('category.beleuchtung')}
-              </Link>
-              <Link to="/category/haus-kueche" className="text-header-foreground/70 hover:text-primary text-sm transition-colors">
-                {t('category.haus-kueche')}
-              </Link>
-              <Link to="/category/garten" className="text-header-foreground/70 hover:text-primary text-sm transition-colors">
-                {t('category.garten')}
-              </Link>
+              {categories.slice(0, 6).map(cat => (
+                <Link 
+                  key={cat.slug}
+                  to={`/category/${cat.slug}`} 
+                  className="text-header-foreground/70 hover:text-primary text-sm transition-colors"
+                >
+                  {tCategory(cat.slug)}
+                </Link>
+              ))}
             </div>
           </div>
           

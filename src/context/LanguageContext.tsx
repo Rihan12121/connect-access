@@ -124,6 +124,10 @@ const translations: Translations = {
   'footer.terms': { de: 'AGB', en: 'Terms' },
   'footer.rights': { de: 'Alle Rechte vorbehalten.', en: 'All rights reserved.' },
   'footer.description': { de: 'Dein Online-Shop für alles was du brauchst.', en: 'Your online shop for everything you need.' },
+  'category.sex-sinnlichkeit': { de: 'Sex & Sinnlichkeit', en: 'Intimacy & Sensuality' },
+  'category.speisen-getraenke': { de: 'Speisen & Getränke', en: 'Food & Drinks' },
+  'faq.subtitle': { de: 'Häufig gestellte Fragen', en: 'Frequently Asked Questions' },
+  'faq.moreQuestions': { de: 'Noch Fragen? Kontaktieren Sie uns!', en: 'More questions? Contact us!' },
 };
 
 interface LanguageContextType {
