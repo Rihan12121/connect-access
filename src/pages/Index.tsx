@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { categories, products } from '@/data/products';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
@@ -23,7 +23,7 @@ const Index = () => {
   }, [searchQuery]);
 
   const dealProducts = products.filter(p => p.discount);
-  const featuredProducts = searchQuery ? filteredProducts : dealProducts.slice(0, 6);
+  const featuredProducts = searchQuery ? filteredProducts : dealProducts.slice(0, 8);
 
   return (
     <div className="min-h-screen bg-background">
@@ -55,7 +55,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Products */}
+      {/* Hot Deals / Search Results */}
       <section className="container max-w-6xl mx-auto mt-12 px-4">
         <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6">
           {searchQuery ? `${t('search.resultsFor')} "${searchQuery}"` : t('products.hotDeals')}
@@ -73,6 +73,41 @@ const Index = () => {
           </div>
         )}
       </section>
+
+      {/* Discover All Products */}
+      {!searchQuery && (
+        <section className="container max-w-6xl mx-auto mt-16 px-4">
+          <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-2xl p-8 md:p-12 text-center">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+              {t('products.discoverAll')}
+            </h2>
+            <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
+              {t('products.discoverDescription')}
+            </p>
+            <Link 
+              to="/categories" 
+              className="btn-primary inline-flex items-center gap-2 px-8 py-3"
+            >
+              {t('categories.viewAll')}
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {/* Popular Products */}
+      {!searchQuery && (
+        <section className="container max-w-6xl mx-auto mt-12 px-4">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl md:text-2xl font-bold text-foreground">{t('products.popular')}</h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {products.slice(0, 4).map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <Footer />
     </div>
