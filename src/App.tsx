@@ -12,11 +12,19 @@ import NotFound from "./pages/NotFound";
 import ProductDetail from "./pages/ProductDetail";
 import Category from "./pages/Category";
 import Categories from "./pages/Categories";
+import Products from "./pages/Products";
 import Cart from "./pages/Cart";
 import Favorites from "./pages/Favorites";
 import Auth from "./pages/Auth";
 import Account from "./pages/Account";
 import Checkout from "./pages/Checkout";
+import FAQ from "./pages/FAQ";
+import Shipping from "./pages/Shipping";
+import Returns from "./pages/Returns";
+import Contact from "./pages/Contact";
+import Imprint from "./pages/Imprint";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 
 const queryClient = new QueryClient();
 
@@ -35,11 +43,19 @@ const App = () => (
                   <Route path="/product/:id" element={<ProductDetail />} />
                   <Route path="/category/:slug" element={<Category />} />
                   <Route path="/categories" element={<Categories />} />
+                  <Route path="/products" element={<Products />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/favorites" element={<Favorites />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/account" element={<Account />} />
                   <Route path="/checkout" element={<Checkout />} />
+                  <Route path="/faq" element={<FAQ />} />
+                  <Route path="/shipping" element={<Shipping />} />
+                  <Route path="/returns" element={<Returns />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/imprint" element={<Imprint />} />
+                  <Route path="/privacy" element={<Privacy />} />
+                  <Route path="/terms" element={<Terms />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BrowserRouter>
