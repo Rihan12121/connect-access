@@ -7,6 +7,7 @@ import { ShoppingBag, CreditCard, Truck, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import VatNotice from '@/components/VatNotice';
 
 const Checkout = () => {
   const { state, clearCart } = useCart();
@@ -230,6 +231,7 @@ const Checkout = () => {
             </div>
           </div>
         </div>
+        <VatNotice />
       </div>
 
       <Footer />

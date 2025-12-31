@@ -6,6 +6,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
+import CategoryIcon from '@/components/CategoryIcon';
 
 const Index = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
@@ -103,7 +104,7 @@ const Index = () => {
               to={`/category/${category.slug}`}
               className="category-chip min-w-[100px]"
             >
-              <span className="text-2xl">{category.icon}</span>
+              <CategoryIcon slug={category.slug} size="sm" />
               <span className="text-xs font-medium text-center">{tCategory(category.slug)}</span>
             </Link>
           ))}
@@ -151,7 +152,7 @@ const Index = () => {
           <ArrowRight className="w-5 h-5" />
         </Link>
         <p className="text-muted-foreground text-xs mt-4">
-          {t('footer.vatNotice')}
+          Alle Preise inklusive gesetzlicher MwSt, zzgl Versandkosten
         </p>
       </section>
 

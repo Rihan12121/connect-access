@@ -1,6 +1,7 @@
 import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import VatNotice from '@/components/VatNotice';
 import { HelpCircle, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 
@@ -112,6 +113,7 @@ const FAQ = () => {
             {t('footer.contact')}
           </a>
         </div>
+        <VatNotice />
       </div>
 
       <Footer />

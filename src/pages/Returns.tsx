@@ -1,6 +1,7 @@
 import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import VatNotice from '@/components/VatNotice';
 import { RotateCcw, Check, AlertCircle } from 'lucide-react';
 
 const Returns = () => {
@@ -163,6 +164,7 @@ const Returns = () => {
         <div className="bg-primary/10 rounded-xl p-6 text-center">
           <p className="text-foreground">{data.refund}</p>
         </div>
+        <VatNotice />
       </div>
 
       <Footer />

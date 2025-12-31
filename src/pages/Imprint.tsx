@@ -1,6 +1,7 @@
 import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import VatNotice from '@/components/VatNotice';
 import { Building } from 'lucide-react';
 
 const Imprint = () => {
@@ -127,6 +128,7 @@ You can find our email address in the legal notice above.`
             </div>
           ))}
         </div>
+        <VatNotice />
       </div>
 
       <Footer />

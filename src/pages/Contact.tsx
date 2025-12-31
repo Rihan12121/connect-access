@@ -1,6 +1,7 @@
 import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import VatNotice from '@/components/VatNotice';
 import { Mail, Phone, MapPin, Clock } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -167,6 +168,7 @@ const Contact = () => {
             </div>
           </form>
         </div>
+        <VatNotice />
       </div>
 
       <Footer />

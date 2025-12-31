@@ -1,6 +1,7 @@
 import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import VatNotice from '@/components/VatNotice';
 import { FileText } from 'lucide-react';
 
 const Terms = () => {
@@ -162,6 +163,7 @@ Should individual provisions of these terms and conditions be invalid, the valid
             </div>
           ))}
         </div>
+        <VatNotice />
       </div>
 
       <Footer />

@@ -1,6 +1,7 @@
 import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import VatNotice from '@/components/VatNotice';
 import { Shield } from 'lucide-react';
 
 const Privacy = () => {
@@ -156,6 +157,7 @@ These service providers process your payment data in accordance with their own p
             </div>
           ))}
         </div>
+        <VatNotice />
       </div>
 
       <Footer />

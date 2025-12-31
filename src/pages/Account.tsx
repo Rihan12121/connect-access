@@ -8,6 +8,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import VatNotice from '@/components/VatNotice';
 
 const Account = () => {
   const { user, loading, signOut } = useAuth();
@@ -103,6 +104,7 @@ const Account = () => {
             <span className="text-foreground">{t('auth.logout')}</span>
           </button>
         </div>
+        <VatNotice />
       </div>
 
       <Footer />

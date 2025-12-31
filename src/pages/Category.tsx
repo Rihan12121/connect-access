@@ -6,6 +6,8 @@ import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
+import VatNotice from '@/components/VatNotice';
+import CategoryIcon from '@/components/CategoryIcon';
 
 type SortOption = 'default' | 'price-asc' | 'price-desc' | 'discount';
 type FilterOption = 'all' | 'deals' | 'inStock';
@@ -77,7 +79,7 @@ const Category = () => {
             <span className="text-white">{tCategory(category.slug)}</span>
           </nav>
           <h1 className="text-3xl md:text-4xl font-bold text-white flex items-center gap-3">
-            <span className="text-4xl">{category.icon}</span>
+            <CategoryIcon slug={category.slug} size="lg" className="shadow-lg" />
             {tCategory(category.slug)}
           </h1>
         </div>
@@ -179,6 +181,7 @@ const Category = () => {
             <p>{t('search.noResults')}</p>
           </div>
         )}
+        <VatNotice />
       </div>
 
       <Footer />
