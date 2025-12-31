@@ -38,7 +38,7 @@ const Products = () => {
       <div className="container max-w-6xl mx-auto px-6 py-12 md:py-16">
         {/* Page Header */}
         <div className="mb-12 md:mb-16">
-          <p className="section-subheading mb-3">Kollektion</p>
+          <p className="section-subheading mb-3">{t('ui.collection')}</p>
           <h1 className="section-heading">{t('products.discoverAll')}</h1>
           <p className="text-muted-foreground text-sm mt-3">
             {sortedProducts.length} {t('products.count')}
@@ -48,7 +48,7 @@ const Products = () => {
         {/* Filter Bar */}
         <div className="flex items-center justify-between mb-8 pb-6 border-b border-border">
           <div className="text-sm text-muted-foreground">
-            Alle Produkte anzeigen
+            {t('ui.showAllProducts')}
           </div>
           <div className="relative">
             <select

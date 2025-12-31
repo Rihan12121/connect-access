@@ -43,7 +43,7 @@ const Favorites = () => {
       <div className="container max-w-6xl mx-auto px-6 py-12 md:py-16">
         {/* Page Header */}
         <div className="mb-12">
-          <p className="section-subheading mb-2">Ihre Auswahl</p>
+          <p className="section-subheading mb-2">{t('favorites.yourSelection')}</p>
           <h1 className="section-heading">
             {t('favorites.title')} <span className="text-muted-foreground">({favorites.length})</span>
           </h1>

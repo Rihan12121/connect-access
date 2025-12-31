@@ -27,10 +27,10 @@ const Categories = () => {
       <div className="container max-w-6xl mx-auto px-6 py-12 md:py-16">
         {/* Page Header */}
         <div className="text-center mb-16">
-          <p className="section-subheading mb-3">Entdecken Sie</p>
+          <p className="section-subheading mb-3">{t('ui.discover')}</p>
           <h1 className="section-heading">{t('categories.all')}</h1>
           <p className="text-muted-foreground mt-4 max-w-md mx-auto">
-            Durchstöbern Sie unsere sorgfältig kuratierten Kategorien
+            {t('ui.browseCategories')}
           </p>
         </div>
 

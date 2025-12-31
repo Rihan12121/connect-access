@@ -133,7 +133,7 @@ const ProductDetail = () => {
             {/* Savings */}
             {savings && (
               <p className="text-sm text-success font-medium mt-2">
-                Sie sparen {savings} €
+                {t('ui.youSave')} {savings} €
               </p>
             )}
 
@@ -201,8 +201,8 @@ const ProductDetail = () => {
                   <Truck className="w-4 h-4 text-foreground" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-foreground">Kostenloser Versand</p>
-                  <p className="text-xs text-muted-foreground">Ab 50€ Bestellwert</p>
+                  <p className="text-sm font-medium text-foreground">{t('ui.freeShippingFrom')}</p>
+                  <p className="text-xs text-muted-foreground">{t('ui.from50')}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -210,8 +210,8 @@ const ProductDetail = () => {
                   <Shield className="w-4 h-4 text-foreground" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-foreground">Sichere Zahlung</p>
-                  <p className="text-xs text-muted-foreground">SSL-Verschlüsselung</p>
+                  <p className="text-sm font-medium text-foreground">{t('ui.securePaymentTitle')}</p>
+                  <p className="text-xs text-muted-foreground">{t('ui.sslEncryption')}</p>
                 </div>
               </div>
             </div>
@@ -222,7 +222,7 @@ const ProductDetail = () => {
         {relatedProducts.length > 0 && (
           <section className="mt-24">
             <div className="mb-10">
-              <p className="section-subheading mb-2">Das könnte Ihnen auch gefallen</p>
+              <p className="section-subheading mb-2">{t('ui.mayAlsoLike')}</p>
               <h2 className="section-heading">{t('products.related')}</h2>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6 stagger-children">
