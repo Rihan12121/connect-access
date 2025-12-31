@@ -4,6 +4,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
+import VatNotice from '@/components/VatNotice';
 
 type SortOption = 'default' | 'price-asc' | 'price-desc' | 'discount';
 
@@ -53,6 +54,7 @@ const Products = () => {
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
+        <VatNotice />
       </div>
 
       <Footer />

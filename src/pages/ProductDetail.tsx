@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
+import VatNotice from '@/components/VatNotice';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -150,6 +151,7 @@ const ProductDetail = () => {
             </div>
           </section>
         )}
+        <VatNotice />
       </div>
 
       <Footer />

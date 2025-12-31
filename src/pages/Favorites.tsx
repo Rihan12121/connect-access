@@ -5,6 +5,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
+import VatNotice from '@/components/VatNotice';
 
 const Favorites = () => {
   const { favorites } = useFavorites();
@@ -41,6 +42,7 @@ const Favorites = () => {
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
+        <VatNotice />
       </div>
 
       <Footer />

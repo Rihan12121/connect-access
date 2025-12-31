@@ -4,6 +4,7 @@ import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import VatNotice from '@/components/VatNotice';
 
 const Cart = () => {
   const { state, updateQuantity, removeItem, clearCart } = useCart();
@@ -127,6 +128,7 @@ const Cart = () => {
             </div>
           </div>
         </div>
+        <VatNotice />
       </div>
 
       <Footer />

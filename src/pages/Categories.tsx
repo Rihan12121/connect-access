@@ -3,6 +3,8 @@ import { categories } from '@/data/products';
 import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import VatNotice from '@/components/VatNotice';
+import CategoryIcon from '@/components/CategoryIcon';
 
 const Categories = () => {
   const { t, tCategory } = useLanguage();
@@ -27,12 +29,14 @@ const Categories = () => {
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-4">
+              <div className="absolute bottom-0 left-0 right-0 p-4 flex items-center gap-3">
+                <CategoryIcon slug={category.slug} size="sm" />
                 <span className="text-white font-bold text-lg">{tCategory(category.slug)}</span>
               </div>
             </Link>
           ))}
         </div>
+        <VatNotice />
       </div>
 
       <Footer />

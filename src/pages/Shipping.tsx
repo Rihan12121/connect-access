@@ -1,6 +1,7 @@
 import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import VatNotice from '@/components/VatNotice';
 import { Truck, Clock, MapPin, Euro } from 'lucide-react';
 
 const Shipping = () => {
@@ -136,6 +137,7 @@ const Shipping = () => {
             </div>
           ))}
         </div>
+        <VatNotice />
       </div>
 
       <Footer />
