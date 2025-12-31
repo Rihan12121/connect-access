@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { categories, products, banners } from '@/data/products';
-import { ChevronRight, ChevronLeft, ArrowRight, Package, Truck, HeadphonesIcon } from 'lucide-react';
+import { ChevronRight, ChevronLeft, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
@@ -163,46 +163,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* About Us Section */}
-      <section id="about" className="bg-secondary/30 py-12 mt-12">
-        <div className="container max-w-6xl mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground text-center mb-2">
-            {t('about.title')}
-          </h2>
-          <p className="text-lg text-primary font-medium text-center mb-2">
-            {t('hero.tagline')}
-          </p>
-          <p className="text-muted-foreground text-center max-w-3xl mx-auto mb-10">
-            {t('hero.description')}
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-card rounded-2xl p-6 text-center shadow-sm">
-              <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Package className="w-7 h-7 text-primary" />
-              </div>
-              <h3 className="font-semibold text-foreground mb-2">{t('about.quality')}</h3>
-              <p className="text-sm text-muted-foreground">{t('about.qualityDesc')}</p>
-            </div>
-            
-            <div className="bg-card rounded-2xl p-6 text-center shadow-sm">
-              <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Truck className="w-7 h-7 text-primary" />
-              </div>
-              <h3 className="font-semibold text-foreground mb-2">{t('about.shipping')}</h3>
-              <p className="text-sm text-muted-foreground">{t('about.shippingDesc')}</p>
-            </div>
-            
-            <div className="bg-card rounded-2xl p-6 text-center shadow-sm">
-              <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <HeadphonesIcon className="w-7 h-7 text-primary" />
-              </div>
-              <h3 className="font-semibold text-foreground mb-2">{t('about.support')}</h3>
-              <p className="text-sm text-muted-foreground">{t('about.supportDesc')}</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Discover All Products Button */}
       <section className="container max-w-6xl mx-auto mt-12 px-4 text-center pb-8">

@@ -34,7 +34,7 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">{t('footer.help')}</h4>
             <div className="flex flex-col gap-2">
-              <Link to="/#about" className="text-header-foreground/70 hover:text-primary text-sm transition-colors">
+              <Link to="/about" className="text-header-foreground/70 hover:text-primary text-sm transition-colors">
                 {t('footer.aboutUs')}
               </Link>
               <Link to="/faq" className="text-header-foreground/70 hover:text-primary text-sm transition-colors">
