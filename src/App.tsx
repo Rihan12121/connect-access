@@ -34,6 +34,7 @@ const Imprint = lazy(() => import("./pages/Imprint"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const About = lazy(() => import("./pages/About"));
+const OrderConfirmation = lazy(() => import("./pages/OrderConfirmation"));
 
 const queryClient = new QueryClient();
 
@@ -63,6 +64,7 @@ const App = () => (
                         <Route path="/auth" element={<Auth />} />
                         <Route path="/account" element={<Account />} />
                         <Route path="/checkout" element={<Checkout />} />
+                        <Route path="/order-confirmation" element={<OrderConfirmation />} />
                         <Route path="/faq" element={<FAQ />} />
                         <Route path="/shipping" element={<Shipping />} />
                         <Route path="/returns" element={<Returns />} />

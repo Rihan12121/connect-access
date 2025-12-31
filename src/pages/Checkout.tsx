@@ -69,8 +69,7 @@ const Checkout = () => {
       setCurrentStep('review');
     } else {
       clearCart();
-      toast.success(t('checkout.orderSuccess'));
-      navigate('/');
+      navigate('/order-confirmation');
     }
   };
 
