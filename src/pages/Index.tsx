@@ -150,6 +150,9 @@ const Index = () => {
           {t('products.discoverAll')}
           <ArrowRight className="w-5 h-5" />
         </Link>
+        <p className="text-muted-foreground text-xs mt-4">
+          {t('footer.vatNotice')}
+        </p>
       </section>
 
       <Footer />
