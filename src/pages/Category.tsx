@@ -1,13 +1,14 @@
 import { useParams, Link } from 'react-router-dom';
 import { products, categories, subcategories } from '@/data/products';
 import { useState, useMemo } from 'react';
-import { ChevronRight, Filter, X } from 'lucide-react';
+import { ChevronDown, SlidersHorizontal, X, ArrowLeft } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import VatNotice from '@/components/VatNotice';
 import CategoryIcon from '@/components/CategoryIcon';
+import SEO from '@/components/SEO';
 
 type SortOption = 'default' | 'price-asc' | 'price-desc' | 'discount';
 type FilterOption = 'all' | 'deals' | 'inStock';
@@ -25,7 +26,6 @@ const Category = () => {
   const filteredProducts = useMemo(() => {
     let result = products.filter(p => p.category === slug);
 
-    // Apply filter
     if (filter === 'deals') {
       result = result.filter(p => p.discount);
     } else if (filter === 'inStock') {
@@ -51,10 +51,11 @@ const Category = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="container max-w-6xl mx-auto px-4 py-12 text-center">
-          <h1 className="text-2xl font-bold text-foreground">{t('categories.notFound')}</h1>
-          <Link to="/" className="text-primary hover:underline mt-4 inline-block">
-            {t('nav.backToHome')}
+        <div className="container max-w-6xl mx-auto px-6 py-24 text-center">
+          <h1 className="font-display text-3xl font-semibold text-foreground mb-4">{t('categories.notFound')}</h1>
+          <Link to="/categories" className="premium-link inline-flex items-center gap-2">
+            <ArrowLeft className="w-4 h-4" />
+            Alle Kategorien
           </Link>
         </div>
         <Footer />
@@ -64,37 +65,59 @@ const Category = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title={`${tCategory(category.slug)} — Noor`}
+        description={`Entdecken Sie unsere ${tCategory(category.slug)} Kollektion bei Noor.`}
+      />
       <Header />
 
-      {/* Hero */}
-      <div 
-        className="relative h-40 md:h-56 bg-cover bg-center"
-        style={{ backgroundImage: `url(${category.image})` }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/40" />
-        <div className="container max-w-6xl mx-auto px-4 h-full flex flex-col justify-center relative z-10">
-          <nav className="flex items-center gap-2 text-sm text-white/70 mb-2">
-            <Link to="/" className="hover:text-white">{t('nav.home')}</Link>
-            <ChevronRight className="w-4 h-4" />
-            <span className="text-white">{tCategory(category.slug)}</span>
-          </nav>
-          <h1 className="text-3xl md:text-4xl font-bold text-white flex items-center gap-3">
-            <CategoryIcon slug={category.slug} size="lg" className="shadow-lg" />
-            {tCategory(category.slug)}
-          </h1>
+      {/* Hero Section */}
+      <section className="relative h-64 md:h-80 overflow-hidden">
+        <img 
+          src={category.image} 
+          alt={tCategory(category.slug)}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-foreground/80 via-foreground/50 to-foreground/30" />
+        
+        <div className="absolute inset-0 flex items-center">
+          <div className="container max-w-6xl mx-auto px-6">
+            {/* Breadcrumb */}
+            <nav className="flex items-center gap-3 text-xs text-primary-foreground/60 mb-6 tracking-wide uppercase">
+              <Link to="/" className="hover:text-primary-foreground transition-colors">{t('nav.home')}</Link>
+              <span>/</span>
+              <Link to="/categories" className="hover:text-primary-foreground transition-colors">Kategorien</Link>
+              <span>/</span>
+              <span className="text-primary-foreground">{tCategory(category.slug)}</span>
+            </nav>
+            
+            <div className="flex items-center gap-4">
+              <CategoryIcon slug={category.slug} size="lg" className="shadow-xl" />
+              <div>
+                <h1 className="font-display text-4xl md:text-5xl font-semibold text-primary-foreground">
+                  {tCategory(category.slug)}
+                </h1>
+                <p className="text-primary-foreground/70 mt-2">
+                  {filteredProducts.length} Produkte
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div className="container max-w-6xl mx-auto px-4 py-6">
+      <div className="container max-w-6xl mx-auto px-6 py-10">
         {/* Subcategories */}
         {categorySubcategories.length > 0 && (
-          <div className="mb-6">
-            <h3 className="text-sm font-medium text-muted-foreground mb-3">{t('categories.subcategories')}</h3>
-            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+          <div className="mb-10">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-4">
+              {t('categories.subcategories')}
+            </p>
+            <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
               {categorySubcategories.map(sub => (
                 <button 
                   key={sub.slug}
-                  className="px-4 py-2 bg-secondary text-secondary-foreground rounded-full text-sm font-medium whitespace-nowrap hover:bg-primary hover:text-primary-foreground transition-colors"
+                  className="px-5 py-2.5 bg-card border border-border text-foreground rounded-md text-sm font-medium whitespace-nowrap hover:border-primary hover:text-primary transition-all duration-300"
                 >
                   {sub.name}
                 </button>
@@ -103,82 +126,95 @@ const Category = () => {
           </div>
         )}
 
-        {/* Filters & Sort */}
-        <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-b border-border">
-          <div className="flex items-center gap-2">
+        {/* Filter Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-4 py-6 border-b border-border">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-4 py-2 bg-secondary text-foreground rounded-lg text-sm font-medium hover:bg-muted transition-colors"
+              className={`
+                flex items-center gap-2 px-4 py-2.5 rounded-md text-sm font-medium transition-all duration-300
+                ${showFilters 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'bg-card border border-border text-foreground hover:border-primary'
+                }
+              `}
             >
-              <Filter className="w-4 h-4" />
+              <SlidersHorizontal className="w-4 h-4" />
               {t('filter.title')}
             </button>
-            <p className="text-muted-foreground text-sm">
-              {filteredProducts.length} {t('products.count')}
-            </p>
+            
+            {filter !== 'all' && (
+              <button
+                onClick={() => setFilter('all')}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 text-primary rounded-md text-xs font-medium"
+              >
+                {filter === 'deals' ? t('filter.dealsOnly') : t('filter.inStock')}
+                <X className="w-3 h-3" />
+              </button>
+            )}
           </div>
-          <div className="flex items-center gap-3">
+          
+          <div className="relative">
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortOption)}
-              className="bg-secondary text-foreground rounded-lg px-3 py-2 text-sm border-none outline-none cursor-pointer"
+              className="appearance-none bg-transparent text-foreground text-sm pr-6 cursor-pointer focus:outline-none font-medium"
             >
               <option value="default">{t('sort.default')}</option>
               <option value="price-asc">{t('sort.priceAsc')}</option>
               <option value="price-desc">{t('sort.priceDesc')}</option>
               <option value="discount">{t('sort.discount')}</option>
             </select>
+            <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
           </div>
         </div>
 
         {/* Filter Options */}
         {showFilters && (
-          <div className="py-4 border-b border-border">
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setFilter('all')}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  filter === 'all' 
-                    ? 'bg-primary text-primary-foreground' 
-                    : 'bg-secondary text-foreground hover:bg-muted'
-                }`}
-              >
-                {t('filter.all')}
-              </button>
-              <button
-                onClick={() => setFilter('deals')}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  filter === 'deals' 
-                    ? 'bg-primary text-primary-foreground' 
-                    : 'bg-secondary text-foreground hover:bg-muted'
-                }`}
-              >
-                {t('filter.dealsOnly')}
-              </button>
-              <button
-                onClick={() => setFilter('inStock')}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  filter === 'inStock' 
-                    ? 'bg-primary text-primary-foreground' 
-                    : 'bg-secondary text-foreground hover:bg-muted'
-                }`}
-              >
-                {t('filter.inStock')}
-              </button>
+          <div className="py-6 border-b border-border animate-in">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest mb-4">
+              Filter
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {[
+                { value: 'all', label: t('filter.all') },
+                { value: 'deals', label: t('filter.dealsOnly') },
+                { value: 'inStock', label: t('filter.inStock') },
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => setFilter(option.value as FilterOption)}
+                  className={`
+                    px-5 py-2.5 rounded-md text-sm font-medium transition-all duration-300
+                    ${filter === option.value 
+                      ? 'bg-primary text-primary-foreground shadow-glow' 
+                      : 'bg-card border border-border text-foreground hover:border-primary'
+                    }
+                  `}
+                >
+                  {option.label}
+                </button>
+              ))}
             </div>
           </div>
         )}
 
         {/* Products Grid */}
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6 mt-10 stagger-children">
             {filteredProducts.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 text-muted-foreground">
-            <p>{t('search.noResults')}</p>
+          <div className="text-center py-20">
+            <p className="text-muted-foreground">{t('search.noResults')}</p>
+            <button
+              onClick={() => setFilter('all')}
+              className="premium-link mt-4 inline-block"
+            >
+              Filter zurücksetzen
+            </button>
           </div>
         )}
         <VatNotice />

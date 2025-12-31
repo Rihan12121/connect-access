@@ -1,41 +1,81 @@
 import { Link } from 'react-router-dom';
-import { categories } from '@/data/products';
+import { categories, products } from '@/data/products';
 import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import VatNotice from '@/components/VatNotice';
 import CategoryIcon from '@/components/CategoryIcon';
+import SEO from '@/components/SEO';
+import { ArrowRight } from 'lucide-react';
 
 const Categories = () => {
   const { t, tCategory } = useLanguage();
 
+  // Get product count per category
+  const getCategoryProductCount = (slug: string) => {
+    return products.filter(p => p.category === slug).length;
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Kategorien — Noor"
+        description="Entdecken Sie alle Kategorien bei Noor. Von Baby bis Elektronik - finden Sie was Sie suchen."
+      />
       <Header />
 
-      <div className="container max-w-6xl mx-auto px-4 py-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-8">{t('categories.all')}</h1>
+      <div className="container max-w-6xl mx-auto px-6 py-12 md:py-16">
+        {/* Page Header */}
+        <div className="text-center mb-16">
+          <p className="section-subheading mb-3">Entdecken Sie</p>
+          <h1 className="section-heading">{t('categories.all')}</h1>
+          <p className="text-muted-foreground mt-4 max-w-md mx-auto">
+            Durchstöbern Sie unsere sorgfältig kuratierten Kategorien
+          </p>
+        </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {categories.map(category => (
+        {/* Categories Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {categories.map((category, index) => (
             <Link 
               key={category.slug}
               to={`/category/${category.slug}`}
-              className="group relative aspect-square rounded-2xl overflow-hidden"
+              className="group relative aspect-[4/3] rounded-lg overflow-hidden animate-in"
+              style={{ animationDelay: `${index * 0.1}s` }}
             >
+              {/* Background Image */}
               <img 
                 src={category.image} 
                 alt={tCategory(category.slug)} 
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-4 flex items-center gap-3">
-                <CategoryIcon slug={category.slug} size="sm" />
-                <span className="text-white font-bold text-lg">{tCategory(category.slug)}</span>
+              
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/40 to-transparent transition-opacity duration-300" />
+              
+              {/* Hover Overlay */}
+              <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300" />
+              
+              {/* Content */}
+              <div className="absolute inset-0 p-6 flex flex-col justify-end">
+                <div className="flex items-center gap-3 mb-3">
+                  <CategoryIcon slug={category.slug} size="sm" />
+                  <span className="text-xs text-primary-foreground/70 font-medium uppercase tracking-widest">
+                    {getCategoryProductCount(category.slug)} Produkte
+                  </span>
+                </div>
+                <h2 className="font-display text-2xl font-semibold text-primary-foreground mb-2">
+                  {tCategory(category.slug)}
+                </h2>
+                <div className="flex items-center gap-2 text-primary-foreground/80 text-sm group-hover:text-primary-foreground transition-colors">
+                  <span className="uppercase tracking-wider text-xs font-medium">Entdecken</span>
+                  <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                </div>
               </div>
             </Link>
           ))}
         </div>
+        
         <VatNotice />
       </div>
 
