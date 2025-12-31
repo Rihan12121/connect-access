@@ -2,6 +2,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import VatNotice from '@/components/VatNotice';
+import SEO from '@/components/SEO';
 import { Shield } from 'lucide-react';
 
 const Privacy = () => {
@@ -138,6 +139,10 @@ These service providers process your payment data in accordance with their own p
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Datenschutz"
+        description="Datenschutzerklärung von Noor Shop - Erfahre wie wir deine Daten schützen."
+      />
       <Header />
 
       <div className="container max-w-4xl mx-auto px-4 py-12">

@@ -9,6 +9,7 @@ import ProductCard from '@/components/ProductCard';
 import CategoryIcon from '@/components/CategoryIcon';
 import VatNotice from '@/components/VatNotice';
 import WelcomeScreen from '@/components/WelcomeScreen';
+import SEO from '@/components/SEO';
 
 const Index = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
@@ -48,6 +49,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Noor - Online Shop"
+        description="Dein Online-Shop für Qualitätsprodukte zu fairen Preisen. Entdecke Baby, Schönheit, Elektronik und mehr."
+      />
       <Header />
 
       {/* Hero Banner Carousel */}

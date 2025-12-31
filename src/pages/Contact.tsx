@@ -2,6 +2,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import VatNotice from '@/components/VatNotice';
+import SEO from '@/components/SEO';
 import { Mail, Phone, MapPin, Clock } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -64,6 +65,10 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Kontakt"
+        description="Kontaktiere uns bei Noor Shop - Wir sind für dich da. E-Mail, Telefon und Kontaktformular."
+      />
       <Header />
 
       <div className="container max-w-4xl mx-auto px-4 py-12">

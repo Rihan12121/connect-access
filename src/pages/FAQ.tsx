@@ -2,6 +2,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import VatNotice from '@/components/VatNotice';
+import SEO from '@/components/SEO';
 import { HelpCircle, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 
@@ -67,6 +68,10 @@ const FAQ = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="FAQ"
+        description="Häufig gestellte Fragen zu Bestellung, Versand, Zahlung und Rückgabe bei Noor Shop."
+      />
       <Header />
 
       <div className="container max-w-4xl mx-auto px-4 py-12">

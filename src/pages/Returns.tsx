@@ -2,6 +2,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import VatNotice from '@/components/VatNotice';
+import SEO from '@/components/SEO';
 import { RotateCcw, Check, AlertCircle } from 'lucide-react';
 
 const Returns = () => {
@@ -100,6 +101,10 @@ const Returns = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Rückgabe & Erstattung"
+        description="30 Tage Rückgaberecht bei Noor Shop - Einfache Rücksendung und schnelle Erstattung."
+      />
       <Header />
 
       <div className="container max-w-4xl mx-auto px-4 py-12">

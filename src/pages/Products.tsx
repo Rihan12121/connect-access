@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import VatNotice from '@/components/VatNotice';
+import SEO from '@/components/SEO';
 
 type SortOption = 'default' | 'price-asc' | 'price-desc' | 'discount';
 
@@ -27,6 +28,10 @@ const Products = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Alle Produkte"
+        description="Entdecke alle Produkte bei Noor Shop - Baby, Schönheit, Elektronik, Haushalt und mehr zu fairen Preisen."
+      />
       <Header />
 
       <div className="container max-w-6xl mx-auto px-4 py-8">
