@@ -8,10 +8,25 @@ import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import CategoryIcon from '@/components/CategoryIcon';
 import VatNotice from '@/components/VatNotice';
+import WelcomeScreen from '@/components/WelcomeScreen';
 
 const Index = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
+  const [showWelcome, setShowWelcome] = useState(false);
   const { t, tCategory } = useLanguage();
+
+  // Check if user has accepted policy
+  useEffect(() => {
+    const hasAccepted = localStorage.getItem('noor-policy-accepted');
+    if (!hasAccepted) {
+      setShowWelcome(true);
+    }
+  }, []);
+
+  const handleAcceptPolicy = () => {
+    localStorage.setItem('noor-policy-accepted', 'true');
+    setShowWelcome(false);
+  };
 
   // Auto-rotate banners
   useEffect(() => {
@@ -26,6 +41,10 @@ const Index = () => {
 
   const nextBanner = () => setCurrentBanner((prev) => (prev + 1) % banners.length);
   const prevBanner = () => setCurrentBanner((prev) => (prev - 1 + banners.length) % banners.length);
+
+  if (showWelcome) {
+    return <WelcomeScreen onAccept={handleAcceptPolicy} />;
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -167,7 +186,7 @@ const Index = () => {
       </section>
 
       {/* About Us Section */}
-      <section className="bg-secondary/30 py-12 mt-12">
+      <section id="about" className="bg-secondary/30 py-12 mt-12">
         <div className="container max-w-6xl mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground text-center mb-4">
             {t('about.title')}

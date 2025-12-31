@@ -128,7 +128,7 @@ const translations: Translations = {
   'category.speisen-getraenke': { de: 'Speisen & Getränke', en: 'Food & Drinks' },
   'faq.subtitle': { de: 'Häufig gestellte Fragen', en: 'Frequently Asked Questions' },
   'faq.moreQuestions': { de: 'Noch Fragen? Kontaktieren Sie uns!', en: 'More questions? Contact us!' },
-  'hero.welcome': { de: 'Willkommen bei Noor Shop', en: 'Welcome to Noor Shop' },
+  'hero.welcome': { de: 'Willkommen bei Noor Website', en: 'Welcome to Noor Website' },
   'hero.tagline': { de: 'Dein Online-Shop für Qualitätsprodukte zu fairen Preisen', en: 'Your online shop for quality products at fair prices' },
   'hero.description': { de: 'Entdecke eine vielfältige Auswahl an Produkten – von Baby & Schönheit bis hin zu Elektronik und Haushalt. Wir bieten dir schnellen Versand und erstklassigen Service.', en: 'Discover a wide selection of products – from Baby & Beauty to Electronics and Home. We offer fast shipping and excellent service.' },
   'hero.shopNow': { de: 'Jetzt entdecken', en: 'Shop Now' },
@@ -140,6 +140,13 @@ const translations: Translations = {
   'about.shippingDesc': { de: 'Lieferung direkt zu dir nach Hause', en: 'Delivery straight to your door' },
   'about.support': { de: 'Top Service', en: 'Great Service' },
   'about.supportDesc': { de: 'Bei Fragen sind wir für dich da', en: 'We are here for you with any questions' },
+  'welcome.title': { de: 'Willkommen bei Noor Website', en: 'Welcome to Noor Website' },
+  'welcome.subtitle': { de: 'Schön, dass du hier bist!', en: 'Great to have you here!' },
+  'welcome.policyTitle': { de: 'Datenschutz & Nutzungsbedingungen', en: 'Privacy & Terms of Use' },
+  'welcome.policyText': { de: 'Mit der Nutzung unserer Website erklärst du dich mit unseren Datenschutzrichtlinien und Allgemeinen Geschäftsbedingungen einverstanden.', en: 'By using our website, you agree to our Privacy Policy and Terms of Service.' },
+  'welcome.accept': { de: 'Einverstanden & Weiter', en: 'Accept & Continue' },
+  'welcome.declineNote': { de: 'Durch Klicken auf "Einverstanden" akzeptierst du unsere Richtlinien.', en: 'By clicking "Accept" you agree to our policies.' },
+  'footer.aboutUs': { de: 'Über uns', en: 'About Us' },
 };
 
 interface LanguageContextType {
