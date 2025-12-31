@@ -50,28 +50,6 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      {/* Hero Welcome Section */}
-      <section className="bg-gradient-to-br from-primary/10 via-background to-secondary/20 py-12 md:py-20">
-        <div className="container max-w-6xl mx-auto px-4 text-center">
-          <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-4">
-            {t('hero.welcome')}
-          </h1>
-          <p className="text-lg md:text-xl text-primary font-medium mb-4">
-            {t('hero.tagline')}
-          </p>
-          <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
-            {t('hero.description')}
-          </p>
-          <Link 
-            to="/products" 
-            className="btn-primary inline-flex items-center gap-2 px-8 py-3 text-lg"
-          >
-            {t('hero.shopNow')}
-            <ArrowRight className="w-5 h-5" />
-          </Link>
-        </div>
-      </section>
-
       {/* Hero Banner Carousel */}
       <section className="relative overflow-hidden">
         <div 
@@ -188,11 +166,14 @@ const Index = () => {
       {/* About Us Section */}
       <section id="about" className="bg-secondary/30 py-12 mt-12">
         <div className="container max-w-6xl mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground text-center mb-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground text-center mb-2">
             {t('about.title')}
           </h2>
+          <p className="text-lg text-primary font-medium text-center mb-2">
+            {t('hero.tagline')}
+          </p>
           <p className="text-muted-foreground text-center max-w-3xl mx-auto mb-10">
-            {t('about.description')}
+            {t('hero.description')}
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
