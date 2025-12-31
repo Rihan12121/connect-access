@@ -1,22 +1,32 @@
-import { Heart } from 'lucide-react';
+import { Heart, ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Product } from '@/data/products';
 import { useFavorites } from '@/context/FavoritesContext';
+import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { toast } from 'sonner';
 
 interface ProductCardProps {
   product: Product;
+  showAddToCart?: boolean;
 }
 
-const ProductCard = ({ product }: ProductCardProps) => {
+const ProductCard = ({ product, showAddToCart = false }: ProductCardProps) => {
   const { toggleFavorite, isFavorite } = useFavorites();
+  const { addItem } = useCart();
   const { t } = useLanguage();
   const navigate = useNavigate();
 
   const handleClick = () => {
     window.scrollTo(0, 0);
     navigate(`/product/${product.id}`);
+  };
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem(product);
+    toast.success(`${product.name} ${t('products.addedToCart')}`);
   };
 
   return (
@@ -61,6 +71,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
             <span className="text-xs text-muted-foreground line-through">{product.originalPrice.toFixed(2)} €</span>
           )}
         </div>
+        
+        {/* Add to Cart Button - only shown when showAddToCart is true */}
+        {showAddToCart && (
+          <button
+            onClick={handleAddToCart}
+            className="w-full mt-4 py-2.5 bg-primary text-primary-foreground rounded-md text-sm font-medium flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+          >
+            <ShoppingCart className="w-4 h-4" />
+            {t('products.addToCart')}
+          </button>
+        )}
       </div>
     </div>
   );

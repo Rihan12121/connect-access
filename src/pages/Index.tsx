@@ -120,7 +120,7 @@ const Index = () => {
       </section>
 
       {/* Categories Section */}
-      <section className="container max-w-6xl mx-auto mt-20 px-6">
+      <section className="container max-w-6xl mx-auto mt-12 px-6">
         <div className="flex items-end justify-between mb-10">
           <div>
             <p className="section-subheading mb-2">{t('categories.browse')}</p>
@@ -146,7 +146,7 @@ const Index = () => {
       </section>
 
       {/* Hot Deals Section */}
-      <section className="container max-w-6xl mx-auto mt-24 px-6">
+      <section className="container max-w-6xl mx-auto mt-14 px-6">
         <div className="flex items-end justify-between mb-10">
           <div>
             <p className="section-subheading mb-2">Limitierte Angebote</p>
@@ -165,7 +165,7 @@ const Index = () => {
       </section>
 
       {/* Popular Products Section */}
-      <section className="container max-w-6xl mx-auto mt-24 px-6">
+      <section className="container max-w-6xl mx-auto mt-14 px-6">
         <div className="flex items-end justify-between mb-10">
           <div>
             <p className="section-subheading mb-2">Bestseller</p>
@@ -183,7 +183,7 @@ const Index = () => {
       </section>
 
       {/* Discover All Products Button */}
-      <section className="container max-w-6xl mx-auto mt-20 px-6 text-center pb-12">
+      <section className="container max-w-6xl mx-auto mt-12 px-6 text-center pb-12">
         <div className="divider mx-auto mb-10" />
         <Link 
           to="/products" 
