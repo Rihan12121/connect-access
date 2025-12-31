@@ -80,11 +80,7 @@ const Header = () => {
             </Link>
             
             {/* Language Dropdown */}
-            <div 
-              className="relative"
-              onMouseEnter={() => setLangHover(true)}
-              onMouseLeave={() => setLangHover(false)}
-            >
+            <div className="relative">
               <button 
                 onClick={() => setLangHover(!langHover)}
                 className="icon-btn text-header-foreground hover:bg-header-foreground/10 flex items-center gap-1"
@@ -93,20 +89,26 @@ const Header = () => {
                 <span className="text-xs font-medium hidden sm:inline">{language.toUpperCase()}</span>
               </button>
               {langHover && (
-                <div className="absolute right-0 top-full mt-1 bg-card border border-border rounded-lg shadow-lg py-1 min-w-[120px] z-50">
-                  <button 
-                    onClick={() => { setLanguage('de'); setLangHover(false); }}
-                    className={`w-full px-4 py-2 text-left text-sm hover:bg-muted transition-colors cursor-pointer ${language === 'de' ? 'text-primary font-medium' : 'text-foreground'}`}
-                  >
-                    DE - Deutsch
-                  </button>
-                  <button 
-                    onClick={() => { setLanguage('en'); setLangHover(false); }}
-                    className={`w-full px-4 py-2 text-left text-sm hover:bg-muted transition-colors cursor-pointer ${language === 'en' ? 'text-primary font-medium' : 'text-foreground'}`}
-                  >
-                    EN - English
-                  </button>
-                </div>
+                <>
+                  <div 
+                    className="fixed inset-0 z-40" 
+                    onClick={() => setLangHover(false)}
+                  />
+                  <div className="absolute right-0 top-full mt-1 bg-card border border-border rounded-lg shadow-lg py-1 min-w-[120px] z-50">
+                    <button 
+                      onClick={() => { setLanguage('de'); setLangHover(false); }}
+                      className={`w-full px-4 py-2 text-left text-sm hover:bg-muted transition-colors cursor-pointer ${language === 'de' ? 'text-primary font-medium' : 'text-foreground'}`}
+                    >
+                      DE - Deutsch
+                    </button>
+                    <button 
+                      onClick={() => { setLanguage('en'); setLangHover(false); }}
+                      className={`w-full px-4 py-2 text-left text-sm hover:bg-muted transition-colors cursor-pointer ${language === 'en' ? 'text-primary font-medium' : 'text-foreground'}`}
+                    >
+                      EN - English
+                    </button>
+                  </div>
+                </>
               )}
             </div>
 
