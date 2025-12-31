@@ -31,11 +31,10 @@ const SearchBar = ({ searchQuery, onSearchChange }: SearchBarProps) => {
     }
   }, []);
 
-  // Save search to history - saves the search term only
+  // Save search to history
   const saveToHistory = (term: string) => {
     if (!term.trim()) return;
     
-    // Save only the search term, not product names
     const searchTerm = term.trim();
     const newHistory = [searchTerm, ...searchHistory.filter(h => h.toLowerCase() !== searchTerm.toLowerCase())].slice(0, MAX_HISTORY);
     setSearchHistory(newHistory);
@@ -70,7 +69,6 @@ const SearchBar = ({ searchQuery, onSearchChange }: SearchBarProps) => {
   }, []);
 
   const handleSelectSuggestion = (productName: string) => {
-    // Save the current search query to history, not the product name
     if (searchQuery.trim()) {
       saveToHistory(searchQuery.trim());
     }
@@ -95,7 +93,7 @@ const SearchBar = ({ searchQuery, onSearchChange }: SearchBarProps) => {
   return (
     <div ref={containerRef} className="relative w-full">
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-header-foreground/50" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-header-foreground/40" />
         <input
           ref={inputRef}
           type="text"
@@ -104,26 +102,26 @@ const SearchBar = ({ searchQuery, onSearchChange }: SearchBarProps) => {
           onChange={(e) => onSearchChange(e.target.value)}
           onFocus={() => setIsFocused(true)}
           onKeyDown={handleKeyDown}
-          className="w-full bg-header-foreground/10 rounded-xl pl-12 pr-10 py-3 text-header-foreground placeholder:text-header-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30"
+          className="w-full bg-header-foreground/5 border border-header-foreground/10 rounded-lg pl-11 pr-10 py-3 text-sm text-header-foreground placeholder:text-header-foreground/40 focus:outline-none focus:border-primary/50 focus:bg-header-foreground/10 transition-all duration-300"
         />
         {searchQuery && (
           <button
             onClick={() => onSearchChange('')}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-header-foreground/50 hover:text-header-foreground"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-header-foreground/40 hover:text-header-foreground transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         )}
       </div>
 
       {/* Dropdown */}
       {showDropdown && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-xl shadow-elevated overflow-hidden z-50">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-lg shadow-elevated overflow-hidden z-50">
           {/* Suggestions */}
           {searchQuery.trim() && suggestions.length > 0 && (
             <div className="p-2">
-              <div className="flex items-center gap-2 px-3 py-2 text-xs text-muted-foreground uppercase font-medium">
-                <TrendingUp className="w-4 h-4" />
+              <div className="flex items-center gap-2 px-3 py-2 text-[10px] text-muted-foreground uppercase font-medium tracking-widest">
+                <TrendingUp className="w-3 h-3" />
                 {t('search.suggestions')}
               </div>
               {suggestions.map((product) => (
@@ -131,16 +129,16 @@ const SearchBar = ({ searchQuery, onSearchChange }: SearchBarProps) => {
                   key={product.id}
                   to={`/product/${product.id}`}
                   onClick={() => handleSelectSuggestion(product.name)}
-                  className="flex items-center gap-3 px-3 py-2 hover:bg-muted rounded-lg transition-colors"
+                  className="flex items-center gap-3 px-3 py-2.5 hover:bg-muted rounded-md transition-colors"
                 >
                   <img 
                     src={product.image} 
                     alt={product.name} 
-                    className="w-10 h-10 rounded-lg object-cover"
+                    className="w-10 h-10 rounded-md object-cover"
                   />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-foreground line-clamp-1">{product.name}</p>
-                    <p className="text-xs text-muted-foreground">{product.price.toFixed(2)} €</p>
+                    <p className="text-xs text-muted-foreground font-display">{product.price.toFixed(2)} €</p>
                   </div>
                 </Link>
               ))}
@@ -149,7 +147,7 @@ const SearchBar = ({ searchQuery, onSearchChange }: SearchBarProps) => {
 
           {/* No results */}
           {searchQuery.trim() && suggestions.length === 0 && (
-            <div className="p-4 text-center text-muted-foreground text-sm">
+            <div className="p-6 text-center text-muted-foreground text-sm">
               {t('search.noResults')} "{searchQuery}"
             </div>
           )}
@@ -158,13 +156,13 @@ const SearchBar = ({ searchQuery, onSearchChange }: SearchBarProps) => {
           {!searchQuery.trim() && searchHistory.length > 0 && (
             <div className="p-2">
               <div className="flex items-center justify-between px-3 py-2">
-                <span className="flex items-center gap-2 text-xs text-muted-foreground uppercase font-medium">
-                  <Clock className="w-4 h-4" />
+                <span className="flex items-center gap-2 text-[10px] text-muted-foreground uppercase font-medium tracking-widest">
+                  <Clock className="w-3 h-3" />
                   {t('search.history')}
                 </span>
                 <button
                   onClick={clearHistory}
-                  className="text-xs text-primary hover:underline"
+                  className="text-[10px] text-primary hover:underline uppercase tracking-wider"
                 >
                   {t('search.clearHistory')}
                 </button>
@@ -173,7 +171,7 @@ const SearchBar = ({ searchQuery, onSearchChange }: SearchBarProps) => {
                 <button
                   key={idx}
                   onClick={() => handleSelectHistory(term)}
-                  className="w-full flex items-center gap-3 px-3 py-2 hover:bg-muted rounded-lg transition-colors text-left"
+                  className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-muted rounded-md transition-colors text-left"
                 >
                   <Clock className="w-4 h-4 text-muted-foreground" />
                   <span className="text-sm text-foreground">{term}</span>

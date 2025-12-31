@@ -20,12 +20,21 @@ const ProductCard = ({ product }: ProductCardProps) => {
   };
 
   return (
-    <div className="product-card">
+    <div className="product-card group">
       <div onClick={handleClick} className="block cursor-pointer">
-        <div className="relative aspect-square">
-          <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+        <div className="relative aspect-[4/5] overflow-hidden bg-muted">
+          <img 
+            src={product.image} 
+            alt={product.name} 
+            className="w-full h-full object-cover"
+          />
+          {/* Overlay on hover */}
+          <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/5 transition-colors duration-500" />
+          
           {product.discount && (
-            <span className="absolute top-2 left-2 badge-deal">-{product.discount}%</span>
+            <span className="absolute top-3 left-3 badge-deal">
+              -{product.discount}%
+            </span>
           )}
           <button 
             onClick={(e) => {
@@ -34,20 +43,20 @@ const ProductCard = ({ product }: ProductCardProps) => {
               toggleFavorite(product);
               toast.success(isFavorite(product.id) ? t('favorites.removed') : t('favorites.added'));
             }}
-            className="absolute top-2 right-2 p-2 rounded-full bg-white/80 hover:bg-white transition-colors"
+            className="absolute top-3 right-3 p-2.5 rounded-full bg-card/90 backdrop-blur-sm hover:bg-card shadow-soft transition-all duration-300 hover:scale-110"
           >
-            <Heart className={`w-4 h-4 ${isFavorite(product.id) ? 'fill-favorite text-favorite' : 'text-muted-foreground'}`} />
+            <Heart className={`w-4 h-4 transition-colors ${isFavorite(product.id) ? 'fill-favorite text-favorite' : 'text-muted-foreground'}`} />
           </button>
         </div>
       </div>
-      <div className="p-4">
+      <div className="p-5">
         <div onClick={handleClick} className="cursor-pointer">
-          <h3 className="font-medium text-foreground line-clamp-2 text-sm hover:text-primary transition-colors">
+          <h3 className="font-body font-medium text-foreground line-clamp-2 text-sm leading-relaxed group-hover:text-primary transition-colors duration-300">
             {product.name}
           </h3>
         </div>
-        <div className="flex items-center gap-2 mt-2">
-          <span className="font-bold text-primary">{product.price.toFixed(2)} €</span>
+        <div className="flex items-baseline gap-2 mt-3">
+          <span className="font-display text-xl font-semibold text-foreground">{product.price.toFixed(2)} €</span>
           {product.originalPrice && (
             <span className="text-xs text-muted-foreground line-through">{product.originalPrice.toFixed(2)} €</span>
           )}

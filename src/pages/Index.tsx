@@ -33,7 +33,7 @@ const Index = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentBanner((prev) => (prev + 1) % banners.length);
-    }, 5000);
+    }, 6000);
     return () => clearInterval(timer);
   }, []);
 
@@ -50,36 +50,41 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO 
-        title="Noor - Online Shop"
-        description="Dein Online-Shop für Qualitätsprodukte zu fairen Preisen. Entdecke Baby, Schönheit, Elektronik und mehr."
+        title="Noor — Premium Online Shop"
+        description="Entdecken Sie exklusive Qualitätsprodukte für Baby, Schönheit, Elektronik und mehr. Noor - Ihr Partner für erstklassige Produkte."
       />
       <Header />
 
       {/* Hero Banner Carousel */}
       <section className="relative overflow-hidden">
         <div 
-          className="flex transition-transform duration-500 ease-out"
+          className="flex transition-transform duration-700 ease-out"
           style={{ transform: `translateX(-${currentBanner * 100}%)` }}
         >
           {banners.map((banner) => (
             <Link 
               key={banner.id}
               to={banner.link}
-              className="w-full flex-shrink-0 relative h-48 md:h-72 lg:h-80"
+              className="w-full flex-shrink-0 relative h-[50vh] md:h-[60vh] lg:h-[70vh]"
             >
               <img 
                 src={banner.image} 
                 alt={banner.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-foreground/80 via-foreground/40 to-transparent" />
               <div className="absolute inset-0 flex items-center">
-                <div className="container max-w-6xl mx-auto px-4">
-                  <p className="text-primary font-bold text-sm md:text-base">{banner.subtitle}</p>
-                  <h2 className="text-white text-2xl md:text-4xl lg:text-5xl font-bold mt-2">{banner.title}</h2>
-                  <span className="inline-flex items-center gap-2 mt-4 text-white text-sm font-medium hover:text-primary transition-colors">
-                    {t('categories.viewAll')} <ArrowRight className="w-4 h-4" />
-                  </span>
+                <div className="container max-w-6xl mx-auto px-6">
+                  <div className="max-w-xl">
+                    <p className="section-subheading text-primary-foreground/80 mb-4">{banner.subtitle}</p>
+                    <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-semibold text-primary-foreground leading-tight">{banner.title}</h2>
+                    <div className="mt-8">
+                      <span className="inline-flex items-center gap-3 text-primary-foreground/90 text-sm font-medium tracking-widest uppercase hover:text-primary-foreground transition-colors group">
+                        {t('categories.viewAll')} 
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </Link>
@@ -89,94 +94,103 @@ const Index = () => {
         {/* Banner Navigation */}
         <button 
           onClick={prevBanner}
-          className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/20 hover:bg-white/40 rounded-full text-white transition-colors"
+          className="absolute left-6 top-1/2 -translate-y-1/2 p-3 bg-card/20 backdrop-blur-sm hover:bg-card/40 rounded-full text-primary-foreground transition-all duration-300"
         >
-          <ChevronLeft className="w-6 h-6" />
+          <ChevronLeft className="w-5 h-5" />
         </button>
         <button 
           onClick={nextBanner}
-          className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/20 hover:bg-white/40 rounded-full text-white transition-colors"
+          className="absolute right-6 top-1/2 -translate-y-1/2 p-3 bg-card/20 backdrop-blur-sm hover:bg-card/40 rounded-full text-primary-foreground transition-all duration-300"
         >
-          <ChevronRight className="w-6 h-6" />
+          <ChevronRight className="w-5 h-5" />
         </button>
 
         {/* Banner Dots */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3">
           {banners.map((_, idx) => (
             <button
               key={idx}
               onClick={() => setCurrentBanner(idx)}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                idx === currentBanner ? 'bg-primary' : 'bg-white/50'
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                idx === currentBanner ? 'bg-primary-foreground w-8' : 'bg-primary-foreground/40'
               }`}
             />
           ))}
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="container max-w-6xl mx-auto mt-8 px-4">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl md:text-2xl font-bold text-foreground">{t('categories.browse')}</h2>
-          <Link to="/categories" className="text-primary text-sm font-medium flex items-center gap-1 hover:underline">
+      {/* Categories Section */}
+      <section className="container max-w-6xl mx-auto mt-20 px-6">
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <p className="section-subheading mb-2">{t('categories.browse')}</p>
+            <h2 className="section-heading">Kategorien</h2>
+          </div>
+          <Link to="/categories" className="premium-link hidden md:flex items-center gap-2 hover-underline">
             {t('categories.viewAll')} <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+        <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 stagger-children">
           {categories.map((category) => (
             <Link 
               key={category.slug} 
               to={`/category/${category.slug}`}
-              className="category-chip min-w-[100px]"
+              className="category-chip min-w-[120px]"
               onClick={() => window.scrollTo(0, 0)}
             >
               <CategoryIcon slug={category.slug} size="sm" />
-              <span className="text-xs font-medium text-center">{tCategory(category.slug)}</span>
+              <span className="text-xs font-medium text-center text-foreground">{tCategory(category.slug)}</span>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* Hot Deals */}
-      <section className="container max-w-6xl mx-auto mt-12 px-4">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl md:text-2xl font-bold text-foreground">{t('products.hotDeals')}</h2>
-          <Link to="/products?filter=deals" className="text-primary text-sm font-medium flex items-center gap-1 hover:underline">
+      {/* Hot Deals Section */}
+      <section className="container max-w-6xl mx-auto mt-24 px-6">
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <p className="section-subheading mb-2">Limitierte Angebote</p>
+            <h2 className="section-heading">{t('products.hotDeals')}</h2>
+          </div>
+          <Link to="/products?filter=deals" className="premium-link hidden md:flex items-center gap-2 hover-underline">
             {t('categories.viewAll')} <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6 stagger-children">
           {featuredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </section>
 
-      {/* Popular Products */}
-      <section className="container max-w-6xl mx-auto mt-12 px-4">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl md:text-2xl font-bold text-foreground">{t('products.popular')}</h2>
-          <Link to="/products" className="text-primary text-sm font-medium flex items-center gap-1 hover:underline">
+      {/* Popular Products Section */}
+      <section className="container max-w-6xl mx-auto mt-24 px-6">
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <p className="section-subheading mb-2">Bestseller</p>
+            <h2 className="section-heading">{t('products.popular')}</h2>
+          </div>
+          <Link to="/products" className="premium-link hidden md:flex items-center gap-2 hover-underline">
             {t('categories.viewAll')} <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6 stagger-children">
           {products.slice(0, 4).map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </section>
 
-
       {/* Discover All Products Button */}
-      <section className="container max-w-6xl mx-auto mt-12 px-4 text-center pb-8">
+      <section className="container max-w-6xl mx-auto mt-20 px-6 text-center pb-12">
+        <div className="divider mx-auto mb-10" />
         <Link 
           to="/products" 
-          className="btn-primary inline-flex items-center gap-2 px-8 py-3"
+          className="btn-primary inline-flex items-center gap-3"
         >
           {t('products.discoverAll')}
-          <ArrowRight className="w-5 h-5" />
+          <ArrowRight className="w-4 h-4" />
         </Link>
       </section>
 
