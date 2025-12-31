@@ -103,6 +103,7 @@ const Index = () => {
               key={category.slug} 
               to={`/category/${category.slug}`}
               className="category-chip min-w-[100px]"
+              onClick={() => window.scrollTo(0, 0)}
             >
               <CategoryIcon slug={category.slug} size="sm" />
               <span className="text-xs font-medium text-center">{tCategory(category.slug)}</span>
