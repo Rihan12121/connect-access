@@ -2,6 +2,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import VatNotice from '@/components/VatNotice';
+import SEO from '@/components/SEO';
 import { FileText } from 'lucide-react';
 
 const Terms = () => {
@@ -144,6 +145,10 @@ Should individual provisions of these terms and conditions be invalid, the valid
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="AGB"
+        description="Allgemeine Geschäftsbedingungen von Noor Shop."
+      />
       <Header />
 
       <div className="container max-w-4xl mx-auto px-4 py-12">

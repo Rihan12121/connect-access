@@ -4,6 +4,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import VatNotice from '@/components/VatNotice';
+import SEO from '@/components/SEO';
 
 const About = () => {
   const { t } = useLanguage();
@@ -14,6 +15,10 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Über uns"
+        description="Erfahre mehr über Noor Shop - Dein zuverlässiger Partner für hochwertige Produkte zu fairen Preisen."
+      />
       <Header />
 
       <section className="bg-gradient-to-br from-primary/10 via-background to-secondary/20 py-16 md:py-24">

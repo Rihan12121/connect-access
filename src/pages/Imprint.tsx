@@ -2,6 +2,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import VatNotice from '@/components/VatNotice';
+import SEO from '@/components/SEO';
 import { Building } from 'lucide-react';
 
 const Imprint = () => {
@@ -110,6 +111,10 @@ You can find our email address in the legal notice above.`
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Impressum"
+        description="Impressum von Noor Shop - Rechtliche Informationen und Kontaktdaten."
+      />
       <Header />
 
       <div className="container max-w-4xl mx-auto px-4 py-12">

@@ -2,6 +2,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import VatNotice from '@/components/VatNotice';
+import SEO from '@/components/SEO';
 import { Truck, Clock, MapPin, Euro } from 'lucide-react';
 
 const Shipping = () => {
@@ -106,6 +107,10 @@ const Shipping = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Versand & Lieferung"
+        description="Versandkosten und Lieferzeiten bei Noor Shop - Kostenloser Versand ab 50€."
+      />
       <Header />
 
       <div className="container max-w-4xl mx-auto px-4 py-12">

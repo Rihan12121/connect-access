@@ -5,6 +5,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import VatNotice from '@/components/VatNotice';
+import SEO from '@/components/SEO';
 
 const Cart = () => {
   const { state, updateQuantity, removeItem, clearCart } = useCart();
@@ -13,6 +14,7 @@ const Cart = () => {
   if (state.items.length === 0) {
     return (
       <div className="min-h-screen bg-background">
+        <SEO title="Warenkorb" description="Dein Warenkorb bei Noor Shop" />
         <Header />
         <div className="container max-w-6xl mx-auto px-4 py-16 text-center">
           <ShoppingBag className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
@@ -29,6 +31,7 @@ const Cart = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="Warenkorb" description="Dein Warenkorb bei Noor Shop" />
       <Header />
 
       <div className="container max-w-6xl mx-auto px-4 py-8">
