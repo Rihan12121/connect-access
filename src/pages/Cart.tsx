@@ -149,7 +149,7 @@ const Cart = () => {
                   <span className="text-foreground font-medium">{t('cart.total')}</span>
                   <span className="font-display text-3xl font-semibold text-foreground">{state.total.toFixed(2)} €</span>
                 </div>
-                <p className="text-xs text-muted-foreground">inkl. MwSt.</p>
+                <p className="text-xs text-muted-foreground">{t('ui.inclVat')}</p>
               </div>
 
               <Link 
@@ -171,15 +171,15 @@ const Cart = () => {
               <div className="mt-10 pt-8 border-t border-border space-y-4">
                 <div className="flex items-center gap-3 text-sm">
                   <Truck className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Kostenloser Versand ab 50€</span>
+                  <span className="text-muted-foreground">{t('ui.freeShipping')}</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <Shield className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Sichere SSL-Verschlüsselung</span>
+                  <span className="text-muted-foreground">{t('ui.securePayment')}</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <RotateCcw className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">14 Tage Rückgaberecht</span>
+                  <span className="text-muted-foreground">{t('ui.returnPolicy')}</span>
                 </div>
               </div>
             </div>

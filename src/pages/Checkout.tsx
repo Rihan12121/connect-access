@@ -86,7 +86,7 @@ const Checkout = () => {
       <div className="container max-w-5xl mx-auto px-6 py-12 md:py-16">
         {/* Page Header */}
         <div className="text-center mb-12">
-          <p className="section-subheading mb-2">Sichere Bestellung</p>
+          <p className="section-subheading mb-2">{t('ui.secureOrder')}</p>
           <h1 className="section-heading">{t('checkout.title')}</h1>
         </div>
 
@@ -464,7 +464,7 @@ const Checkout = () => {
                 <span className="text-foreground font-medium">Gesamt</span>
                 <div className="text-right">
                   <span className="font-display text-3xl font-semibold text-foreground">{state.total.toFixed(2)} €</span>
-                  <p className="text-xs text-muted-foreground mt-1">inkl. MwSt.</p>
+                  <p className="text-xs text-muted-foreground mt-1">{t('ui.inclVat')}</p>
                 </div>
               </div>
 
@@ -472,7 +472,7 @@ const Checkout = () => {
               <div className="mt-8 pt-6 border-t border-border">
                 <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
                   <Lock className="w-3 h-3" />
-                  <span>Sichere SSL-Verschlüsselung</span>
+                  <span>{t('ui.securePayment')}</span>
                 </div>
               </div>
             </div>
