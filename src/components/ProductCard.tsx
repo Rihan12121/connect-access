@@ -1,7 +1,6 @@
 import { Heart } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Product } from '@/data/products';
-import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { toast } from 'sonner';
@@ -11,7 +10,6 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
-  const { addItem } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
   const { t } = useLanguage();
   const navigate = useNavigate();
@@ -54,15 +52,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
             <span className="text-xs text-muted-foreground line-through">{product.originalPrice.toFixed(2)} €</span>
           )}
         </div>
-        <button 
-          onClick={() => {
-            addItem(product);
-            toast.success(t('products.addedToCart'));
-          }}
-          className="w-full mt-3 btn-primary text-sm py-2"
-        >
-          {t('products.addToCart')}
-        </button>
       </div>
     </div>
   );

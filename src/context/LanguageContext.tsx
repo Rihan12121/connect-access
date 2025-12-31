@@ -128,6 +128,18 @@ const translations: Translations = {
   'category.speisen-getraenke': { de: 'Speisen & Getränke', en: 'Food & Drinks' },
   'faq.subtitle': { de: 'Häufig gestellte Fragen', en: 'Frequently Asked Questions' },
   'faq.moreQuestions': { de: 'Noch Fragen? Kontaktieren Sie uns!', en: 'More questions? Contact us!' },
+  'hero.welcome': { de: 'Willkommen bei Noor Shop', en: 'Welcome to Noor Shop' },
+  'hero.tagline': { de: 'Dein Online-Shop für Qualitätsprodukte zu fairen Preisen', en: 'Your online shop for quality products at fair prices' },
+  'hero.description': { de: 'Entdecke eine vielfältige Auswahl an Produkten – von Baby & Schönheit bis hin zu Elektronik und Haushalt. Wir bieten dir schnellen Versand und erstklassigen Service.', en: 'Discover a wide selection of products – from Baby & Beauty to Electronics and Home. We offer fast shipping and excellent service.' },
+  'hero.shopNow': { de: 'Jetzt entdecken', en: 'Shop Now' },
+  'about.title': { de: 'Über uns', en: 'About Us' },
+  'about.description': { de: 'Noor Shop ist dein zuverlässiger Partner für hochwertige Produkte. Wir legen Wert auf Qualität, faire Preise und schnelle Lieferung. Unser Ziel ist es, dir das beste Einkaufserlebnis zu bieten – einfach, schnell und unkompliziert.', en: 'Noor Shop is your reliable partner for high-quality products. We value quality, fair prices, and fast delivery. Our goal is to provide you with the best shopping experience – simple, fast, and hassle-free.' },
+  'about.quality': { de: 'Geprüfte Qualität', en: 'Verified Quality' },
+  'about.qualityDesc': { de: 'Alle Produkte werden sorgfältig ausgewählt', en: 'All products are carefully selected' },
+  'about.shipping': { de: 'Schneller Versand', en: 'Fast Shipping' },
+  'about.shippingDesc': { de: 'Lieferung direkt zu dir nach Hause', en: 'Delivery straight to your door' },
+  'about.support': { de: 'Top Service', en: 'Great Service' },
+  'about.supportDesc': { de: 'Bei Fragen sind wir für dich da', en: 'We are here for you with any questions' },
 };
 
 interface LanguageContextType {
