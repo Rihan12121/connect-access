@@ -15,13 +15,13 @@ const Terms = () => {
       sections: [
         {
           title: '§ 1 Geltungsbereich',
-          content: `Diese Allgemeinen Geschäftsbedingungen gelten für alle Bestellungen, die über unseren Online-Shop getätigt werden. Mit der Bestellung akzeptieren Sie diese AGB.
+          content: `Diese Allgemeinen Geschäftsbedingungen gelten für alle Bestellungen, die über unsere Website getätigt werden. Mit der Bestellung akzeptieren Sie diese AGB.
 
 Vertragspartner ist die Noor GmbH, Musterstraße 123, 12345 Berlin.`
         },
         {
           title: '§ 2 Vertragsschluss',
-          content: `Die Darstellung der Produkte im Online-Shop stellt kein rechtlich bindendes Angebot dar, sondern eine Aufforderung zur Abgabe einer Bestellung.
+          content: `Die Darstellung der Produkte auf unserer Website stellt kein rechtlich bindendes Angebot dar, sondern eine Aufforderung zur Abgabe einer Bestellung.
 
 Durch das Absenden der Bestellung geben Sie ein verbindliches Kaufangebot ab. Sie erhalten eine automatische Bestellbestätigung per E-Mail. Der Kaufvertrag kommt zustande, wenn wir Ihre Bestellung durch Versand der Ware annehmen.`
         },
@@ -80,13 +80,13 @@ Sollten einzelne Bestimmungen dieser AGB unwirksam sein, bleibt die Wirksamkeit 
       sections: [
         {
           title: '§ 1 Scope of Application',
-          content: `These General Terms and Conditions apply to all orders placed through our online shop. By placing an order, you accept these terms.
+          content: `These General Terms and Conditions apply to all orders placed through our website. By placing an order, you accept these terms.
 
 The contracting party is Noor GmbH, Musterstraße 123, 12345 Berlin, Germany.`
         },
         {
           title: '§ 2 Conclusion of Contract',
-          content: `The presentation of products in the online shop does not constitute a legally binding offer, but an invitation to place an order.
+          content: `The presentation of products on our website does not constitute a legally binding offer, but an invitation to place an order.
 
 By submitting an order, you make a binding purchase offer. You will receive an automatic order confirmation by email. The purchase contract is concluded when we accept your order by shipping the goods.`
         },
@@ -147,7 +147,7 @@ Should individual provisions of these terms and conditions be invalid, the valid
     <div className="min-h-screen bg-background">
       <SEO 
         title="AGB"
-        description="Allgemeine Geschäftsbedingungen von Noor Shop."
+        description="Allgemeine Geschäftsbedingungen von Noor."
       />
       <Header />
 

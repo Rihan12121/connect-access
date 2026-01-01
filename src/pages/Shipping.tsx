@@ -109,7 +109,7 @@ const Shipping = () => {
     <div className="min-h-screen bg-background">
       <SEO 
         title="Versand & Lieferung"
-        description="Versandkosten und Lieferzeiten bei Noor Shop - Kostenloser Versand ab 50€."
+        description="Versandkosten und Lieferzeiten bei Noor - Kostenloser Versand ab 50€."
       />
       <Header />
 

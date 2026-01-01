@@ -70,7 +70,7 @@ const FAQ = () => {
     <div className="min-h-screen bg-background">
       <SEO 
         title="FAQ"
-        description="Häufig gestellte Fragen zu Bestellung, Versand, Zahlung und Rückgabe bei Noor Shop."
+        description="Häufig gestellte Fragen zu Bestellung, Versand, Zahlung und Rückgabe bei Noor."
       />
       <Header />
 

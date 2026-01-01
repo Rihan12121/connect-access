@@ -141,7 +141,7 @@ These service providers process your payment data in accordance with their own p
     <div className="min-h-screen bg-background">
       <SEO 
         title="Datenschutz"
-        description="Datenschutzerklärung von Noor Shop - Erfahre wie wir deine Daten schützen."
+        description="Datenschutzerklärung von Noor - Erfahre wie wir deine Daten schützen."
       />
       <Header />
 
