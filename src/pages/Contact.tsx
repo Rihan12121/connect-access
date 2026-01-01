@@ -21,7 +21,7 @@ const Contact = () => {
       title: 'Kontakt',
       subtitle: 'Wir sind für Sie da',
       info: {
-        email: { label: 'E-Mail', value: 'support@noor-shop.de' },
+        email: { label: 'E-Mail', value: 'support@noor.de' },
         phone: { label: 'Telefon', value: '+49 123 456 789' },
         address: { label: 'Adresse', value: 'Musterstraße 123, 12345 Berlin' },
         hours: { label: 'Öffnungszeiten', value: 'Mo-Fr: 9:00-18:00 Uhr' }
@@ -39,7 +39,7 @@ const Contact = () => {
       title: 'Contact',
       subtitle: 'We are here for you',
       info: {
-        email: { label: 'Email', value: 'support@noor-shop.de' },
+        email: { label: 'Email', value: 'support@noor.de' },
         phone: { label: 'Phone', value: '+49 123 456 789' },
         address: { label: 'Address', value: 'Musterstraße 123, 12345 Berlin' },
         hours: { label: 'Business Hours', value: 'Mon-Fri: 9:00 AM - 6:00 PM' }
@@ -67,7 +67,7 @@ const Contact = () => {
     <div className="min-h-screen bg-background">
       <SEO 
         title="Kontakt"
-        description="Kontaktiere uns bei Noor Shop - Wir sind für dich da. E-Mail, Telefon und Kontaktformular."
+        description="Kontaktiere uns bei Noor - Wir sind für dich da. E-Mail, Telefon und Kontaktformular."
       />
       <Header />
 

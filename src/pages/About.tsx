@@ -17,7 +17,7 @@ const About = () => {
     <div className="min-h-screen bg-background">
       <SEO 
         title="Über uns"
-        description="Erfahre mehr über Noor Shop - Dein zuverlässiger Partner für hochwertige Produkte zu fairen Preisen."
+        description="Erfahre mehr über Noor - Dein zuverlässiger Partner für hochwertige Produkte zu fairen Preisen."
       />
       <Header />
 
