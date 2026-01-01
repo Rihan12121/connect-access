@@ -1,8 +1,8 @@
-# Noor Shop – Projektdokumentation
+# Noor – Projektdokumentation
 
 ## 📋 Projektübersicht
 
-**Noor** ist ein moderner E-Commerce Online-Shop, entwickelt mit React, TypeScript und Tailwind CSS. Der Shop bietet eine elegante, benutzerfreundliche Oberfläche für den Verkauf verschiedener Produktkategorien.
+**Noor** ist eine moderne E-Commerce Plattform, entwickelt mit React, TypeScript und Tailwind CSS. Die Website bietet eine elegante, benutzerfreundliche Oberfläche für den Verkauf verschiedener Produktkategorien.
 
 **Live-URL:** https://connect-access.vercel.app/
 
