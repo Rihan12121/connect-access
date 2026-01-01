@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { products, categories } from '@/data/products';
-import { Heart, ShoppingCart, Minus, Plus, Check, Truck, Shield, ArrowLeft } from 'lucide-react';
+import { Heart, ShoppingCart, Minus, Plus, Truck, Shield, ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
@@ -11,12 +11,12 @@ import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import VatNotice from '@/components/VatNotice';
 import SEO from '@/components/SEO';
+import ProductImageGallery from '@/components/ProductImageGallery';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const product = products.find(p => p.id === id);
   const [quantity, setQuantity] = useState(1);
-  const [imageLoaded, setImageLoaded] = useState(false);
   const { addItem } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
   const { t, tCategory } = useLanguage();
@@ -72,21 +72,15 @@ const ProductDetail = () => {
         {/* Product Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
           {/* Image Section */}
-          <div className="relative">
-            <div className="aspect-[4/5] rounded-lg overflow-hidden bg-muted">
-              <img 
-                src={product.image} 
-                alt={product.name} 
-                className={`w-full h-full object-cover transition-all duration-700 ${imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
-                onLoad={() => setImageLoaded(true)}
-              />
-              {/* Overlay gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/5 via-transparent to-transparent pointer-events-none" />
-            </div>
+          <div className="relative group">
+            <ProductImageGallery 
+              images={product.images || [product.image]} 
+              productName={product.name} 
+            />
             
             {/* Badges */}
             {product.discount && (
-              <div className="absolute top-4 left-4 bg-deal text-deal-foreground text-xs font-semibold px-3 py-1.5 rounded-md uppercase tracking-wider">
+              <div className="absolute top-4 left-4 bg-deal text-deal-foreground text-xs font-semibold px-3 py-1.5 rounded-md uppercase tracking-wider z-10">
                 -{product.discount}% Rabatt
               </div>
             )}
@@ -97,7 +91,7 @@ const ProductDetail = () => {
                 toggleFavorite(product);
                 toast.success(isFavorite(product.id) ? t('favorites.removed') : t('favorites.added'));
               }}
-              className="absolute top-4 right-4 p-3 rounded-full bg-card/95 backdrop-blur-sm hover:bg-card shadow-card transition-all duration-300 hover:scale-110"
+              className="absolute top-4 right-4 p-3 rounded-full bg-card/95 backdrop-blur-sm hover:bg-card shadow-card transition-all duration-300 hover:scale-110 z-10"
             >
               <Heart className={`w-5 h-5 transition-colors ${isFavorite(product.id) ? 'fill-favorite text-favorite' : 'text-muted-foreground'}`} />
             </button>
