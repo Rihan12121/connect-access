@@ -103,7 +103,7 @@ const Returns = () => {
     <div className="min-h-screen bg-background">
       <SEO 
         title="Rückgabe & Erstattung"
-        description="30 Tage Rückgaberecht bei Noor Shop - Einfache Rücksendung und schnelle Erstattung."
+        description="30 Tage Rückgaberecht bei Noor - Einfache Rücksendung und schnelle Erstattung."
       />
       <Header />
 
