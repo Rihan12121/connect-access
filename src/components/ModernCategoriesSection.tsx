@@ -82,7 +82,7 @@ const ModernCategoriesSection = () => {
         </div>
       )}
 
-      <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4">
+      <div className="flex gap-5 overflow-x-auto no-scrollbar pb-6 px-1">
         {categories.map((category, index) => (
           <ModernCategoryCard
             key={category.slug}
