@@ -80,6 +80,42 @@ export type Database = {
         }
         Relationships: []
       }
+      hero_banners: {
+        Row: {
+          created_at: string
+          id: string
+          image: string
+          is_active: boolean
+          link: string
+          position: number
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image: string
+          is_active?: boolean
+          link?: string
+          position?: number
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image?: string
+          is_active?: boolean
+          link?: string
+          position?: number
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string

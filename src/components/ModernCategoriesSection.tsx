@@ -1,11 +1,12 @@
 import { useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, RotateCcw, Settings2, Plus } from 'lucide-react';
+import { ChevronRight, Settings2, Plus, Pencil } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
-import { useCategoryOrder } from '@/hooks/useCategoryOrder';
+import { useCategoryOrder, DatabaseCategory } from '@/hooks/useCategoryOrder';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import ModernCategoryCard from './ModernCategoryCard';
 import AddCategoryDialog from './AddCategoryDialog';
+import EditCategoryDialog from './EditCategoryDialog';
 import { Button } from './ui/button';
 import {
   AlertDialog,
@@ -20,13 +21,15 @@ import {
 
 const ModernCategoriesSection = () => {
   const { t } = useLanguage();
-  const { categories, reorderCategories, addCategory, deleteCategory, isLoading } = useCategoryOrder();
+  const { categories, reorderCategories, addCategory, deleteCategory, updateCategory, isLoading } = useCategoryOrder();
   const { isAdmin } = useIsAdmin();
   
   const [isEditMode, setIsEditMode] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<DatabaseCategory | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null);
 
   // Touch handling for mobile
@@ -64,7 +67,6 @@ const ModernCategoriesSection = () => {
     const container = containerRef.current;
     const cards = container.querySelectorAll('[data-category-card]');
     
-    // Find which card the touch is over
     cards.forEach((card, index) => {
       const rect = card.getBoundingClientRect();
       if (
@@ -94,6 +96,15 @@ const ModernCategoriesSection = () => {
 
   const handleAddCategory = async (category: { slug: string; name: string; icon: string; image: string }) => {
     await addCategory(category);
+  };
+
+  const handleEditCategory = (category: DatabaseCategory) => {
+    setEditingCategory(category);
+    setShowEditDialog(true);
+  };
+
+  const handleSaveCategory = async (id: string, updates: Partial<DatabaseCategory>) => {
+    await updateCategory(id, updates);
   };
 
   const handleDeleteCategory = async () => {
@@ -126,17 +137,15 @@ const ModernCategoriesSection = () => {
           {isAdmin && (
             <>
               {isEditMode && (
-                <>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowAddDialog(true)}
-                    className="gap-2"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span className="hidden md:inline">Hinzufügen</span>
-                  </Button>
-                </>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowAddDialog(true)}
+                  className="gap-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span className="hidden md:inline">Hinzufügen</span>
+                </Button>
               )}
               <Button
                 variant={isEditMode ? "default" : "outline"}
@@ -162,7 +171,7 @@ const ModernCategoriesSection = () => {
 
       {isEditMode && (
         <div className="mb-4 p-3 bg-muted/50 rounded-lg text-sm text-muted-foreground text-center">
-          Kategorien per Drag & Drop (oder Touch) verschieben • Zum Löschen auf 🗑️ klicken
+          Kategorien per Drag & Drop verschieben • ✏️ Bearbeiten • 🗑️ Löschen
         </div>
       )}
 
@@ -183,6 +192,7 @@ const ModernCategoriesSection = () => {
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
+              onEdit={() => handleEditCategory(category)}
               onDelete={() => setDeleteConfirm({ id: category.id, name: category.name })}
             />
           </div>
@@ -194,6 +204,14 @@ const ModernCategoriesSection = () => {
         open={showAddDialog}
         onOpenChange={setShowAddDialog}
         onAdd={handleAddCategory}
+      />
+
+      {/* Edit Category Dialog */}
+      <EditCategoryDialog
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+        category={editingCategory}
+        onSave={handleSaveCategory}
       />
 
       {/* Delete Confirmation Dialog */}

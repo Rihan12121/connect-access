@@ -15,6 +15,7 @@ import {
   Wine,
   GripVertical,
   Trash2,
+  Pencil,
   X
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
@@ -32,6 +33,7 @@ interface ModernCategoryCardProps {
   onTouchStart?: (index: number, e: React.TouchEvent) => void;
   onTouchMove?: (e: React.TouchEvent) => void;
   onTouchEnd?: () => void;
+  onEdit?: () => void;
   onDelete?: () => void;
 }
 
@@ -77,6 +79,7 @@ const ModernCategoryCard = ({
   onTouchStart,
   onTouchMove,
   onTouchEnd,
+  onEdit,
   onDelete
 }: ModernCategoryCardProps) => {
   const { tCategory } = useLanguage();
@@ -140,16 +143,28 @@ const ModernCategoryCard = ({
           >
             <GripVertical className="w-4 h-4 text-gray-600" />
           </div>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onDelete?.();
-            }}
-            className="absolute top-2 right-2 z-10 p-1.5 rounded-lg bg-red-500/80 hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-all"
-          >
-            <Trash2 className="w-4 h-4 text-white" />
-          </button>
+          <div className="absolute top-2 right-2 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onEdit?.();
+              }}
+              className="p-1.5 rounded-lg bg-white/80 hover:bg-white transition-all"
+            >
+              <Pencil className="w-4 h-4 text-gray-600" />
+            </button>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onDelete?.();
+              }}
+              className="p-1.5 rounded-lg bg-red-500/80 hover:bg-red-600 transition-all"
+            >
+              <Trash2 className="w-4 h-4 text-white" />
+            </button>
+          </div>
         </>
       )}
 
