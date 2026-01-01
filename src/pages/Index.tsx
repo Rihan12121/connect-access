@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { categories, products, banners } from '@/data/products';
+import { products, banners } from '@/data/products';
 import { ChevronRight, ChevronLeft, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
-import CategoryIcon from '@/components/CategoryIcon';
+import ModernCategoriesSection from '@/components/ModernCategoriesSection';
 import VatNotice from '@/components/VatNotice';
 import SEO from '@/components/SEO';
 
@@ -101,30 +101,7 @@ const Index = () => {
       </section>
 
       {/* Categories Section */}
-      <section className="container max-w-6xl mx-auto mt-12 px-6">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <p className="section-subheading mb-2">{t('categories.browse')}</p>
-            <h2 className="section-heading">Kategorien</h2>
-          </div>
-          <Link to="/categories" className="premium-link hidden md:flex items-center gap-2 hover-underline">
-            {t('categories.viewAll')} <ChevronRight className="w-4 h-4" />
-          </Link>
-        </div>
-        <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 stagger-children">
-          {categories.map((category) => (
-            <Link 
-              key={category.slug} 
-              to={`/category/${category.slug}`}
-              className="category-chip min-w-[120px]"
-              onClick={() => window.scrollTo(0, 0)}
-            >
-              <CategoryIcon slug={category.slug} size="sm" />
-              <span className="text-xs font-medium text-center text-foreground">{tCategory(category.slug)}</span>
-            </Link>
-          ))}
-        </div>
-      </section>
+      <ModernCategoriesSection />
 
       {/* Hot Deals Section */}
       <section className="container max-w-6xl mx-auto mt-14 px-6">
