@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { Cookie, Shield, BarChart3, Target, X } from 'lucide-react';
+import { Cookie, Shield, BarChart3, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import {
@@ -30,7 +30,7 @@ const CookieConsentBanner = () => {
     const accepted = localStorage.getItem('cookie-consent-given');
     if (!accepted) {
       // Slight delay to avoid layout shift on load
-      const timer = setTimeout(() => setShowBanner(true), 500);
+      const timer = setTimeout(() => setShowBanner(true), 300);
       return () => clearTimeout(timer);
     }
   }, []);
@@ -117,14 +117,20 @@ const CookieConsentBanner = () => {
     },
   ];
 
+  // Don't render anything if consent was already given and settings modal is closed
   if (!showBanner && !showSettings) return null;
 
   return (
     <>
+      {/* Full-screen blocking overlay */}
+      {showBanner && !showSettings && (
+        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm" />
+      )}
+
       {/* Cookie Banner */}
       {showBanner && !showSettings && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 p-4 md:p-6">
-          <div className="container max-w-4xl mx-auto">
+        <div className="fixed inset-0 z-[101] flex items-end justify-center p-4 md:p-6 pointer-events-none">
+          <div className="container max-w-4xl mx-auto pointer-events-auto">
             <div className="bg-card border border-border rounded-2xl shadow-elevated p-6 md:p-8">
               <div className="flex items-start gap-4 mb-6">
                 <div className="p-3 bg-primary/10 rounded-xl shrink-0">
@@ -136,8 +142,8 @@ const CookieConsentBanner = () => {
                   </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {language === 'de' 
-                      ? 'Wir verwenden Cookies und ähnliche Technologien für die Verbesserung des Benutzererlebnisses und die Personalisierung von Werbung. Auf diese Weise können wir und Drittanbieter Ihnen sowohl auf als auch außerhalb unserer Websites Inhalte, Marketing und Werbung anbieten, die Ihnen gefallen könnten. Ihre Einstellungen können Sie jederzeit unter "Cookie-Einstellungen" ändern.'
-                      : 'We use cookies and similar technologies to improve user experience and personalize advertising. This allows us and third parties to offer you content, marketing and advertising that you might like, both on and off our websites. You can change your settings at any time under "Cookie Settings".'}
+                      ? 'Wir verwenden Cookies und ähnliche Technologien für die Verbesserung des Benutzererlebnisses und die Personalisierung von Werbung. Auf diese Weise können wir und Drittanbieter Ihnen sowohl auf als auch außerhalb unserer Websites Inhalte, Marketing und Werbung anbieten, die Ihnen gefallen könnten. Ihre Einstellungen können Sie jederzeit unter "Cookie-Einstellungen" ändern. Weitere Informationen finden Sie in unserem Cookie-Hinweis.'
+                      : 'We use cookies and similar technologies to improve user experience and personalize advertising. This allows us and third parties to offer you content, marketing and advertising that you might like, both on and off our websites. You can change your settings at any time under "Cookie Settings". For more information, see our Cookie Notice.'}
                   </p>
                 </div>
               </div>
@@ -146,20 +152,20 @@ const CookieConsentBanner = () => {
                 <Button 
                   variant="outline" 
                   onClick={openSettings}
-                  className="flex-1 sm:flex-none"
+                  className="flex-1"
                 >
                   {language === 'de' ? 'Cookies personalisieren' : 'Customize Cookies'}
                 </Button>
                 <Button 
                   variant="outline" 
                   onClick={handleRejectAll}
-                  className="flex-1 sm:flex-none"
+                  className="flex-1"
                 >
                   {language === 'de' ? 'Cookies ablehnen' : 'Reject Cookies'}
                 </Button>
                 <Button 
                   onClick={handleAcceptAll}
-                  className="flex-1 sm:flex-none"
+                  className="flex-1"
                 >
                   {language === 'de' ? 'Cookies akzeptieren' : 'Accept Cookies'}
                 </Button>
