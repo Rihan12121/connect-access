@@ -12,6 +12,7 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ScrollToTop from "@/components/ScrollToTop";
 import BackToTopButton from "@/components/BackToTopButton";
+import CookieConsentBanner from "@/components/CookieConsentBanner";
 import { PageSkeleton } from "@/components/LoadingSkeleton";
 import AdminGuard from "@/components/AdminGuard";
 // Lazy load pages for better performance
@@ -35,7 +36,6 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const About = lazy(() => import("./pages/About"));
 const OrderConfirmation = lazy(() => import("./pages/OrderConfirmation"));
-const CookieSettings = lazy(() => import("./pages/CookieSettings"));
 const OrderHistory = lazy(() => import("./pages/OrderHistory"));
 
 // Admin pages
@@ -61,6 +61,7 @@ const App = () => (
                   <BrowserRouter>
                     <ScrollToTop />
                     <BackToTopButton />
+                    <CookieConsentBanner />
                     <Suspense fallback={<PageSkeleton />}>
                       <Routes>
                         <Route path="/" element={<Index />} />
@@ -82,7 +83,6 @@ const App = () => (
                         <Route path="/privacy" element={<Privacy />} />
                         <Route path="/terms" element={<Terms />} />
                         <Route path="/about" element={<About />} />
-                        <Route path="/cookie-settings" element={<CookieSettings />} />
                         <Route path="/orders" element={<OrderHistory />} />
                         {/* Admin Routes - Protected */}
                         <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
