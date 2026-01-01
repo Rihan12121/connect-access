@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, LogOut, Heart, ShoppingBag, Settings } from 'lucide-react';
+import { User, LogOut, Heart, ShoppingBag, Package } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useCart } from '@/context/CartContext';
@@ -89,6 +89,23 @@ const Account = () => {
               <h3 className="font-medium text-foreground">{t('cart.title')}</h3>
               <p className="text-muted-foreground text-sm">
                 {getItemCount()} {t('account.items')}
+              </p>
+            </div>
+          </Link>
+
+          <Link 
+            to="/orders"
+            className="flex items-center gap-4 bg-card border border-border rounded-xl p-4 hover:border-primary transition-colors"
+          >
+            <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+              <Package className="w-6 h-6 text-green-600" />
+            </div>
+            <div>
+              <h3 className="font-medium text-foreground">
+                {t('nav.home') === 'Home' ? 'Order History' : 'Bestellverlauf'}
+              </h3>
+              <p className="text-muted-foreground text-sm">
+                {t('nav.home') === 'Home' ? 'View your orders' : 'Bestellungen anzeigen'}
               </p>
             </div>
           </Link>
