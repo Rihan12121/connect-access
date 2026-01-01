@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { ShoppingBag, CreditCard, Truck, Check, ArrowRight, ArrowLeft, Lock, MapPin, Package, Loader2 } from 'lucide-react';
+import { ShoppingBag, CreditCard, Truck, Check, ArrowRight, ArrowLeft, Lock, MapPin, Package, Loader2, Ban } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -21,11 +21,13 @@ const steps: { id: CheckoutStep; label: string; icon: React.ElementType }[] = [
 
 const Checkout = () => {
   const { state, clearCart } = useCart();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<CheckoutStep>('shipping');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [checkingBlocked, setCheckingBlocked] = useState(true);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -37,8 +39,74 @@ const Checkout = () => {
     country: 'Deutschland',
   });
 
+  // Check if user is blocked
+  useEffect(() => {
+    const checkIfBlocked = async () => {
+      if (!user?.email) {
+        setCheckingBlocked(false);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase.rpc('is_user_blocked', {
+          check_email: user.email,
+        });
+
+        if (error) {
+          console.error('Error checking blocked status:', error);
+        } else {
+          setIsBlocked(data === true);
+        }
+      } catch (err) {
+        console.error('Error:', err);
+      }
+      setCheckingBlocked(false);
+    };
+
+    checkIfBlocked();
+  }, [user]);
+
   const currentStepIndex = steps.findIndex(s => s.id === currentStep);
   const itemCount = state.items.reduce((acc, item) => acc + item.quantity, 0);
+
+  // Show blocked message
+  if (isBlocked) {
+    return (
+      <div className="min-h-screen bg-background">
+        <SEO title="Checkout — Noor" description="Checkout nicht verfügbar" />
+        <Header />
+        <div className="container max-w-6xl mx-auto px-6 py-24 text-center">
+          <div className="max-w-md mx-auto">
+            <div className="w-20 h-20 bg-destructive/10 rounded-full flex items-center justify-center mx-auto mb-8">
+              <Ban className="w-10 h-10 text-destructive" />
+            </div>
+            <h1 className="font-display text-3xl font-semibold text-foreground mb-4">
+              {language === 'de' ? 'Zugang gesperrt' : 'Access Blocked'}
+            </h1>
+            <p className="text-muted-foreground mb-10">
+              {language === 'de' 
+                ? 'Ihr Konto wurde gesperrt. Bei Fragen wenden Sie sich bitte an unseren Kundenservice.' 
+                : 'Your account has been blocked. Please contact customer service for assistance.'}
+            </p>
+            <Link to="/contact" className="btn-primary inline-flex items-center gap-3">
+              {language === 'de' ? 'Kontakt aufnehmen' : 'Contact Us'}
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Show loading while checking blocked status
+  if (checkingBlocked) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   if (state.items.length === 0) {
     return (
