@@ -8,26 +8,11 @@ import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import CategoryIcon from '@/components/CategoryIcon';
 import VatNotice from '@/components/VatNotice';
-import WelcomeScreen from '@/components/WelcomeScreen';
 import SEO from '@/components/SEO';
 
 const Index = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
-  const [showWelcome, setShowWelcome] = useState(false);
   const { t, tCategory } = useLanguage();
-
-  // Check if user has accepted policy
-  useEffect(() => {
-    const hasAccepted = localStorage.getItem('noor-policy-accepted');
-    if (!hasAccepted) {
-      setShowWelcome(true);
-    }
-  }, []);
-
-  const handleAcceptPolicy = () => {
-    localStorage.setItem('noor-policy-accepted', 'true');
-    setShowWelcome(false);
-  };
 
   // Auto-rotate banners
   useEffect(() => {
@@ -42,10 +27,6 @@ const Index = () => {
 
   const nextBanner = () => setCurrentBanner((prev) => (prev + 1) % banners.length);
   const prevBanner = () => setCurrentBanner((prev) => (prev - 1 + banners.length) % banners.length);
-
-  if (showWelcome) {
-    return <WelcomeScreen onAccept={handleAcceptPolicy} />;
-  }
 
   return (
     <div className="min-h-screen bg-background">
