@@ -1,11 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Heart, ShoppingCart, Menu, X, Globe, User, LogOut, ArrowLeft } from 'lucide-react';
+import { Heart, ShoppingCart, Menu, X, Globe, User, LogOut, ArrowLeft, LayoutDashboard } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useAuth } from '@/context/AuthContext';
 import { useState } from 'react';
 import { useScrollHeader } from '@/hooks/useScrollHeader';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
 import SearchBar from '@/components/SearchBar';
 
 const Header = () => {
@@ -13,6 +14,7 @@ const Header = () => {
   const { getItemCount } = useCart();
   const { favorites } = useFavorites();
   const { user, signOut } = useAuth();
+  const { isAdmin } = useIsAdmin();
   const [menuOpen, setMenuOpen] = useState(false);
   const [langHover, setLangHover] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -53,6 +55,16 @@ const Header = () => {
 
           {/* Icons */}
           <div className="flex items-center gap-2">
+            {user && isAdmin && (
+              <Link
+                to="/admin"
+                className="icon-btn text-header-foreground/70 hover:text-header-foreground"
+                title="Admin"
+              >
+                <LayoutDashboard className="w-5 h-5" />
+              </Link>
+            )}
+
             <Link 
               to="/favorites" 
               className="icon-btn text-header-foreground/70 hover:text-header-foreground relative"
@@ -154,6 +166,15 @@ const Header = () => {
               >
                 {t('nav.categories')}
               </Link>
+              {user && isAdmin && (
+                <Link
+                  to="/admin"
+                  onClick={() => setMenuOpen(false)}
+                  className="text-sm font-medium tracking-wide uppercase text-header-foreground/70 hover:text-header-foreground transition-colors"
+                >
+                  Admin
+                </Link>
+              )}
               <Link 
                 to={user ? "/account" : "/auth"} 
                 onClick={() => setMenuOpen(false)}
