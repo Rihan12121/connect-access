@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      blocked_users: {
+        Row: {
+          bank_account: string | null
+          blocked_by: string | null
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          reason: string | null
+        }
+        Insert: {
+          bank_account?: string | null
+          blocked_by?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          reason?: string | null
+        }
+        Update: {
+          bank_account?: string | null
+          blocked_by?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          reason?: string | null
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string
@@ -230,6 +260,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_user_blocked: {
+        Args: { check_bank?: string; check_email: string; check_name?: string }
         Returns: boolean
       }
     }

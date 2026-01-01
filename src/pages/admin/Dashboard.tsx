@@ -162,6 +162,12 @@ const AdminDashboard = () => {
       icon: ShoppingCart,
     },
     {
+      title: language === 'de' ? 'Kunden' : 'Customers',
+      description: language === 'de' ? 'Kunden verwalten und blockieren' : 'Manage and block customers',
+      href: '/admin/customers',
+      icon: Users,
+    },
+    {
       title: language === 'de' ? 'Bewertungen' : 'Reviews',
       description: language === 'de' ? 'Kundenbewertungen ansehen' : 'View customer reviews',
       href: '/admin/reviews',
