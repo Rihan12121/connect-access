@@ -16,13 +16,28 @@ const Footer = () => {
               {t('footer.description')} {t('footer.quality')}
             </p>
             <div className="flex gap-3 mt-6">
-              <a href="#" className="p-2.5 bg-header-foreground/5 border border-header-foreground/10 rounded-lg hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all duration-300">
+              <a 
+                href="https://facebook.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="p-2.5 bg-header-foreground/5 border border-header-foreground/10 rounded-lg hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all duration-300"
+              >
                 <Facebook className="w-4 h-4" />
               </a>
-              <a href="#" className="p-2.5 bg-header-foreground/5 border border-header-foreground/10 rounded-lg hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all duration-300">
+              <a 
+                href="https://instagram.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="p-2.5 bg-header-foreground/5 border border-header-foreground/10 rounded-lg hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all duration-300"
+              >
                 <Instagram className="w-4 h-4" />
               </a>
-              <a href="#" className="p-2.5 bg-header-foreground/5 border border-header-foreground/10 rounded-lg hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all duration-300">
+              <a 
+                href="https://twitter.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="p-2.5 bg-header-foreground/5 border border-header-foreground/10 rounded-lg hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all duration-300"
+              >
                 <Twitter className="w-4 h-4" />
               </a>
             </div>
