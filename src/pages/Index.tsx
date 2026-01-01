@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, ChevronLeft, ArrowRight } from 'lucide-react';
+import { ChevronRight, ChevronLeft, ArrowRight, Flame, Star, Sparkles } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -32,14 +32,20 @@ const Index = () => {
       <ModernCategoriesSection />
 
       {/* Hot Deals Section */}
-      <section className="container max-w-6xl mx-auto mt-14 px-6">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <p className="section-subheading mb-2">{t('ui.limitedOffers')}</p>
-            <h2 className="section-heading">{t('products.hotDeals')}</h2>
+      <section className="container max-w-6xl mx-auto mt-20 px-6">
+        <div className="flex items-end justify-between mb-12">
+          <div className="section-header">
+            <div className="section-icon">
+              <Flame />
+            </div>
+            <div>
+              <p className="section-subheading mb-1">{t('ui.limitedOffers')}</p>
+              <h2 className="section-heading">{t('products.hotDeals')}</h2>
+            </div>
           </div>
-          <Link to="/products?filter=deals" className="premium-link hidden md:flex items-center gap-2 hover-underline">
-            {t('categories.viewAll')} <ChevronRight className="w-4 h-4" />
+          <Link to="/products?filter=deals" className="premium-link hidden md:flex items-center gap-2 group">
+            {t('categories.viewAll')} 
+            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
@@ -51,14 +57,20 @@ const Index = () => {
       </section>
 
       {/* Popular Products Section */}
-      <section className="container max-w-6xl mx-auto mt-14 px-6">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <p className="section-subheading mb-2">{t('ui.bestseller')}</p>
-            <h2 className="section-heading">{t('products.popular')}</h2>
+      <section className="container max-w-6xl mx-auto mt-20 px-6">
+        <div className="flex items-end justify-between mb-12">
+          <div className="section-header">
+            <div className="section-icon">
+              <Star />
+            </div>
+            <div>
+              <p className="section-subheading mb-1">{t('ui.bestseller')}</p>
+              <h2 className="section-heading">{t('products.popular')}</h2>
+            </div>
           </div>
-          <Link to="/products" className="premium-link hidden md:flex items-center gap-2 hover-underline">
-            {t('categories.viewAll')} <ChevronRight className="w-4 h-4" />
+          <Link to="/products" className="premium-link hidden md:flex items-center gap-2 group">
+            {t('categories.viewAll')} 
+            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6 stagger-children">
@@ -69,14 +81,15 @@ const Index = () => {
       </section>
 
       {/* Discover All Products Button */}
-      <section className="container max-w-6xl mx-auto mt-12 px-6 text-center pb-12">
-        <div className="divider mx-auto mb-10" />
+      <section className="container max-w-6xl mx-auto mt-16 px-6 text-center pb-12">
+        <div className="divider mx-auto mb-12" />
         <Link 
           to="/products" 
-          className="btn-primary inline-flex items-center gap-3"
+          className="btn-primary inline-flex items-center gap-3 text-base"
         >
+          <Sparkles className="w-5 h-5" />
           {t('products.discoverAll')}
-          <ArrowRight className="w-4 h-4" />
+          <ArrowRight className="w-5 h-5" />
         </Link>
       </section>
 
