@@ -21,6 +21,8 @@ interface Stats {
   totalRevenue: number;
   totalReviews: number;
   pendingOrders: number;
+  totalCustomers: number;
+  totalProducts: number;
 }
 
 const AdminDashboard = () => {
@@ -30,6 +32,8 @@ const AdminDashboard = () => {
     totalRevenue: 0,
     totalReviews: 0,
     pendingOrders: 0,
+    totalCustomers: 0,
+    totalProducts: 0,
   });
   const [loading, setLoading] = useState(true);
   const [recentOrders, setRecentOrders] = useState<any[]>([]);
@@ -50,12 +54,24 @@ const AdminDashboard = () => {
       .from('reviews')
       .select('id');
 
+    // Fetch unique customers (profiles)
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('id');
+
+    // Fetch products
+    const { data: products } = await supabase
+      .from('products')
+      .select('id');
+
     if (orders) {
       setStats({
         totalOrders: orders.length,
         totalRevenue: orders.reduce((sum, o) => sum + Number(o.total), 0),
         totalReviews: reviews?.length || 0,
         pendingOrders: orders.filter(o => o.status === 'pending').length,
+        totalCustomers: profiles?.length || 0,
+        totalProducts: products?.length || 0,
       });
     }
     setLoading(false);
@@ -95,7 +111,19 @@ const AdminDashboard = () => {
 
   const statCards = [
     {
-      title: language === 'de' ? 'Gesamtbestellungen' : 'Total Orders',
+      title: language === 'de' ? 'Kunden' : 'Customers',
+      value: stats.totalCustomers,
+      icon: Users,
+      color: 'bg-indigo-500',
+    },
+    {
+      title: language === 'de' ? 'Produkte' : 'Products',
+      value: stats.totalProducts,
+      icon: Package,
+      color: 'bg-orange-500',
+    },
+    {
+      title: language === 'de' ? 'Bestellungen' : 'Orders',
       value: stats.totalOrders,
       icon: ShoppingCart,
       color: 'bg-blue-500',
