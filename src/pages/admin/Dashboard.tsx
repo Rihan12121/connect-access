@@ -122,6 +122,12 @@ const AdminDashboard = () => {
 
   const menuItems = [
     {
+      title: language === 'de' ? 'Produkte' : 'Products',
+      description: language === 'de' ? 'Produkte hinzufügen und bearbeiten' : 'Add and edit products',
+      href: '/admin/products',
+      icon: Package,
+    },
+    {
       title: language === 'de' ? 'Bestellungen' : 'Orders',
       description: language === 'de' ? 'Alle Bestellungen verwalten' : 'Manage all orders',
       href: '/admin/orders',
