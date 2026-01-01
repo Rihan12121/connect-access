@@ -38,6 +38,11 @@ const OrderConfirmation = lazy(() => import("./pages/OrderConfirmation"));
 const CookieSettings = lazy(() => import("./pages/CookieSettings"));
 const OrderHistory = lazy(() => import("./pages/OrderHistory"));
 
+// Admin pages
+const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
+const AdminOrders = lazy(() => import("./pages/admin/Orders"));
+const AdminReviews = lazy(() => import("./pages/admin/Reviews"));
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -77,6 +82,10 @@ const App = () => (
                         <Route path="/about" element={<About />} />
                         <Route path="/cookie-settings" element={<CookieSettings />} />
                         <Route path="/orders" element={<OrderHistory />} />
+                        {/* Admin Routes */}
+                        <Route path="/admin" element={<AdminDashboard />} />
+                        <Route path="/admin/orders" element={<AdminOrders />} />
+                        <Route path="/admin/reviews" element={<AdminReviews />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </Suspense>
