@@ -1,3 +1,4 @@
+import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Baby, 
@@ -12,53 +13,44 @@ import {
   Dumbbell, 
   Heart, 
   Wine,
-  GripVertical
+  GripVertical,
+  Trash2,
+  X
 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
-import { Category } from '@/data/products';
+import { DatabaseCategory } from '@/hooks/useCategoryOrder';
+import { products } from '@/data/products';
 
 interface ModernCategoryCardProps {
-  category: Category;
+  category: DatabaseCategory;
   index: number;
   isAdmin?: boolean;
   isDragging?: boolean;
   onDragStart?: (index: number) => void;
   onDragOver?: (index: number) => void;
   onDragEnd?: () => void;
+  onTouchStart?: (index: number, e: React.TouchEvent) => void;
+  onTouchMove?: (e: React.TouchEvent) => void;
+  onTouchEnd?: () => void;
+  onDelete?: () => void;
 }
 
 const iconMap: Record<string, React.ComponentType<any>> = {
-  'baby': Baby,
-  'schoenheit': Sparkles,
-  'elektronik': Smartphone,
-  'beleuchtung': Lightbulb,
-  'haus-kueche': Home,
-  'garten': Flower2,
-  'schmuck': Gem,
-  'spielzeug': Gamepad2,
-  'kleidung': Shirt,
-  'sport-outdoor': Dumbbell,
-  'sex-sinnlichkeit': Heart,
-  'speisen-getraenke': Wine,
+  'Baby': Baby,
+  'Sparkles': Sparkles,
+  'Smartphone': Smartphone,
+  'Lightbulb': Lightbulb,
+  'Home': Home,
+  'Flower2': Flower2,
+  'Gem': Gem,
+  'Gamepad2': Gamepad2,
+  'Shirt': Shirt,
+  'Dumbbell': Dumbbell,
+  'Heart': Heart,
+  'Wine': Wine,
 };
 
-// Real category images
-const imageMap: Record<string, string> = {
-  'baby': 'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=400&h=300&fit=crop&q=80',
-  'schoenheit': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=300&fit=crop&q=80',
-  'elektronik': 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=400&h=300&fit=crop&q=80',
-  'beleuchtung': 'https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?w=400&h=300&fit=crop&q=80',
-  'haus-kueche': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop&q=80',
-  'garten': 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop&q=80',
-  'schmuck': 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=300&fit=crop&q=80',
-  'spielzeug': 'https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=400&h=300&fit=crop&q=80',
-  'kleidung': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop&q=80',
-  'sport-outdoor': 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&h=300&fit=crop&q=80',
-  'sex-sinnlichkeit': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop&q=80',
-  'speisen-getraenke': 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=400&h=300&fit=crop&q=80',
-};
-
-// Icon background colors (soft pastels)
+// Icon background colors
 const iconBgMap: Record<string, string> = {
   'baby': 'bg-gradient-to-br from-pink-400 to-pink-500 text-white',
   'schoenheit': 'bg-gradient-to-br from-purple-400 to-purple-500 text-white',
@@ -81,12 +73,36 @@ const ModernCategoryCard = ({
   isDragging = false,
   onDragStart,
   onDragOver,
-  onDragEnd
+  onDragEnd,
+  onTouchStart,
+  onTouchMove,
+  onTouchEnd,
+  onDelete
 }: ModernCategoryCardProps) => {
   const { tCategory } = useLanguage();
-  const Icon = iconMap[category.slug] || Home;
-  const iconBg = iconBgMap[category.slug] || 'bg-gray-400 text-white';
-  const image = imageMap[category.slug] || category.image;
+  const [showPreview, setShowPreview] = useState(false);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  const Icon = iconMap[category.icon] || Home;
+  const iconBg = iconBgMap[category.slug] || 'bg-gradient-to-br from-gray-400 to-gray-500 text-white';
+
+  // Get products for this category (max 3)
+  const categoryProducts = products.filter(p => p.category === category.slug).slice(0, 3);
+
+  const handleMouseEnter = () => {
+    if (!isAdmin) {
+      hoverTimeoutRef.current = setTimeout(() => {
+        setShowPreview(true);
+      }, 300);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    setShowPreview(false);
+  };
 
   const cardContent = (
     <div 
@@ -100,32 +116,45 @@ const ModernCategoryCard = ({
         hover:-translate-y-2
         cursor-pointer
         group
-        ${isDragging ? 'opacity-50 scale-95' : ''}
+        ${isDragging ? 'opacity-50 scale-95 rotate-2' : ''}
       `}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {/* Background Image */}
       <div className="absolute inset-0">
         <img 
-          src={image} 
-          alt={tCategory(category.slug)}
+          src={category.image} 
+          alt={category.name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
       </div>
 
-      {/* Admin drag handle */}
+      {/* Admin controls */}
       {isAdmin && (
-        <div 
-          className="absolute top-2 right-2 z-10 p-1.5 rounded-lg bg-white/80 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing"
-          onMouseDown={(e) => e.stopPropagation()}
-        >
-          <GripVertical className="w-4 h-4 text-gray-600" />
-        </div>
+        <>
+          <div 
+            className="absolute top-2 left-2 z-10 p-1.5 rounded-lg bg-white/80 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing touch-none"
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <GripVertical className="w-4 h-4 text-gray-600" />
+          </div>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onDelete?.();
+            }}
+            className="absolute top-2 right-2 z-10 p-1.5 rounded-lg bg-red-500/80 hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-all"
+          >
+            <Trash2 className="w-4 h-4 text-white" />
+          </button>
+        </>
       )}
 
       {/* Content */}
       <div className="absolute bottom-0 left-0 right-0 p-4 flex flex-col items-start gap-2">
-        {/* Icon */}
         <div 
           className={`
             w-10 h-10
@@ -139,12 +168,58 @@ const ModernCategoryCard = ({
         >
           <Icon className="w-5 h-5" strokeWidth={2} />
         </div>
-
-        {/* Category name */}
         <span className="text-sm font-semibold text-white leading-tight drop-shadow-md">
-          {tCategory(category.slug)}
+          {tCategory(category.slug) || category.name}
         </span>
       </div>
+
+      {/* Product Preview Popup */}
+      {showPreview && categoryProducts.length > 0 && (
+        <div 
+          className="absolute left-full top-0 ml-2 z-50 w-64 bg-card rounded-xl shadow-2xl border border-border overflow-hidden animate-in fade-in slide-in-from-left-2 duration-200"
+          onMouseEnter={() => setShowPreview(true)}
+          onMouseLeave={() => setShowPreview(false)}
+        >
+          <div className="p-3 bg-muted/50 border-b border-border flex items-center justify-between">
+            <span className="text-sm font-medium text-foreground">Produkte</span>
+            <button 
+              onClick={(e) => {
+                e.preventDefault();
+                setShowPreview(false);
+              }}
+              className="p-1 hover:bg-muted rounded"
+            >
+              <X className="w-3 h-3 text-muted-foreground" />
+            </button>
+          </div>
+          <div className="p-2 space-y-2 max-h-[280px] overflow-y-auto">
+            {categoryProducts.map(product => (
+              <Link
+                key={product.id}
+                to={`/product/${product.id}`}
+                className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <img 
+                  src={product.image} 
+                  alt={product.name}
+                  className="w-12 h-12 rounded-lg object-cover"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">{product.name}</p>
+                  <p className="text-xs text-primary font-semibold">{product.price.toFixed(2)} €</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <Link 
+            to={`/category/${category.slug}`}
+            className="block p-3 text-center text-sm text-primary hover:bg-muted transition-colors border-t border-border"
+          >
+            Alle anzeigen →
+          </Link>
+        </div>
+      )}
     </div>
   );
 
@@ -158,7 +233,10 @@ const ModernCategoryCard = ({
           onDragOver?.(index);
         }}
         onDragEnd={onDragEnd}
-        className="animate-in"
+        onTouchStart={(e) => onTouchStart?.(index, e)}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+        className="animate-in touch-none"
         style={{ animationDelay: `${index * 0.05}s` }}
       >
         {cardContent}

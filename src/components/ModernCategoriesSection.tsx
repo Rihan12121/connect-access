@@ -1,20 +1,37 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, RotateCcw, Settings2 } from 'lucide-react';
+import { ChevronRight, RotateCcw, Settings2, Plus } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCategoryOrder } from '@/hooks/useCategoryOrder';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import ModernCategoryCard from './ModernCategoryCard';
+import AddCategoryDialog from './AddCategoryDialog';
 import { Button } from './ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from './ui/alert-dialog';
 
 const ModernCategoriesSection = () => {
   const { t } = useLanguage();
-  const { categories, reorderCategories, resetOrder } = useCategoryOrder();
+  const { categories, reorderCategories, addCategory, deleteCategory, isLoading } = useCategoryOrder();
   const { isAdmin } = useIsAdmin();
   
   const [isEditMode, setIsEditMode] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null);
+
+  // Touch handling for mobile
+  const touchStartRef = useRef<{ index: number; x: number; y: number } | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const handleDragStart = (index: number) => {
     setDraggedIndex(index);
@@ -33,6 +50,71 @@ const ModernCategoriesSection = () => {
     setDragOverIndex(null);
   };
 
+  // Touch handlers for mobile drag
+  const handleTouchStart = useCallback((index: number, e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    touchStartRef.current = { index, x: touch.clientX, y: touch.clientY };
+    setDraggedIndex(index);
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!touchStartRef.current || !containerRef.current) return;
+    
+    const touch = e.touches[0];
+    const container = containerRef.current;
+    const cards = container.querySelectorAll('[data-category-card]');
+    
+    // Find which card the touch is over
+    cards.forEach((card, index) => {
+      const rect = card.getBoundingClientRect();
+      if (
+        touch.clientX >= rect.left &&
+        touch.clientX <= rect.right &&
+        touch.clientY >= rect.top &&
+        touch.clientY <= rect.bottom
+      ) {
+        if (index !== touchStartRef.current?.index) {
+          setDragOverIndex(index);
+        }
+      }
+    });
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if (touchStartRef.current !== null && dragOverIndex !== null) {
+      const fromIndex = touchStartRef.current.index;
+      if (fromIndex !== dragOverIndex) {
+        reorderCategories(fromIndex, dragOverIndex);
+      }
+    }
+    touchStartRef.current = null;
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  }, [dragOverIndex, reorderCategories]);
+
+  const handleAddCategory = async (category: { slug: string; name: string; icon: string; image: string }) => {
+    await addCategory(category);
+  };
+
+  const handleDeleteCategory = async () => {
+    if (deleteConfirm) {
+      await deleteCategory(deleteConfirm.id);
+      setDeleteConfirm(null);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <section className="container max-w-6xl mx-auto mt-12 px-6">
+        <div className="flex gap-5 overflow-x-auto no-scrollbar pb-6 px-1">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="w-[160px] h-[200px] flex-shrink-0 rounded-2xl bg-muted animate-pulse" />
+          ))}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="container max-w-6xl mx-auto mt-12 px-6">
       <div className="flex items-end justify-between mb-8">
@@ -40,19 +122,21 @@ const ModernCategoriesSection = () => {
           <p className="section-subheading mb-2">{t('categories.browse')}</p>
           <h2 className="section-heading">Kategorien</h2>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
           {isAdmin && (
             <>
               {isEditMode && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={resetOrder}
-                  className="gap-2 text-muted-foreground hover:text-foreground"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                  <span className="hidden md:inline">Zurücksetzen</span>
-                </Button>
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowAddDialog(true)}
+                    className="gap-2"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span className="hidden md:inline">Hinzufügen</span>
+                  </Button>
+                </>
               )}
               <Button
                 variant={isEditMode ? "default" : "outline"}
@@ -62,7 +146,7 @@ const ModernCategoriesSection = () => {
               >
                 <Settings2 className="w-4 h-4" />
                 <span className="hidden md:inline">
-                  {isEditMode ? 'Fertig' : 'Anordnen'}
+                  {isEditMode ? 'Fertig' : 'Bearbeiten'}
                 </span>
               </Button>
             </>
@@ -78,24 +162,58 @@ const ModernCategoriesSection = () => {
 
       {isEditMode && (
         <div className="mb-4 p-3 bg-muted/50 rounded-lg text-sm text-muted-foreground text-center">
-          Kategorien per Drag & Drop verschieben
+          Kategorien per Drag & Drop (oder Touch) verschieben • Zum Löschen auf 🗑️ klicken
         </div>
       )}
 
-      <div className="flex gap-5 overflow-x-auto no-scrollbar pb-6 px-1">
+      <div 
+        ref={containerRef}
+        className="flex gap-5 overflow-x-auto no-scrollbar pb-6 px-1"
+      >
         {categories.map((category, index) => (
-          <ModernCategoryCard
-            key={category.slug}
-            category={category}
-            index={index}
-            isAdmin={isEditMode}
-            isDragging={draggedIndex === index}
-            onDragStart={handleDragStart}
-            onDragOver={handleDragOver}
-            onDragEnd={handleDragEnd}
-          />
+          <div key={category.id} data-category-card>
+            <ModernCategoryCard
+              category={category}
+              index={index}
+              isAdmin={isEditMode}
+              isDragging={draggedIndex === index}
+              onDragStart={handleDragStart}
+              onDragOver={handleDragOver}
+              onDragEnd={handleDragEnd}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              onDelete={() => setDeleteConfirm({ id: category.id, name: category.name })}
+            />
+          </div>
         ))}
       </div>
+
+      {/* Add Category Dialog */}
+      <AddCategoryDialog
+        open={showAddDialog}
+        onOpenChange={setShowAddDialog}
+        onAdd={handleAddCategory}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Kategorie löschen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Möchten Sie die Kategorie "{deleteConfirm?.name}" wirklich löschen? 
+              Diese Aktion kann nicht rückgängig gemacht werden.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteCategory} className="bg-destructive hover:bg-destructive/90">
+              Löschen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </section>
   );
 };
