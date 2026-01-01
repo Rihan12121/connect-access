@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
-import { categories, products } from '@/data/products';
+import { products } from '@/data/products';
 import { useLanguage } from '@/context/LanguageContext';
+import { useCategoryOrder } from '@/hooks/useCategoryOrder';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import VatNotice from '@/components/VatNotice';
@@ -10,11 +11,28 @@ import { ArrowRight } from 'lucide-react';
 
 const Categories = () => {
   const { t, tCategory } = useLanguage();
+  const { categories, isLoading } = useCategoryOrder();
 
   // Get product count per category
   const getCategoryProductCount = (slug: string) => {
     return products.filter(p => p.category === slug).length;
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container max-w-6xl mx-auto px-6 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="aspect-[4/3] rounded-lg bg-muted animate-pulse" />
+            ))}
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -65,7 +83,7 @@ const Categories = () => {
                   </span>
                 </div>
                 <h2 className="font-display text-2xl font-semibold text-primary-foreground mb-2">
-                  {tCategory(category.slug)}
+                  {tCategory(category.slug) || category.name}
                 </h2>
                 <div className="flex items-center gap-2 text-primary-foreground/80 text-sm group-hover:text-primary-foreground transition-colors">
                   <span className="uppercase tracking-wider text-xs font-medium">Entdecken</span>

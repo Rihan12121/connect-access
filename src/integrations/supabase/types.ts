@@ -44,24 +44,36 @@ export type Database = {
         }
         Relationships: []
       }
-      category_order: {
+      categories: {
         Row: {
           created_at: string
+          icon: string
           id: string
+          image: string
+          is_active: boolean
+          name: string
           position: number
           slug: string
           updated_at: string
         }
         Insert: {
           created_at?: string
+          icon?: string
           id?: string
-          position: number
+          image: string
+          is_active?: boolean
+          name: string
+          position?: number
           slug: string
           updated_at?: string
         }
         Update: {
           created_at?: string
+          icon?: string
           id?: string
+          image?: string
+          is_active?: boolean
+          name?: string
           position?: number
           slug?: string
           updated_at?: string
