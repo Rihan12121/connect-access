@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
-import { ShoppingBag, CreditCard, Truck, Check, ArrowRight, ArrowLeft, Lock, MapPin, Package } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { ShoppingBag, CreditCard, Truck, Check, ArrowRight, ArrowLeft, Lock, MapPin, Package, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -24,6 +25,7 @@ const Checkout = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<CheckoutStep>('shipping');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -61,15 +63,65 @@ const Checkout = () => {
     );
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (currentStep === 'shipping') {
       setCurrentStep('payment');
     } else if (currentStep === 'payment') {
       setCurrentStep('review');
     } else {
-      clearCart();
-      navigate('/order-confirmation');
+      // Final step - submit order
+      setIsSubmitting(true);
+      
+      try {
+        if (user) {
+          // Save order to database
+          const { data: orderData, error: orderError } = await supabase
+            .from('orders')
+            .insert({
+              user_id: user.id,
+              total: state.total,
+              status: 'pending',
+              shipping_address: {
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                address: formData.address,
+                city: formData.city,
+                postalCode: formData.postalCode,
+              }
+            })
+            .select()
+            .single();
+
+          if (orderError) throw orderError;
+
+          // Save order items
+          const orderItems = state.items.map(item => ({
+            order_id: orderData.id,
+            product_id: item.product.id,
+            product_name: item.product.name,
+            product_image: item.product.image,
+            price: item.product.price,
+            quantity: item.quantity,
+          }));
+
+          const { error: itemsError } = await supabase
+            .from('order_items')
+            .insert(orderItems);
+
+          if (itemsError) throw itemsError;
+
+          toast.success(t('checkout.orderSuccess'));
+        }
+
+        clearCart();
+        navigate('/order-confirmation');
+      } catch (error) {
+        console.error('Error creating order:', error);
+        toast.error('Fehler beim Erstellen der Bestellung');
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
