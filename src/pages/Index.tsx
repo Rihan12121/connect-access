@@ -7,7 +7,6 @@ import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import ModernCategoriesSection from '@/components/ModernCategoriesSection';
 import HeroSection from '@/components/HeroSection';
-import HeroVideo from '@/components/HeroVideo';
 import VatNotice from '@/components/VatNotice';
 import SEO from '@/components/SEO';
 import { products } from '@/data/products';
@@ -25,9 +24,6 @@ const Index = () => {
         description="Entdecken Sie exklusive Qualitätsprodukte für Baby, Schönheit, Elektronik und mehr. Noor - Ihre E-Commerce Plattform für erstklassige Produkte."
       />
       <Header />
-
-      {/* Hero Video Background */}
-      <HeroVideo />
 
       {/* Hero Banner Carousel - Now managed by admins */}
       <HeroSection />
