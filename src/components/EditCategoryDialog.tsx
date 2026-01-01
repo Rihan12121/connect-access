@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Baby, 
   Sparkles, 
@@ -12,6 +12,7 @@ import {
   Dumbbell, 
   Heart, 
   Wine,
+  Pencil
 } from 'lucide-react';
 import {
   Dialog,
@@ -23,11 +24,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import ImageUploadField from './ImageUploadField';
+import { DatabaseCategory } from '@/hooks/useCategoryOrder';
 
-interface AddCategoryDialogProps {
+interface EditCategoryDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAdd: (category: { slug: string; name: string; icon: string; image: string }) => void;
+  category: DatabaseCategory | null;
+  onSave: (id: string, updates: Partial<DatabaseCategory>) => void;
 }
 
 const iconOptions = [
@@ -45,38 +48,31 @@ const iconOptions = [
   { name: 'Wine', icon: Wine },
 ];
 
-const AddCategoryDialog = ({ open, onOpenChange, onAdd }: AddCategoryDialogProps) => {
+const EditCategoryDialog = ({ open, onOpenChange, category, onSave }: EditCategoryDialogProps) => {
   const [name, setName] = useState('');
   const [selectedIcon, setSelectedIcon] = useState('Home');
   const [imageUrl, setImageUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const generateSlug = (name: string) => {
-    return name
-      .toLowerCase()
-      .replace(/[äöüß]/g, (char) => {
-        const map: Record<string, string> = { 'ä': 'ae', 'ö': 'oe', 'ü': 'ue', 'ß': 'ss' };
-        return map[char] || char;
-      })
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
-  };
+  useEffect(() => {
+    if (category) {
+      setName(category.name);
+      setSelectedIcon(category.icon);
+      setImageUrl(category.image);
+    }
+  }, [category]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !imageUrl.trim()) return;
+    if (!category || !name.trim() || !imageUrl.trim()) return;
 
     setIsSubmitting(true);
-    await onAdd({
-      slug: generateSlug(name),
+    await onSave(category.id, {
       name: name.trim(),
       icon: selectedIcon,
       image: imageUrl.trim(),
     });
     setIsSubmitting(false);
-    setName('');
-    setSelectedIcon('Home');
-    setImageUrl('');
     onOpenChange(false);
   };
 
@@ -84,13 +80,16 @@ const AddCategoryDialog = ({ open, onOpenChange, onAdd }: AddCategoryDialogProps
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Neue Kategorie hinzufügen</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            <Pencil className="w-5 h-5" />
+            Kategorie bearbeiten
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="edit-name">Name</Label>
             <Input
-              id="name"
+              id="edit-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="z.B. Haustiere"
@@ -141,7 +140,7 @@ const AddCategoryDialog = ({ open, onOpenChange, onAdd }: AddCategoryDialogProps
               disabled={!name.trim() || !imageUrl.trim() || isSubmitting}
               className="flex-1"
             >
-              {isSubmitting ? 'Wird erstellt...' : 'Hinzufügen'}
+              {isSubmitting ? 'Wird gespeichert...' : 'Speichern'}
             </Button>
           </div>
         </form>
@@ -150,4 +149,4 @@ const AddCategoryDialog = ({ open, onOpenChange, onAdd }: AddCategoryDialogProps
   );
 };
 
-export default AddCategoryDialog;
+export default EditCategoryDialog;
