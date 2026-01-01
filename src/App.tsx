@@ -13,7 +13,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import ScrollToTop from "@/components/ScrollToTop";
 import BackToTopButton from "@/components/BackToTopButton";
 import { PageSkeleton } from "@/components/LoadingSkeleton";
-
+import AdminGuard from "@/components/AdminGuard";
 // Lazy load pages for better performance
 const Index = lazy(() => import("./pages/Index"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -82,10 +82,10 @@ const App = () => (
                         <Route path="/about" element={<About />} />
                         <Route path="/cookie-settings" element={<CookieSettings />} />
                         <Route path="/orders" element={<OrderHistory />} />
-                        {/* Admin Routes */}
-                        <Route path="/admin" element={<AdminDashboard />} />
-                        <Route path="/admin/orders" element={<AdminOrders />} />
-                        <Route path="/admin/reviews" element={<AdminReviews />} />
+                        {/* Admin Routes - Protected */}
+                        <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
+                        <Route path="/admin/orders" element={<AdminGuard><AdminOrders /></AdminGuard>} />
+                        <Route path="/admin/reviews" element={<AdminGuard><AdminReviews /></AdminGuard>} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </Suspense>
