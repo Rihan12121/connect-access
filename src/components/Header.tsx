@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Heart, ShoppingCart, Menu, X, Globe, User, LogOut, ArrowLeft, LayoutDashboard } from 'lucide-react';
+import { Heart, ShoppingCart, Menu, X, Globe, User, LogOut, ArrowLeft, LayoutDashboard, Settings, Package, ChevronDown } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
@@ -17,6 +17,7 @@ const Header = () => {
   const { isAdmin } = useIsAdmin();
   const [menuOpen, setMenuOpen] = useState(false);
   const [langHover, setLangHover] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const isVisible = useScrollHeader();
   const location = useLocation();
@@ -25,6 +26,7 @@ const Header = () => {
   const isHomePage = location.pathname === '/';
 
   const handleLogout = async () => {
+    setUserMenuOpen(false);
     await signOut();
   };
 
@@ -121,15 +123,73 @@ const Header = () => {
               )}
             </div>
 
-            {/* Auth Button */}
+            {/* User Menu */}
             {user ? (
-              <button 
-                onClick={handleLogout}
-                className="icon-btn text-header-foreground/70 hover:text-header-foreground"
-                title={t('nav.logout')}
-              >
-                <LogOut className="w-5 h-5" />
-              </button>
+              <div className="relative">
+                <button 
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="icon-btn text-header-foreground/70 hover:text-header-foreground flex items-center gap-1"
+                >
+                  <User className="w-5 h-5" />
+                  <ChevronDown className="w-3 h-3" />
+                </button>
+                {userMenuOpen && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-40" 
+                      onClick={() => setUserMenuOpen(false)}
+                    />
+                    <div className="absolute right-0 top-full mt-2 bg-card border border-border rounded-lg shadow-elevated py-1.5 min-w-[180px] z-50">
+                      <div className="px-4 py-2 border-b border-border">
+                        <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                      </div>
+                      <Link 
+                        to="/account"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
+                      >
+                        <User className="w-4 h-4" />
+                        {language === 'de' ? 'Mein Profil' : 'My Profile'}
+                      </Link>
+                      <Link 
+                        to="/orders"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
+                      >
+                        <Package className="w-4 h-4" />
+                        {language === 'de' ? 'Meine Bestellungen' : 'My Orders'}
+                      </Link>
+                      <Link 
+                        to="/favorites"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
+                      >
+                        <Heart className="w-4 h-4" />
+                        {language === 'de' ? 'Wunschliste' : 'Wishlist'}
+                      </Link>
+                      {isAdmin && (
+                        <Link 
+                          to="/admin"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
+                        >
+                          <LayoutDashboard className="w-4 h-4" />
+                          Admin Dashboard
+                        </Link>
+                      )}
+                      <div className="border-t border-border mt-1 pt-1">
+                        <button 
+                          onClick={handleLogout}
+                          className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-destructive hover:bg-muted transition-colors"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          {language === 'de' ? 'Abmelden' : 'Logout'}
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
             ) : (
               <Link 
                 to="/auth" 
@@ -139,7 +199,6 @@ const Header = () => {
                 <User className="w-5 h-5" />
               </Link>
             )}
-
             {/* Mobile Menu Toggle */}
             <button 
               onClick={() => setMenuOpen(!menuOpen)}

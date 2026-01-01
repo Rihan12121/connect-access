@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/context/LanguageContext';
@@ -10,7 +10,9 @@ import {
   Edit,
   Plus,
   X,
-  Check
+  Check,
+  Upload,
+  Image as ImageIcon
 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -76,7 +78,11 @@ const AdminProducts = () => {
   const [formData, setFormData] = useState(emptyProduct);
   const [saving, setSaving] = useState(false);
   const [tagsInput, setTagsInput] = useState('');
-  const [imagesInput, setImagesInput] = useState('');
+  const [uploadingMain, setUploadingMain] = useState(false);
+  const [uploadingGallery, setUploadingGallery] = useState(false);
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const mainImageRef = useRef<HTMLInputElement>(null);
+  const galleryImageRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchProducts();
@@ -96,11 +102,69 @@ const AdminProducts = () => {
     setLoading(false);
   };
 
+  const uploadImage = async (file: File): Promise<string | null> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const filePath = `${fileName}`;
+
+    const { error } = await supabase.storage
+      .from('product-images')
+      .upload(filePath, file);
+
+    if (error) {
+      console.error('Upload error:', error);
+      toast.error(language === 'de' ? 'Fehler beim Hochladen' : 'Upload failed');
+      return null;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('product-images')
+      .getPublicUrl(filePath);
+
+    return publicUrl;
+  };
+
+  const handleMainImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingMain(true);
+    const url = await uploadImage(file);
+    if (url) {
+      setFormData({ ...formData, image: url });
+    }
+    setUploadingMain(false);
+    if (mainImageRef.current) mainImageRef.current.value = '';
+  };
+
+  const handleGalleryImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploadingGallery(true);
+    const newUrls: string[] = [];
+
+    for (const file of Array.from(files)) {
+      const url = await uploadImage(file);
+      if (url) {
+        newUrls.push(url);
+      }
+    }
+
+    setGalleryImages([...galleryImages, ...newUrls]);
+    setUploadingGallery(false);
+    if (galleryImageRef.current) galleryImageRef.current.value = '';
+  };
+
+  const removeGalleryImage = (index: number) => {
+    setGalleryImages(galleryImages.filter((_, i) => i !== index));
+  };
+
   const openCreateDialog = () => {
     setEditingProduct(null);
     setFormData(emptyProduct);
     setTagsInput('');
-    setImagesInput('');
+    setGalleryImages([]);
     setDialogOpen(true);
   };
 
@@ -120,7 +184,7 @@ const AdminProducts = () => {
       in_stock: product.in_stock,
     });
     setTagsInput((product.tags || []).join(', '));
-    setImagesInput((product.images || []).join('\n'));
+    setGalleryImages(product.images || []);
     setDialogOpen(true);
   };
 
@@ -139,7 +203,7 @@ const AdminProducts = () => {
       original_price: formData.original_price || null,
       discount: formData.discount || null,
       image: formData.image,
-      images: imagesInput.split('\n').map(s => s.trim()).filter(Boolean),
+      images: galleryImages,
       category: formData.category,
       subcategory: formData.subcategory || null,
       tags: tagsInput.split(',').map(s => s.trim()).filter(Boolean),
@@ -364,24 +428,90 @@ const AdminProducts = () => {
               </div>
             </div>
 
+            {/* Main Image Upload */}
             <div className="grid gap-2">
-              <Label htmlFor="image">{language === 'de' ? 'Hauptbild URL *' : 'Main Image URL *'}</Label>
-              <Input
-                id="image"
-                value={formData.image}
-                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                placeholder="https://..."
-              />
+              <Label>{language === 'de' ? 'Hauptbild *' : 'Main Image *'}</Label>
+              <div className="flex gap-4 items-start">
+                {formData.image ? (
+                  <div className="relative">
+                    <img src={formData.image} alt="Main" className="w-24 h-24 object-cover rounded-lg border border-border" />
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, image: '' })}
+                      className="absolute -top-2 -right-2 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <div 
+                    onClick={() => mainImageRef.current?.click()}
+                    className="w-24 h-24 border-2 border-dashed border-muted-foreground/30 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors"
+                  >
+                    {uploadingMain ? (
+                      <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                    ) : (
+                      <>
+                        <Upload className="w-6 h-6 text-muted-foreground" />
+                        <span className="text-xs text-muted-foreground mt-1">Upload</span>
+                      </>
+                    )}
+                  </div>
+                )}
+                <input
+                  ref={mainImageRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleMainImageUpload}
+                  className="hidden"
+                />
+                <div className="flex-1">
+                  <Input
+                    value={formData.image}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                    placeholder={language === 'de' ? 'Oder URL eingeben...' : 'Or enter URL...'}
+                  />
+                </div>
+              </div>
             </div>
 
+            {/* Gallery Images Upload */}
             <div className="grid gap-2">
-              <Label htmlFor="images">{language === 'de' ? 'Weitere Bilder (eine URL pro Zeile)' : 'Additional Images (one URL per line)'}</Label>
-              <Textarea
-                id="images"
-                value={imagesInput}
-                onChange={(e) => setImagesInput(e.target.value)}
-                placeholder="https://...&#10;https://..."
-                rows={3}
+              <Label>{language === 'de' ? 'Galerie-Bilder' : 'Gallery Images'}</Label>
+              <div className="flex flex-wrap gap-3">
+                {galleryImages.map((img, index) => (
+                  <div key={index} className="relative">
+                    <img src={img} alt={`Gallery ${index + 1}`} className="w-20 h-20 object-cover rounded-lg border border-border" />
+                    <button
+                      type="button"
+                      onClick={() => removeGalleryImage(index)}
+                      className="absolute -top-2 -right-2 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+                <div 
+                  onClick={() => galleryImageRef.current?.click()}
+                  className="w-20 h-20 border-2 border-dashed border-muted-foreground/30 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors"
+                >
+                  {uploadingGallery ? (
+                    <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                  ) : (
+                    <>
+                      <ImageIcon className="w-5 h-5 text-muted-foreground" />
+                      <span className="text-[10px] text-muted-foreground mt-1">+ Bild</span>
+                    </>
+                  )}
+                </div>
+              </div>
+              <input
+                ref={galleryImageRef}
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleGalleryImageUpload}
+                className="hidden"
               />
             </div>
 
