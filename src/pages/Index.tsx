@@ -39,7 +39,6 @@ const Index = () => {
               <Flame />
             </div>
             <div>
-              <p className="section-subheading mb-1">{t('ui.limitedOffers')}</p>
               <h2 className="section-heading">{t('products.hotDeals')}</h2>
             </div>
           </div>
@@ -64,7 +63,6 @@ const Index = () => {
               <Star />
             </div>
             <div>
-              <p className="section-subheading mb-1">{t('ui.bestseller')}</p>
               <h2 className="section-heading">{t('products.popular')}</h2>
             </div>
           </div>

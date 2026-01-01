@@ -134,7 +134,6 @@ const ModernCategoriesSection = () => {
             <LayoutGrid />
           </div>
           <div>
-            <p className="section-subheading mb-1">{t('categories.browse')}</p>
             <h2 className="section-heading">Kategorien</h2>
           </div>
         </div>
