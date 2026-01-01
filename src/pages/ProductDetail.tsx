@@ -12,6 +12,7 @@ import ProductCard from '@/components/ProductCard';
 import VatNotice from '@/components/VatNotice';
 import SEO from '@/components/SEO';
 import ProductImageGallery from '@/components/ProductImageGallery';
+import ProductReviews from '@/components/ProductReviews';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -226,6 +227,10 @@ const ProductDetail = () => {
             </div>
           </section>
         )}
+
+        {/* Product Reviews */}
+        <ProductReviews productId={product.id} />
+
         <VatNotice />
       </div>
 
