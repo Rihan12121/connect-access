@@ -63,6 +63,12 @@ const Footer = () => {
               <Link to="/terms" className="text-header-foreground/70 hover:text-header-foreground text-sm transition-colors duration-300 hover-underline inline-block w-fit">
                 {t('footer.terms')}
               </Link>
+              <button 
+                onClick={() => window.dispatchEvent(new Event('open-cookie-settings'))}
+                className="text-header-foreground/70 hover:text-header-foreground text-sm transition-colors duration-300 hover-underline inline-block w-fit text-left"
+              >
+                {t('footer.legal') === 'Rechtliches' ? 'Cookie-Einstellungen' : 'Cookie Settings'}
+              </button>
             </div>
           </div>
         </div>
