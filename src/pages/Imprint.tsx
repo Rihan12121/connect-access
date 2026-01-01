@@ -26,7 +26,7 @@ Deutschland`
         {
           title: 'Kontakt',
           content: `Telefon: +49 123 456 789
-E-Mail: info@noor-shop.de`
+E-Mail: info@noor.de`
         },
         {
           title: 'Registereintrag',
@@ -74,7 +74,7 @@ Germany`
         {
           title: 'Contact',
           content: `Phone: +49 123 456 789
-Email: info@noor-shop.de`
+Email: info@noor.de`
         },
         {
           title: 'Register Entry',
@@ -113,7 +113,7 @@ You can find our email address in the legal notice above.`
     <div className="min-h-screen bg-background">
       <SEO 
         title="Impressum"
-        description="Impressum von Noor Shop - Rechtliche Informationen und Kontaktdaten."
+        description="Impressum von Noor - Rechtliche Informationen und Kontaktdaten."
       />
       <Header />
 

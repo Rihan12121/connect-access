@@ -8,12 +8,12 @@ interface SEOProps {
 }
 
 const SEO = ({ 
-  title = 'Noor - Online Shop',
-  description = 'Noor - Dein Online-Shop für Qualitätsprodukte zu fairen Preisen. Entdecke Baby, Schönheit, Elektronik und mehr.',
+  title = 'Noor - E-Commerce',
+  description = 'Noor - Deine E-Commerce Plattform für Qualitätsprodukte zu fairen Preisen. Entdecke Baby, Schönheit, Elektronik und mehr.',
   image = '/og-image.png',
-  url = 'https://noor-shop.de'
+  url = 'https://noor.de'
 }: SEOProps) => {
-  const fullTitle = title === 'Noor - Online Shop' ? title : `${title} | Noor Shop`;
+  const fullTitle = title === 'Noor - E-Commerce' ? title : `${title} | Noor`;
 
   return (
     <Helmet>

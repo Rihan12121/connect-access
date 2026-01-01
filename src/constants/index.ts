@@ -1,10 +1,10 @@
 // Site Configuration
 export const SITE_CONFIG = {
   name: 'Noor',
-  title: 'Noor - Online Shop',
-  description: 'Dein Online-Shop für Qualitätsprodukte zu fairen Preisen.',
-  url: 'https://noor-shop.de',
-  email: 'info@noor-shop.de',
+  title: 'Noor - E-Commerce',
+  description: 'Deine E-Commerce Plattform für Qualitätsprodukte zu fairen Preisen.',
+  url: 'https://noor.de',
+  email: 'info@noor.de',
   phone: '+49 123 456 789',
 } as const;
 
