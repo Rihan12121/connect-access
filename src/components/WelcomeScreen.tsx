@@ -18,6 +18,10 @@ const CookieBanner = ({ onAccept }: CookieBannerProps) => {
             <Link to="/privacy" className="text-primary hover:underline">{t('footer.privacy')}</Link>
             {' • '}
             <Link to="/terms" className="text-primary hover:underline">{t('footer.terms')}</Link>
+            {' • '}
+            <Link to="/cookie-settings" className="text-primary hover:underline">
+              {language === 'de' ? 'Cookie-Einstellungen' : 'Cookie Settings'}
+            </Link>
           </p>
         </div>
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
