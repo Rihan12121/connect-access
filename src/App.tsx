@@ -43,6 +43,7 @@ const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
 const AdminOrders = lazy(() => import("./pages/admin/Orders"));
 const AdminReviews = lazy(() => import("./pages/admin/Reviews"));
 const AdminProducts = lazy(() => import("./pages/admin/Products"));
+const AdminCustomers = lazy(() => import("./pages/admin/Customers"));
 
 const queryClient = new QueryClient();
 
@@ -88,6 +89,7 @@ const App = () => (
                         <Route path="/admin/orders" element={<AdminGuard><AdminOrders /></AdminGuard>} />
                         <Route path="/admin/reviews" element={<AdminGuard><AdminReviews /></AdminGuard>} />
                         <Route path="/admin/products" element={<AdminGuard><AdminProducts /></AdminGuard>} />
+                        <Route path="/admin/customers" element={<AdminGuard><AdminCustomers /></AdminGuard>} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </Suspense>
