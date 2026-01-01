@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Settings2, Plus, Pencil } from 'lucide-react';
+import { ChevronRight, Settings2, Plus, LayoutGrid } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCategoryOrder, DatabaseCategory } from '@/hooks/useCategoryOrder';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
@@ -127,11 +127,16 @@ const ModernCategoriesSection = () => {
   }
 
   return (
-    <section className="container max-w-6xl mx-auto mt-12 px-6">
-      <div className="flex items-end justify-between mb-8">
-        <div>
-          <p className="section-subheading mb-2">{t('categories.browse')}</p>
-          <h2 className="section-heading">Kategorien</h2>
+    <section className="container max-w-6xl mx-auto mt-16 px-6">
+      <div className="flex items-end justify-between mb-10">
+        <div className="section-header">
+          <div className="section-icon">
+            <LayoutGrid />
+          </div>
+          <div>
+            <p className="section-subheading mb-1">{t('categories.browse')}</p>
+            <h2 className="section-heading">Kategorien</h2>
+          </div>
         </div>
         <div className="flex items-center gap-2 md:gap-3">
           {isAdmin && (
@@ -162,9 +167,10 @@ const ModernCategoriesSection = () => {
           )}
           <Link 
             to="/categories" 
-            className="premium-link hidden md:flex items-center gap-2 hover-underline"
+            className="premium-link hidden md:flex items-center gap-2 group"
           >
-            {t('categories.viewAll')} <ChevronRight className="w-4 h-4" />
+            {t('categories.viewAll')} 
+            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
       </div>
