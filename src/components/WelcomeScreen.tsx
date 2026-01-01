@@ -1,46 +1,39 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
+import { X } from 'lucide-react';
 
-const WelcomeScreen = ({ onAccept }: { onAccept: () => void }) => {
+const CookieBanner = ({ onAccept }: { onAccept: () => void }) => {
   const { t } = useLanguage();
 
   return (
-    <div className="fixed inset-0 z-50 bg-background flex items-center justify-center">
-      <div className="max-w-lg mx-auto px-6 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-          {t('welcome.title')}
-        </h1>
-        <p className="text-lg text-muted-foreground mb-8">
-          {t('welcome.subtitle')}
-        </p>
-        
-        <div className="bg-card border border-border rounded-2xl p-6 mb-8 text-left">
-          <h3 className="font-semibold text-foreground mb-3">{t('welcome.policyTitle')}</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            {t('welcome.policyText')}
-          </p>
-          <div className="flex gap-2 text-sm">
+    <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-card border-t border-border shadow-lg animate-in slide-in-from-bottom-4 duration-300">
+      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex-1">
+          <p className="text-sm text-muted-foreground">
+            {t('welcome.policyText')}{' '}
             <Link to="/privacy" className="text-primary hover:underline">{t('footer.privacy')}</Link>
-            <span className="text-muted-foreground">•</span>
+            {' • '}
             <Link to="/terms" className="text-primary hover:underline">{t('footer.terms')}</Link>
-          </div>
+          </p>
         </div>
-        
-        <div className="flex flex-col gap-3">
+        <div className="flex items-center gap-3 shrink-0">
           <button 
             onClick={onAccept}
-            className="btn-primary w-full py-3 text-lg font-medium"
+            className="bg-primary text-primary-foreground px-5 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
           >
             {t('welcome.accept')}
           </button>
-          <p className="text-xs text-muted-foreground">
-            {t('welcome.declineNote')}
-          </p>
+          <button 
+            onClick={onAccept}
+            className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Schließen"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
       </div>
     </div>
   );
 };
 
-export default WelcomeScreen;
+export default CookieBanner;
