@@ -78,7 +78,7 @@ const HeroSection = () => {
   if (isLoading) {
     return (
       <section className="relative overflow-hidden">
-        <div className="w-full h-[50vh] md:h-[60vh] lg:h-[70vh] bg-muted animate-pulse" />
+        <div className="w-full h-[40vh] md:h-[45vh] lg:h-[50vh] bg-muted animate-pulse" />
       </section>
     );
   }
@@ -119,7 +119,7 @@ const HeroSection = () => {
 
       {banners.length === 0 ? (
         <div 
-          className="w-full h-[50vh] md:h-[60vh] lg:h-[70vh] flex items-center justify-center bg-muted cursor-pointer hover:bg-muted/80 transition-colors"
+          className="w-full h-[40vh] md:h-[45vh] lg:h-[50vh] flex items-center justify-center bg-muted cursor-pointer hover:bg-muted/80 transition-colors"
           onClick={handleAddBanner}
         >
           <div className="text-center">
@@ -136,7 +136,7 @@ const HeroSection = () => {
             {banners.map((banner) => (
               <div 
                 key={banner.id}
-                className="w-full flex-shrink-0 relative h-[50vh] md:h-[60vh] lg:h-[70vh]"
+                className="w-full flex-shrink-0 relative h-[40vh] md:h-[45vh] lg:h-[50vh]"
               >
                 <Link to={banner.link} className="block w-full h-full">
                   <img 
@@ -146,20 +146,20 @@ const HeroSection = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-foreground/80 via-foreground/40 to-transparent" />
                   <div className="absolute inset-0 flex items-center">
-                    <div className="container max-w-6xl mx-auto px-6">
-                      <div className="max-w-xl">
+                    <div className="container max-w-6xl mx-auto px-4 md:px-6">
+                      <div className="max-w-md md:max-w-xl">
                         {banner.subtitle && (
-                          <p className="section-subheading text-primary-foreground/80 mb-4">
+                          <p className="text-xs md:text-sm uppercase tracking-widest text-primary-foreground/80 mb-2 md:mb-4">
                             {banner.subtitle}
                           </p>
                         )}
-                        <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-semibold text-primary-foreground leading-tight">
+                        <h2 className="font-display text-2xl md:text-4xl lg:text-5xl font-semibold text-primary-foreground leading-tight">
                           {banner.title}
                         </h2>
-                        <div className="mt-8">
-                          <span className="inline-flex items-center gap-3 text-primary-foreground/90 text-sm font-medium tracking-widest uppercase hover:text-primary-foreground transition-colors group">
+                        <div className="mt-4 md:mt-6">
+                          <span className="inline-flex items-center gap-2 text-primary-foreground/90 text-xs md:text-sm font-medium tracking-widest uppercase hover:text-primary-foreground transition-colors group">
                             {t('categories.viewAll')} 
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
                           </span>
                         </div>
                       </div>
