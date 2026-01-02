@@ -15,7 +15,6 @@ import BackToTopButton from "@/components/BackToTopButton";
 import CookieConsentBanner from "@/components/CookieConsentBanner";
 import { PageSkeleton } from "@/components/LoadingSkeleton";
 import AdminGuard from "@/components/AdminGuard";
-import BottomNavigation from "@/components/BottomNavigation";
 // Lazy load pages for better performance
 const Index = lazy(() => import("./pages/Index"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -63,7 +62,6 @@ const App = () => (
                     <ScrollToTop />
                     <BackToTopButton />
                     <CookieConsentBanner />
-                    <BottomNavigation />
                     <Suspense fallback={<PageSkeleton />}>
                       <Routes>
                         <Route path="/" element={<Index />} />
