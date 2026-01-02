@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, ChevronLeft, ArrowRight, Flame, Star, Sparkles } from 'lucide-react';
+import { ChevronRight, ArrowRight, Flame, Star, Sparkles } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import { useDealProducts, useProducts } from '@/hooks/useProducts';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
@@ -9,13 +9,12 @@ import ModernCategoriesSection from '@/components/ModernCategoriesSection';
 import HeroSection from '@/components/HeroSection';
 import VatNotice from '@/components/VatNotice';
 import SEO from '@/components/SEO';
-import { products } from '@/data/products';
 
 const Index = () => {
   const { t } = useLanguage();
 
-  const dealProducts = products.filter(p => p.discount);
-  const featuredProducts = dealProducts.slice(0, 8);
+  const { products: dealProducts, isLoading: dealsLoading } = useDealProducts(8);
+  const { products: popularProducts, isLoading: popularLoading } = useProducts({ limit: 4 });
 
   return (
     <div className="min-h-screen bg-background">
@@ -49,9 +48,15 @@ const Index = () => {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6 stagger-children">
-          {featuredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {dealsLoading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="aspect-square bg-muted animate-pulse rounded-lg" />
+            ))
+          ) : (
+            dealProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))
+          )}
         </div>
       </section>
 
@@ -72,9 +77,15 @@ const Index = () => {
           </Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6 stagger-children">
-          {products.slice(0, 4).map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {popularLoading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="aspect-square bg-muted animate-pulse rounded-lg" />
+            ))
+          ) : (
+            popularProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))
+          )}
         </div>
       </section>
 

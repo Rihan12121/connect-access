@@ -1,10 +1,11 @@
 import { useParams, Link } from 'react-router-dom';
-import { products, categories } from '@/data/products';
-import { Heart, ShoppingCart, Minus, Plus, Truck, Shield, ArrowLeft } from 'lucide-react';
+import { Heart, ShoppingCart, Minus, Plus, Truck, Shield, ArrowLeft, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { useProduct, useCategoryProducts } from '@/hooks/useProducts';
+import { categories } from '@/data/products';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -16,11 +17,26 @@ import ProductReviews from '@/components/ProductReviews';
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const product = products.find(p => p.id === id);
+  const { product, isLoading } = useProduct(id);
   const [quantity, setQuantity] = useState(1);
   const { addItem } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
   const { t, tCategory } = useLanguage();
+
+  const { products: relatedProducts } = useCategoryProducts(product?.category || '', { limit: 4 });
+  const filteredRelated = relatedProducts.filter(p => p.id !== product?.id).slice(0, 4);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container max-w-6xl mx-auto px-6 py-24 flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -39,11 +55,10 @@ const ProductDetail = () => {
   }
 
   const category = categories.find(c => c.slug === product.category);
-  const relatedProducts = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
-      addItem(product);
+      addItem(product as any);
     }
     toast.success(`${quantity}x ${product.name} ${t('products.addedToCart')}`);
   };
@@ -89,7 +104,7 @@ const ProductDetail = () => {
             {/* Favorite Button */}
             <button 
               onClick={() => {
-                toggleFavorite(product);
+                toggleFavorite(product as any);
                 toast.success(isFavorite(product.id) ? t('favorites.removed') : t('favorites.added'));
               }}
               className="absolute top-4 right-4 p-3 rounded-full bg-card/95 backdrop-blur-sm hover:bg-card shadow-card transition-all duration-300 hover:scale-110 z-10"
@@ -214,14 +229,14 @@ const ProductDetail = () => {
         </div>
 
         {/* Related Products */}
-        {relatedProducts.length > 0 && (
+        {filteredRelated.length > 0 && (
           <section className="mt-24">
             <div className="mb-10">
               <p className="section-subheading mb-2">{t('ui.mayAlsoLike')}</p>
               <h2 className="section-heading">{t('products.related')}</h2>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6 stagger-children">
-              {relatedProducts.map(product => (
+              {filteredRelated.map(product => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
