@@ -34,7 +34,7 @@ const Index = () => {
       <section className="container max-w-6xl mx-auto mt-20 px-6">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <h2 className="text-lg md:text-xl font-semibold text-foreground">{t('products.hotDeals')}</h2>
+            <h2 className="text-xl md:text-2xl font-semibold text-foreground">{t('products.hotDeals')}</h2>
           </div>
           <Link to="/products?filter=deals" className="premium-link hidden md:flex items-center gap-2 group">
             {t('categories.viewAll')} 
@@ -59,7 +59,7 @@ const Index = () => {
       <section className="container max-w-6xl mx-auto mt-20 px-6">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <h2 className="text-lg md:text-xl font-semibold text-foreground">{t('products.popular')}</h2>
+            <h2 className="text-xl md:text-2xl font-semibold text-foreground">{t('products.popular')}</h2>
           </div>
           <Link to="/products" className="premium-link hidden md:flex items-center gap-2 group">
             {t('categories.viewAll')} 
