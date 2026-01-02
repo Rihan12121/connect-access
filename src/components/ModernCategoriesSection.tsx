@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Settings2, Plus, LayoutGrid } from 'lucide-react';
+import { ChevronRight, Settings2, Plus } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCategoryOrder, DatabaseCategory } from '@/hooks/useCategoryOrder';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
@@ -129,13 +129,8 @@ const ModernCategoriesSection = () => {
   return (
     <section className="container max-w-6xl mx-auto mt-16 px-6">
       <div className="flex items-end justify-between mb-10">
-        <div className="section-header">
-          <div className="section-icon">
-            <LayoutGrid />
-          </div>
-          <div>
-            <h2 className="section-heading">Kategorien</h2>
-          </div>
+        <div>
+          <h2 className="text-lg md:text-xl font-semibold text-foreground">Kategorien</h2>
         </div>
         <div className="flex items-center gap-2 md:gap-3">
           {isAdmin && (
