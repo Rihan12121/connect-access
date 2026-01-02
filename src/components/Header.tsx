@@ -214,36 +214,129 @@ const Header = () => {
           <SearchBar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
         </div>
 
-        {/* Mobile Menu */}
-        {menuOpen && (
-          <div className="md:hidden pb-6 border-t border-header-foreground/10 pt-6">
-            <nav className="flex flex-col gap-4">
+        {/* Mobile Menu Overlay */}
+        <div 
+          className={`fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity duration-300 ${
+            menuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+          onClick={() => setMenuOpen(false)}
+        />
+        
+        {/* Mobile Menu Slide-In */}
+        <div 
+          className={`fixed top-0 right-0 h-full w-72 bg-header z-50 md:hidden transform transition-transform duration-300 ease-out ${
+            menuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
+        >
+          <div className="p-6">
+            <div className="flex justify-between items-center mb-8">
+              <span className="font-display text-xl font-semibold text-header-foreground">Menü</span>
+              <button 
+                onClick={() => setMenuOpen(false)}
+                className="p-2 -mr-2 text-header-foreground/70 hover:text-header-foreground active:scale-95 transition-all"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <nav className="flex flex-col gap-2">
+              <Link 
+                to="/"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 text-base font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-lg transition-all active:scale-98"
+              >
+                Home
+              </Link>
+              <Link 
+                to="/products"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 text-base font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-lg transition-all active:scale-98"
+              >
+                {t('nav.products')}
+              </Link>
               <Link 
                 to="/categories" 
                 onClick={() => setMenuOpen(false)}
-                className="text-sm font-medium tracking-wide uppercase text-header-foreground/70 hover:text-header-foreground transition-colors"
+                className="flex items-center gap-3 px-4 py-3 text-base font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-lg transition-all active:scale-98"
               >
                 {t('nav.categories')}
               </Link>
-              {user && isAdmin && (
-                <Link
-                  to="/admin"
+              <Link 
+                to="/favorites"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 text-base font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-lg transition-all active:scale-98"
+              >
+                {language === 'de' ? 'Wunschliste' : 'Wishlist'}
+                {favorites.length > 0 && (
+                  <span className="ml-auto bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full">
+                    {favorites.length}
+                  </span>
+                )}
+              </Link>
+              <Link 
+                to="/cart"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 text-base font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-lg transition-all active:scale-98"
+              >
+                {t('nav.cart')}
+                {cartCount > 0 && (
+                  <span className="ml-auto bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+              
+              <div className="border-t border-header-foreground/10 my-4" />
+              
+              {user ? (
+                <>
+                  <Link 
+                    to="/account"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 text-base font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-lg transition-all active:scale-98"
+                  >
+                    <User className="w-5 h-5" />
+                    {language === 'de' ? 'Mein Profil' : 'My Profile'}
+                  </Link>
+                  <Link 
+                    to="/orders"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 text-base font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-lg transition-all active:scale-98"
+                  >
+                    <Package className="w-5 h-5" />
+                    {language === 'de' ? 'Bestellungen' : 'Orders'}
+                  </Link>
+                  {isAdmin && (
+                    <Link 
+                      to="/admin"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 text-base font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-lg transition-all active:scale-98"
+                    >
+                      <LayoutDashboard className="w-5 h-5" />
+                      Admin
+                    </Link>
+                  )}
+                  <button 
+                    onClick={() => { handleLogout(); setMenuOpen(false); }}
+                    className="flex items-center gap-3 px-4 py-3 text-base font-medium text-destructive hover:bg-destructive/10 rounded-lg transition-all active:scale-98 w-full text-left"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    {language === 'de' ? 'Abmelden' : 'Logout'}
+                  </button>
+                </>
+              ) : (
+                <Link 
+                  to="/auth"
                   onClick={() => setMenuOpen(false)}
-                  className="text-sm font-medium tracking-wide uppercase text-header-foreground/70 hover:text-header-foreground transition-colors"
+                  className="flex items-center gap-3 px-4 py-3 text-base font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-lg transition-all active:scale-98"
                 >
-                  Admin
+                  <User className="w-5 h-5" />
+                  {t('nav.login')}
                 </Link>
               )}
-              <Link 
-                to={user ? "/account" : "/auth"} 
-                onClick={() => setMenuOpen(false)}
-                className="text-sm font-medium tracking-wide uppercase text-header-foreground/70 hover:text-header-foreground transition-colors"
-              >
-                {user ? t('nav.account') : t('nav.login')}
-              </Link>
             </nav>
           </div>
-        )}
+        </div>
       </div>
     </header>
   );

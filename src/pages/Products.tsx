@@ -165,8 +165,8 @@ const Products = () => {
           </p>
         </div>
 
-        <div className="flex gap-8">
-          {/* Filter Sidebar - Desktop */}
+        <div className="flex gap-6 lg:gap-8">
+          {/* Filter Sidebar */}
           <ProductFilterSidebar
             allProducts={allProducts}
             filters={filters}
@@ -175,23 +175,12 @@ const Products = () => {
           />
 
           {/* Main Content */}
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             {/* Filter Bar */}
-            <div className="flex items-center justify-between mb-8 pb-6 border-b border-border">
-              <div className="flex items-center gap-4">
-                {/* Mobile Filter Button - rendered inside ProductFilterSidebar */}
-                <div className="lg:hidden">
-                  <ProductFilterSidebar
-                    allProducts={allProducts}
-                    filters={filters}
-                    onFiltersChange={handleFiltersChange}
-                    maxPrice={maxPrice}
-                  />
-                </div>
-                <span className="text-sm text-muted-foreground hidden lg:inline">
-                  {t('ui.showAllProducts')}
-                </span>
-              </div>
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
+              <span className="text-sm text-muted-foreground hidden lg:inline">
+                {t('ui.showAllProducts')}
+              </span>
               <div className="relative">
                 <select
                   value={sortBy}
