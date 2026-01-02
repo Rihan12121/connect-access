@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Product, products as allProducts } from '@/data/products';
+import { Product } from '@/hooks/useProducts';
 
 interface FavoritesContextType {
   favorites: Product[];
@@ -8,12 +8,14 @@ interface FavoritesContextType {
   isFavorite: (id: string) => boolean;
   toggleFavorite: (product: Product) => void;
   loading: boolean;
+  favoriteIds: string[];
 }
 
 const FavoritesContext = createContext<FavoritesContextType | null>(null);
 
 export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
+  const [favorites, setFavorites] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -33,10 +35,12 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const addFavorite = (product: Product) => {
     setFavoriteIds(prev => [...prev, product.id]);
+    setFavorites(prev => [...prev, product]);
   };
 
   const removeFavorite = (id: string) => {
     setFavoriteIds(prev => prev.filter(fid => fid !== id));
+    setFavorites(prev => prev.filter(p => p.id !== id));
   };
 
   const isFavorite = (id: string) => favoriteIds.includes(id);
@@ -49,12 +53,8 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   };
 
-  const favorites = favoriteIds
-    .map(id => allProducts.find(p => p.id === id))
-    .filter((p): p is Product => p !== undefined);
-
   return (
-    <FavoritesContext.Provider value={{ favorites, addFavorite, removeFavorite, isFavorite, toggleFavorite, loading }}>
+    <FavoritesContext.Provider value={{ favorites, addFavorite, removeFavorite, isFavorite, toggleFavorite, loading, favoriteIds }}>
       {children}
     </FavoritesContext.Provider>
   );

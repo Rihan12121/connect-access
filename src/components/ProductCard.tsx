@@ -1,6 +1,6 @@
 import { Heart, ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Product } from '@/data/products';
+import { Product } from '@/hooks/useProducts';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';

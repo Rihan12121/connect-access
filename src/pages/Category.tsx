@@ -1,8 +1,9 @@
 import { useParams, Link } from 'react-router-dom';
-import { products, categories, subcategories } from '@/data/products';
 import { useState, useMemo } from 'react';
-import { ChevronDown, SlidersHorizontal, X, ArrowLeft } from 'lucide-react';
+import { ChevronDown, SlidersHorizontal, X, ArrowLeft, Loader2 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import { useCategoryProducts, SortOption } from '@/hooks/useProducts';
+import { categories, subcategories } from '@/data/products';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
@@ -10,7 +11,6 @@ import VatNotice from '@/components/VatNotice';
 import CategoryIcon from '@/components/CategoryIcon';
 import SEO from '@/components/SEO';
 
-type SortOption = 'default' | 'price-asc' | 'price-desc' | 'discount';
 type FilterOption = 'all' | 'deals' | 'inStock';
 
 const Category = () => {
@@ -23,29 +23,11 @@ const Category = () => {
 
   const categorySubcategories = subcategories.filter(s => s.category === slug);
 
-  const filteredProducts = useMemo(() => {
-    let result = products.filter(p => p.category === slug);
-
-    if (filter === 'deals') {
-      result = result.filter(p => p.discount);
-    } else if (filter === 'inStock') {
-      result = result.filter(p => p.inStock);
-    }
-
-    switch (sortBy) {
-      case 'price-asc':
-        result = [...result].sort((a, b) => a.price - b.price);
-        break;
-      case 'price-desc':
-        result = [...result].sort((a, b) => b.price - a.price);
-        break;
-      case 'discount':
-        result = [...result].sort((a, b) => (b.discount || 0) - (a.discount || 0));
-        break;
-    }
-
-    return result;
-  }, [slug, sortBy, filter]);
+  const { products: allCategoryProducts, isLoading } = useCategoryProducts(slug || '', {
+    sortBy,
+    onlyDeals: filter === 'deals',
+    onlyInStock: filter === 'inStock',
+  });
 
   if (!category) {
     return (
@@ -98,7 +80,7 @@ const Category = () => {
                   {tCategory(category.slug)}
                 </h1>
                 <p className="text-primary-foreground/70 mt-2">
-                  {filteredProducts.length} Produkte
+                  {allCategoryProducts.length} Produkte
                 </p>
               </div>
             </div>
@@ -200,9 +182,13 @@ const Category = () => {
         )}
 
         {/* Products Grid */}
-        {filteredProducts.length > 0 ? (
+        {isLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : allCategoryProducts.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6 mt-10 stagger-children">
-            {filteredProducts.map(product => (
+            {allCategoryProducts.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
