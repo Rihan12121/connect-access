@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChevronRight, ArrowRight, Flame, Star, Sparkles } from 'lucide-react';
+import { ChevronRight, ArrowRight, Sparkles } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useDealProducts, useProducts } from '@/hooks/useProducts';
 import Header from '@/components/Header';
@@ -32,14 +32,9 @@ const Index = () => {
 
       {/* Hot Deals Section */}
       <section className="container max-w-6xl mx-auto mt-20 px-6">
-        <div className="flex items-end justify-between mb-12">
-          <div className="section-header">
-            <div className="section-icon">
-              <Flame />
-            </div>
-            <div>
-              <h2 className="section-heading">{t('products.hotDeals')}</h2>
-            </div>
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <h2 className="text-lg md:text-xl font-semibold text-foreground">{t('products.hotDeals')}</h2>
           </div>
           <Link to="/products?filter=deals" className="premium-link hidden md:flex items-center gap-2 group">
             {t('categories.viewAll')} 
@@ -62,14 +57,9 @@ const Index = () => {
 
       {/* Popular Products Section */}
       <section className="container max-w-6xl mx-auto mt-20 px-6">
-        <div className="flex items-end justify-between mb-12">
-          <div className="section-header">
-            <div className="section-icon">
-              <Star />
-            </div>
-            <div>
-              <h2 className="section-heading">{t('products.popular')}</h2>
-            </div>
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <h2 className="text-lg md:text-xl font-semibold text-foreground">{t('products.popular')}</h2>
           </div>
           <Link to="/products" className="premium-link hidden md:flex items-center gap-2 group">
             {t('categories.viewAll')} 
