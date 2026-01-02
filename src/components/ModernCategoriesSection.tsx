@@ -130,7 +130,7 @@ const ModernCategoriesSection = () => {
     <section className="container max-w-6xl mx-auto mt-16 px-6">
       <div className="flex items-end justify-between mb-10">
         <div>
-          <h2 className="text-lg md:text-xl font-semibold text-foreground">Kategorien</h2>
+          <h2 className="text-xl md:text-2xl font-semibold text-foreground">Kategorien</h2>
         </div>
         <div className="flex items-center gap-2 md:gap-3">
           {isAdmin && (
