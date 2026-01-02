@@ -148,16 +148,16 @@ const Products = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 lg:pb-0">
       <SEO 
         title="Alle Produkte — Noor"
         description="Entdecken Sie unsere exklusive Kollektion. Baby, Schönheit, Elektronik, Haushalt und mehr."
       />
       <Header />
 
-      <div className="container max-w-7xl mx-auto px-6 py-12 md:py-16">
+      <div className="container max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-16">
         {/* Page Header */}
-        <div className="mb-12 md:mb-16">
+        <div className="mb-8 md:mb-16 text-center lg:text-left">
           <p className="section-subheading mb-3">{t('ui.collection')}</p>
           <h1 className="section-heading">{t('products.discoverAll')}</h1>
           <p className="text-muted-foreground text-sm mt-3">
@@ -165,14 +165,26 @@ const Products = () => {
           </p>
         </div>
 
-        <div className="flex gap-6 lg:gap-8">
-          {/* Filter Sidebar */}
-          <ProductFilterSidebar
-            allProducts={allProducts}
-            filters={filters}
-            onFiltersChange={handleFiltersChange}
-            maxPrice={maxPrice}
-          />
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+          {/* Filter Button for Mobile - Centered */}
+          <div className="flex justify-center lg:hidden">
+            <ProductFilterSidebar
+              allProducts={allProducts}
+              filters={filters}
+              onFiltersChange={handleFiltersChange}
+              maxPrice={maxPrice}
+            />
+          </div>
+
+          {/* Desktop Filter Sidebar */}
+          <div className="hidden lg:block">
+            <ProductFilterSidebar
+              allProducts={allProducts}
+              filters={filters}
+              onFiltersChange={handleFiltersChange}
+              maxPrice={maxPrice}
+            />
+          </div>
 
           {/* Main Content */}
           <div className="flex-1 min-w-0">
@@ -181,14 +193,14 @@ const Products = () => {
               <span className="text-sm text-muted-foreground hidden lg:inline">
                 {t('ui.showAllProducts')}
               </span>
-              <div className="relative">
+              <div className="relative ml-auto lg:ml-0">
                 <select
                   value={sortBy}
                   onChange={(e) => {
                     setSortBy(e.target.value as SortOption);
                     setCurrentPage(1);
                   }}
-                  className="appearance-none bg-background text-foreground text-sm pr-6 cursor-pointer focus:outline-none font-medium"
+                  className="appearance-none bg-background text-foreground text-sm pr-6 cursor-pointer focus:outline-none font-medium min-h-[44px] touch-manipulation"
                 >
                   <option value="default">{t('sort.default')}</option>
                   <option value="price-asc">{t('sort.priceAsc')}</option>
@@ -210,7 +222,7 @@ const Products = () => {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-5 md:gap-6 stagger-children">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 stagger-children">
                   {paginatedProducts.map(product => (
                     <ProductCard key={product.id} product={product} />
                   ))}
@@ -218,13 +230,13 @@ const Products = () => {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-2 mt-12">
+                  <div className="flex items-center justify-center gap-1 md:gap-2 mt-8 md:mt-12">
                     <Button
                       variant="outline"
                       size="icon"
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={!hasPrevPage}
-                      className="h-10 w-10"
+                      className="h-11 w-11 md:h-10 md:w-10 touch-manipulation"
                     >
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
@@ -237,12 +249,12 @@ const Products = () => {
                             variant={currentPage === page ? 'default' : 'outline'}
                             size="icon"
                             onClick={() => handlePageChange(page)}
-                            className="h-10 w-10"
+                            className="h-11 w-11 md:h-10 md:w-10 touch-manipulation"
                           >
                             {page}
                           </Button>
                         ) : (
-                          <span key={index} className="px-2 text-muted-foreground">
+                          <span key={index} className="px-1 md:px-2 text-muted-foreground">
                             {page}
                           </span>
                         )
@@ -254,7 +266,7 @@ const Products = () => {
                       size="icon"
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={!hasNextPage}
-                      className="h-10 w-10"
+                      className="h-11 w-11 md:h-10 md:w-10 touch-manipulation"
                     >
                       <ChevronRight className="h-4 w-4" />
                     </Button>

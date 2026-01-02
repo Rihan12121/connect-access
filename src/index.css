@@ -355,4 +355,15 @@
   .stagger-children > *:nth-child(6) { animation-delay: 0.35s; }
   .stagger-children > *:nth-child(7) { animation-delay: 0.4s; }
   .stagger-children > *:nth-child(8) { animation-delay: 0.45s; }
+
+  /* Safe area for iPhone notch and home indicator */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Touch optimization */
+  .touch-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
 }
