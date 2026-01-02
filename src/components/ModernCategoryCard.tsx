@@ -111,7 +111,7 @@ const ModernCategoryCard = ({
     <div 
       className={`
         relative flex flex-col
-        w-[160px] h-[200px] flex-shrink-0
+        w-[140px] md:w-[160px] h-[180px] md:h-[200px] flex-shrink-0
         rounded-2xl
         overflow-hidden
         shadow-md hover:shadow-xl

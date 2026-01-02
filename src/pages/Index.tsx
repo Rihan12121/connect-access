@@ -31,18 +31,16 @@ const Index = () => {
       <ModernCategoriesSection />
 
       {/* Hot Deals Section */}
-      <section className="container max-w-6xl mx-auto mt-20 px-6">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <h2 className="text-xl md:text-2xl font-semibold text-foreground">{t('products.hotDeals')}</h2>
-          </div>
+      <section className="container max-w-6xl mx-auto mt-12 md:mt-20 px-4 md:px-6">
+        <div className="flex items-center justify-between mb-6 md:mb-10">
+          <h2 className="text-2xl md:text-3xl font-semibold text-foreground">{t('products.hotDeals')}</h2>
           <Link to="/products?filter=deals" className="premium-link hidden md:flex items-center gap-2 group">
             {t('categories.viewAll')} 
             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6 stagger-children">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 stagger-children">
           {dealsLoading ? (
             Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="aspect-square bg-muted animate-pulse rounded-lg" />
@@ -56,17 +54,15 @@ const Index = () => {
       </section>
 
       {/* Popular Products Section */}
-      <section className="container max-w-6xl mx-auto mt-20 px-6">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <h2 className="text-xl md:text-2xl font-semibold text-foreground">{t('products.popular')}</h2>
-          </div>
+      <section className="container max-w-6xl mx-auto mt-12 md:mt-20 px-4 md:px-6">
+        <div className="flex items-center justify-between mb-6 md:mb-10">
+          <h2 className="text-2xl md:text-3xl font-semibold text-foreground">{t('products.popular')}</h2>
           <Link to="/products" className="premium-link hidden md:flex items-center gap-2 group">
             {t('categories.viewAll')} 
             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6 stagger-children">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 stagger-children">
           {popularLoading ? (
             Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="aspect-square bg-muted animate-pulse rounded-lg" />
@@ -80,8 +76,8 @@ const Index = () => {
       </section>
 
       {/* Discover All Products Button */}
-      <section className="container max-w-6xl mx-auto mt-16 px-6 text-center pb-12">
-        <div className="divider mx-auto mb-12" />
+      <section className="container max-w-6xl mx-auto mt-12 md:mt-16 px-4 md:px-6 text-center pb-12">
+        <div className="divider mx-auto mb-8 md:mb-12" />
         <Link 
           to="/products" 
           className="btn-primary inline-flex items-center gap-3 text-base"

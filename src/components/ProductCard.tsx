@@ -59,16 +59,16 @@ const ProductCard = ({ product, showAddToCart = false }: ProductCardProps) => {
           </button>
         </div>
       </div>
-      <div className="p-5">
+      <div className="p-3 md:p-5">
         <div onClick={handleClick} className="cursor-pointer">
-          <h3 className="font-body font-medium text-foreground line-clamp-2 text-sm leading-relaxed group-hover:text-primary transition-colors duration-300">
+          <h3 className="font-body font-medium text-foreground line-clamp-2 text-xs md:text-sm leading-relaxed group-hover:text-primary transition-colors duration-300">
             {product.name}
           </h3>
         </div>
-        <div className="flex items-baseline gap-2 mt-3">
-          <span className="font-display text-xl font-semibold text-foreground">{product.price.toFixed(2)} €</span>
+        <div className="flex items-baseline gap-1.5 md:gap-2 mt-2 md:mt-3">
+          <span className="font-display text-base md:text-xl font-semibold text-foreground">{product.price.toFixed(2)} €</span>
           {product.originalPrice && (
-            <span className="text-xs text-muted-foreground line-through">{product.originalPrice.toFixed(2)} €</span>
+            <span className="text-[10px] md:text-xs text-muted-foreground line-through">{product.originalPrice.toFixed(2)} €</span>
           )}
         </div>
         
