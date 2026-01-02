@@ -116,10 +116,10 @@ const ModernCategoriesSection = () => {
 
   if (isLoading) {
     return (
-      <section className="container max-w-6xl mx-auto mt-12 px-6">
-        <div className="flex gap-5 overflow-x-auto no-scrollbar pb-6 px-1">
+      <section className="container max-w-6xl mx-auto mt-10 md:mt-12 px-4 md:px-6">
+        <div className="flex gap-3 md:gap-5 overflow-x-auto no-scrollbar pb-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="w-[160px] h-[200px] flex-shrink-0 rounded-2xl bg-muted animate-pulse" />
+            <div key={i} className="w-[140px] md:w-[160px] h-[180px] md:h-[200px] flex-shrink-0 rounded-2xl bg-muted animate-pulse" />
           ))}
         </div>
       </section>
@@ -127,11 +127,9 @@ const ModernCategoriesSection = () => {
   }
 
   return (
-    <section className="container max-w-6xl mx-auto mt-16 px-6">
-      <div className="flex items-end justify-between mb-10">
-        <div>
-          <h2 className="text-xl md:text-2xl font-semibold text-foreground">Kategorien</h2>
-        </div>
+    <section className="container max-w-6xl mx-auto mt-10 md:mt-16 px-4 md:px-6">
+      <div className="flex items-center justify-between mb-6 md:mb-10">
+        <h2 className="text-2xl md:text-3xl font-semibold text-foreground">Kategorien</h2>
         <div className="flex items-center gap-2 md:gap-3">
           {isAdmin && (
             <>
@@ -177,7 +175,7 @@ const ModernCategoriesSection = () => {
 
       <div 
         ref={containerRef}
-        className="flex gap-5 overflow-x-auto no-scrollbar pb-6 px-1"
+        className="flex gap-3 md:gap-5 overflow-x-auto no-scrollbar pb-6"
       >
         {categories.map((category, index) => (
           <div key={category.id} data-category-card>
