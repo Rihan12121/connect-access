@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Star, User, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/context/LanguageContext';
@@ -270,9 +271,9 @@ const ProductReviews = ({ productId }: ProductReviewsProps) => {
               ? 'Melden Sie sich an, um eine Bewertung zu schreiben'
               : 'Sign in to write a review'}
           </p>
-          <a href="/auth" className="text-primary hover:underline font-medium">
+          <Link to="/auth" className="text-primary hover:underline font-medium">
             {language === 'de' ? 'Jetzt anmelden' : 'Sign in now'}
-          </a>
+          </Link>
         </div>
       )}
 
