@@ -15,6 +15,7 @@ import {
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SEO from '@/components/SEO';
+import { AdminManagement } from '@/components/admin/AdminManagement';
 
 interface Stats {
   totalOrders: number;
@@ -230,6 +231,11 @@ const AdminDashboard = () => {
                   <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                 </Link>
               ))}
+            </div>
+
+            {/* Admin Management */}
+            <div className="mb-8">
+              <AdminManagement />
             </div>
 
             {/* Recent Orders */}
