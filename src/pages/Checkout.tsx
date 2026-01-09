@@ -11,12 +11,11 @@ import Footer from '@/components/Footer';
 import VatNotice from '@/components/VatNotice';
 import SEO from '@/components/SEO';
 
-type CheckoutStep = 'shipping' | 'payment' | 'review';
+type CheckoutStep = 'shipping' | 'payment';
 
 const steps: { id: CheckoutStep; label: string; icon: React.ElementType }[] = [
   { id: 'shipping', label: 'Lieferung', icon: MapPin },
   { id: 'payment', label: 'Zahlung', icon: CreditCard },
-  { id: 'review', label: 'Prüfen', icon: Package },
 ];
 
 const Checkout = () => {
@@ -136,14 +135,14 @@ const Checkout = () => {
     if (currentStep === 'shipping') {
       setCurrentStep('payment');
     } else if (currentStep === 'payment') {
-      setCurrentStep('review');
-    } else {
-      // Final step - submit order
+      // Redirect to Stripe Checkout
       setIsSubmitting(true);
       
       try {
+        // First save order to database if user is logged in
+        let orderId: string | undefined;
+        
         if (user) {
-          // Save order to database
           const { data: orderData, error: orderError } = await supabase
             .from('orders')
             .insert({
@@ -162,6 +161,7 @@ const Checkout = () => {
             .single();
 
           if (orderError) throw orderError;
+          orderId = orderData.id;
 
           // Save order items
           const orderItems = state.items.map(item => ({
@@ -178,16 +178,41 @@ const Checkout = () => {
             .insert(orderItems);
 
           if (itemsError) throw itemsError;
-
-          toast.success(t('checkout.orderSuccess'));
         }
 
-        clearCart();
-        navigate('/order-confirmation');
+        // Call Stripe checkout edge function
+        const { data, error } = await supabase.functions.invoke('create-checkout', {
+          body: {
+            items: state.items.map(item => ({
+              name: item.product.name,
+              price: item.product.price,
+              quantity: item.quantity,
+              image: item.product.image,
+            })),
+            shippingAddress: {
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+              address: formData.address,
+              city: formData.city,
+              postalCode: formData.postalCode,
+              country: formData.country,
+              email: formData.email,
+            },
+            orderId,
+          },
+        });
+
+        if (error) throw error;
+
+        if (data?.url) {
+          // Redirect to Stripe Checkout
+          window.location.href = data.url;
+        } else {
+          throw new Error('No checkout URL received');
+        }
       } catch (error) {
-        console.error('Error creating order:', error);
-        toast.error('Fehler beim Erstellen der Bestellung');
-      } finally {
+        console.error('Checkout error:', error);
+        toast.error(language === 'de' ? 'Fehler beim Checkout' : 'Checkout error');
         setIsSubmitting(false);
       }
     }
@@ -195,7 +220,6 @@ const Checkout = () => {
 
   const goBack = () => {
     if (currentStep === 'payment') setCurrentStep('shipping');
-    else if (currentStep === 'review') setCurrentStep('payment');
   };
 
   return (
@@ -375,134 +399,39 @@ const Checkout = () => {
                     </div>
                     <div>
                       <h2 className="font-display text-xl font-semibold text-foreground">{t('checkout.paymentInfo')}</h2>
-                      <p className="text-sm text-muted-foreground">Wie möchten Sie bezahlen?</p>
+                      <p className="text-sm text-muted-foreground">Sichere Zahlung über Stripe</p>
                     </div>
                   </div>
                   
                   <div className="space-y-5">
                     <div className="p-4 bg-accent/50 rounded-lg border border-accent flex items-center gap-3">
                       <Lock className="w-4 h-4 text-accent-foreground" />
-                      <p className="text-sm text-accent-foreground">{t('checkout.demoPayment')}</p>
-                    </div>
-                    
-                    <div>
-                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
-                        Kartennummer
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="4242 4242 4242 4242"
-                        className="w-full px-4 py-3.5 bg-background text-foreground rounded-lg border border-border focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all font-mono"
-                      />
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
-                          Gültig bis
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="MM / JJ"
-                          className="w-full px-4 py-3.5 bg-background text-foreground rounded-lg border border-border focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all font-mono"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
-                          Sicherheitscode
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="CVC"
-                          className="w-full px-4 py-3.5 bg-background text-foreground rounded-lg border border-border focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all font-mono"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Review Step */}
-              {currentStep === 'review' && (
-                <div className="bg-card border border-border rounded-lg p-8 animate-in">
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="p-2 bg-secondary rounded-lg">
-                      <Package className="w-5 h-5 text-foreground" />
-                    </div>
-                    <div>
-                      <h2 className="font-display text-xl font-semibold text-foreground">{t('checkout.confirmOrder')}</h2>
-                      <p className="text-sm text-muted-foreground">Überprüfen Sie Ihre Bestellung</p>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-6">
-                    {/* Shipping Address */}
-                    <div className="p-5 bg-secondary/50 rounded-lg">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Lieferadresse</span>
-                        <button 
-                          type="button" 
-                          onClick={() => setCurrentStep('shipping')}
-                          className="text-xs text-primary hover:underline"
-                        >
-                          Ändern
-                        </button>
-                      </div>
-                      <p className="text-foreground leading-relaxed">
-                        {formData.firstName} {formData.lastName}<br />
-                        {formData.address}<br />
-                        {formData.postalCode} {formData.city}
+                      <p className="text-sm text-accent-foreground">
+                        {language === 'de' 
+                          ? 'Ihre Zahlung wird sicher über Stripe abgewickelt.' 
+                          : 'Your payment is securely processed via Stripe.'}
                       </p>
-                      {formData.email && (
-                        <p className="text-muted-foreground text-sm mt-2">{formData.email}</p>
-                      )}
                     </div>
-
-                    {/* Payment Method */}
-                    <div className="p-5 bg-secondary/50 rounded-lg">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Zahlungsmethode</span>
-                        <button 
-                          type="button" 
-                          onClick={() => setCurrentStep('payment')}
-                          className="text-xs text-primary hover:underline"
-                        >
-                          Ändern
-                        </button>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-6 bg-gradient-to-r from-blue-600 to-blue-800 rounded flex items-center justify-center">
-                          <span className="text-[8px] text-white font-bold">VISA</span>
-                        </div>
-                        <span className="text-foreground font-mono">•••• •••• •••• 4242</span>
-                      </div>
-                    </div>
-
-                    {/* Order Items */}
-                    <div>
-                      <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-4">Bestellübersicht</span>
-                      <div className="space-y-3">
-                        {state.items.map(item => (
-                          <div key={item.product.id} className="flex items-center gap-4 p-3 bg-secondary/30 rounded-lg">
-                            <img 
-                              src={item.product.image} 
-                              alt={item.product.name} 
-                              className="w-14 h-14 rounded-md object-cover" 
-                            />
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm text-foreground line-clamp-1">{item.product.name}</p>
-                              <p className="text-xs text-muted-foreground">Menge: {item.quantity}</p>
-                            </div>
-                            <span className="font-display font-semibold text-foreground">
-                              {(item.product.price * item.quantity).toFixed(2)} €
-                            </span>
-                          </div>
-                        ))}
+                    
+                    <div className="p-6 bg-muted/50 rounded-lg border border-border text-center">
+                      <CreditCard className="w-12 h-12 text-primary mx-auto mb-4" />
+                      <h3 className="font-semibold text-foreground mb-2">
+                        {language === 'de' ? 'Stripe Checkout' : 'Stripe Checkout'}
+                      </h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        {language === 'de' 
+                          ? 'Klicken Sie auf "Weiter", um zur sicheren Stripe-Zahlungsseite zu gelangen.' 
+                          : 'Click "Continue" to proceed to the secure Stripe payment page.'}
+                      </p>
+                      <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+                        <Lock className="w-3 h-3" />
+                        <span>{language === 'de' ? 'SSL-verschlüsselt' : 'SSL encrypted'}</span>
                       </div>
                     </div>
                   </div>
                 </div>
               )}
+
 
               {/* Navigation Buttons */}
               <div className="flex items-center gap-4 mt-8">
@@ -516,11 +445,20 @@ const Checkout = () => {
                     {t('checkout.back')}
                   </button>
                 )}
-                <button type="submit" className="flex-1 btn-primary py-4 flex items-center justify-center gap-3">
-                  {currentStep === 'review' ? (
+                <button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="flex-1 btn-primary py-4 flex items-center justify-center gap-3 disabled:opacity-50"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      {language === 'de' ? 'Wird verarbeitet...' : 'Processing...'}
+                    </>
+                  ) : currentStep === 'payment' ? (
                     <>
                       <Lock className="w-4 h-4" />
-                      {t('checkout.placeOrder')}
+                      {language === 'de' ? 'Zur Zahlung' : 'Proceed to Payment'}
                     </>
                   ) : (
                     <>
