@@ -85,12 +85,13 @@ serve(async (req) => {
       quantity: item.quantity,
     }));
 
-    // Create checkout session
+    // Create checkout session with PayPal enabled
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : customerEmail,
       line_items: lineItems,
       mode: "payment",
+      payment_method_types: ["card", "paypal"],
       success_url: `${req.headers.get("origin")}/order-confirmation?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/checkout`,
       shipping_address_collection: {
