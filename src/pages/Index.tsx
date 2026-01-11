@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChevronRight, ArrowRight, Sparkles } from 'lucide-react';
+import { ChevronRight, ArrowRight, Sparkles, Store, Users, TrendingUp, Shield } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useDealProducts, useProducts } from '@/hooks/useProducts';
 import Header from '@/components/Header';
@@ -11,7 +11,7 @@ import VatNotice from '@/components/VatNotice';
 import SEO from '@/components/SEO';
 
 const Index = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const { products: dealProducts, isLoading: dealsLoading } = useDealProducts(8);
   const { products: popularProducts, isLoading: popularLoading } = useProducts({ limit: 8 });
@@ -19,13 +19,57 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO 
-        title="Noor — E-Commerce Plattform"
-        description="Entdecken Sie exklusive Qualitätsprodukte für Baby, Schönheit, Elektronik und mehr. Noor - Ihre E-Commerce Plattform für erstklassige Produkte."
+        title="Noor — Marktplatz für Premium-Produkte"
+        description="Entdecken Sie tausende Produkte von verifizierten Anbietern. Noor - Ihr Marktplatz für Qualität, Vielfalt und beste Preise."
       />
       <Header />
 
       {/* Hero Banner Carousel */}
       <HeroSection />
+
+      {/* Multi-Vendor Stats Banner */}
+      <section className="container max-w-6xl mx-auto mt-6 md:mt-10 px-4 md:px-6">
+        <div className="bg-gradient-to-r from-primary/5 via-accent/10 to-primary/5 rounded-2xl p-4 md:p-6 border border-primary/10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <Store className="w-5 h-5 text-primary" />
+                <span className="text-2xl md:text-3xl font-bold text-foreground">500+</span>
+              </div>
+              <p className="text-xs md:text-sm text-muted-foreground">
+                {language === 'de' ? 'Verifizierte Anbieter' : 'Verified Vendors'}
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <TrendingUp className="w-5 h-5 text-primary" />
+                <span className="text-2xl md:text-3xl font-bold text-foreground">10K+</span>
+              </div>
+              <p className="text-xs md:text-sm text-muted-foreground">
+                {language === 'de' ? 'Produkte' : 'Products'}
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <Users className="w-5 h-5 text-primary" />
+                <span className="text-2xl md:text-3xl font-bold text-foreground">50K+</span>
+              </div>
+              <p className="text-xs md:text-sm text-muted-foreground">
+                {language === 'de' ? 'Zufriedene Kunden' : 'Happy Customers'}
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <Shield className="w-5 h-5 text-primary" />
+                <span className="text-2xl md:text-3xl font-bold text-foreground">100%</span>
+              </div>
+              <p className="text-xs md:text-sm text-muted-foreground">
+                {language === 'de' ? 'Käuferschutz' : 'Buyer Protection'}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Categories Section */}
       <ModernCategoriesSection />
@@ -143,21 +187,80 @@ const Index = () => {
 
       {/* CTA Section */}
       <section className="container max-w-6xl mx-auto mt-12 md:mt-20 px-4 md:px-6">
-        <div className="bg-card border border-border rounded-2xl p-8 md:p-12 text-center">
-          <Sparkles className="w-10 h-10 md:w-12 md:h-12 text-primary mx-auto mb-4" />
-          <h2 className="font-display text-2xl md:text-3xl font-semibold text-foreground mb-3">
-            Entdecken Sie unser gesamtes Sortiment
-          </h2>
-          <p className="text-muted-foreground max-w-lg mx-auto mb-6 text-sm md:text-base">
-            Hunderte von Produkten warten auf Sie. Von Premium-Qualität bis hin zu unschlagbaren Preisen.
-          </p>
-          <Link 
-            to="/products" 
-            className="btn-primary inline-flex items-center gap-3"
-          >
-            {t('products.discoverAll')}
-            <ArrowRight className="w-5 h-5" />
-          </Link>
+        <div className="bg-gradient-to-br from-primary/10 via-card to-accent/10 border border-border rounded-2xl p-8 md:p-12">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <Sparkles className="w-6 h-6 text-primary" />
+                <span className="text-sm font-medium text-primary uppercase tracking-wider">
+                  {language === 'de' ? 'Marktplatz' : 'Marketplace'}
+                </span>
+              </div>
+              <h2 className="font-display text-2xl md:text-3xl font-semibold text-foreground mb-3">
+                {language === 'de' 
+                  ? 'Entdecken Sie die Vielfalt unserer Anbieter'
+                  : 'Discover the variety of our vendors'}
+              </h2>
+              <p className="text-muted-foreground mb-6 text-sm md:text-base">
+                {language === 'de'
+                  ? 'Hunderte verifizierter Händler bieten Ihnen eine riesige Auswahl an Qualitätsprodukten. Von Premium-Qualität bis hin zu unschlagbaren Preisen.'
+                  : 'Hundreds of verified merchants offer you a huge selection of quality products. From premium quality to unbeatable prices.'}
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link 
+                  to="/products" 
+                  className="btn-primary inline-flex items-center gap-2"
+                >
+                  {t('products.discoverAll')}
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link 
+                  to="/categories" 
+                  className="px-5 py-2.5 border border-border rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors"
+                >
+                  {language === 'de' ? 'Kategorien ansehen' : 'View Categories'}
+                </Link>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-card border border-border rounded-xl p-5 text-center">
+                <div className="w-12 h-12 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-3">
+                  <Store className="w-6 h-6 text-primary" />
+                </div>
+                <p className="text-2xl font-bold text-foreground">500+</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {language === 'de' ? 'Händler' : 'Vendors'}
+                </p>
+              </div>
+              <div className="bg-card border border-border rounded-xl p-5 text-center">
+                <div className="w-12 h-12 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-3">
+                  <TrendingUp className="w-6 h-6 text-primary" />
+                </div>
+                <p className="text-2xl font-bold text-foreground">10K+</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {language === 'de' ? 'Produkte' : 'Products'}
+                </p>
+              </div>
+              <div className="bg-card border border-border rounded-xl p-5 text-center">
+                <div className="w-12 h-12 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-3">
+                  <Users className="w-6 h-6 text-primary" />
+                </div>
+                <p className="text-2xl font-bold text-foreground">50K+</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {language === 'de' ? 'Kunden' : 'Customers'}
+                </p>
+              </div>
+              <div className="bg-card border border-border rounded-xl p-5 text-center">
+                <div className="w-12 h-12 mx-auto bg-success/10 rounded-full flex items-center justify-center mb-3">
+                  <Shield className="w-6 h-6 text-success" />
+                </div>
+                <p className="text-2xl font-bold text-foreground">100%</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {language === 'de' ? 'Sicher' : 'Secure'}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

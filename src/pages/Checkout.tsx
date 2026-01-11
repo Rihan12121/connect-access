@@ -4,12 +4,13 @@ import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { ShoppingBag, CreditCard, Truck, Check, ArrowRight, ArrowLeft, Lock, MapPin, Package, Loader2, Ban } from 'lucide-react';
+import { ShoppingBag, CreditCard, Truck, Check, ArrowRight, ArrowLeft, Lock, MapPin, Package, Loader2, Ban, Shield } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import VatNotice from '@/components/VatNotice';
 import SEO from '@/components/SEO';
+import PaymentBadges from '@/components/PaymentBadges';
 
 type CheckoutStep = 'shipping' | 'payment';
 
@@ -393,39 +394,70 @@ const Checkout = () => {
               {/* Payment Step */}
               {currentStep === 'payment' && (
                 <div className="bg-card border border-border rounded-lg p-8 animate-in">
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="p-2 bg-secondary rounded-lg">
-                      <CreditCard className="w-5 h-5 text-foreground" />
-                    </div>
-                    <div>
-                      <h2 className="font-display text-xl font-semibold text-foreground">{t('checkout.paymentInfo')}</h2>
-                      <p className="text-sm text-muted-foreground">Sichere Zahlung über Stripe</p>
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-secondary rounded-lg">
+                        <CreditCard className="w-5 h-5 text-foreground" />
+                      </div>
+                      <div>
+                        <h2 className="font-display text-xl font-semibold text-foreground">{t('checkout.paymentInfo')}</h2>
+                        <p className="text-sm text-muted-foreground">
+                          {language === 'de' ? 'Sichere Zahlung' : 'Secure Payment'}
+                        </p>
+                      </div>
                     </div>
                   </div>
                   
                   <div className="space-y-5">
-                    <div className="p-4 bg-accent/50 rounded-lg border border-accent flex items-center gap-3">
-                      <Lock className="w-4 h-4 text-accent-foreground" />
-                      <p className="text-sm text-accent-foreground">
-                        {language === 'de' 
-                          ? 'Ihre Zahlung wird sicher über Stripe abgewickelt.' 
-                          : 'Your payment is securely processed via Stripe.'}
+                    {/* Available Payment Methods */}
+                    <div className="p-5 bg-gradient-to-br from-primary/5 to-accent/10 rounded-xl border border-primary/20">
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+                        {language === 'de' ? 'Unterstützte Zahlungsmethoden' : 'Supported Payment Methods'}
                       </p>
+                      <PaymentBadges size="md" />
+                    </div>
+
+                    {/* Security Notice */}
+                    <div className="p-4 bg-success/10 rounded-lg border border-success/20 flex items-start gap-3">
+                      <Shield className="w-5 h-5 text-success mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium text-foreground">
+                          {language === 'de' ? 'Sichere Zahlung garantiert' : 'Secure Payment Guaranteed'}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {language === 'de' 
+                            ? 'Ihre Zahlungsdaten werden verschlüsselt über Stripe verarbeitet. Wir speichern keine Kartendaten.' 
+                            : 'Your payment details are encrypted via Stripe. We never store card data.'}
+                        </p>
+                      </div>
                     </div>
                     
+                    {/* Checkout Info */}
                     <div className="p-6 bg-muted/50 rounded-lg border border-border text-center">
-                      <CreditCard className="w-12 h-12 text-primary mx-auto mb-4" />
+                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Lock className="w-8 h-8 text-primary" />
+                      </div>
                       <h3 className="font-semibold text-foreground mb-2">
-                        {language === 'de' ? 'Stripe Checkout' : 'Stripe Checkout'}
+                        {language === 'de' ? 'Weiter zur sicheren Zahlung' : 'Continue to Secure Payment'}
                       </h3>
                       <p className="text-sm text-muted-foreground mb-4">
                         {language === 'de' 
-                          ? 'Klicken Sie auf "Weiter", um zur sicheren Stripe-Zahlungsseite zu gelangen.' 
-                          : 'Click "Continue" to proceed to the secure Stripe payment page.'}
+                          ? 'Sie werden zur sicheren Stripe-Zahlungsseite weitergeleitet. Dort können Sie PayPal, Kreditkarte oder andere Methoden wählen.' 
+                          : 'You will be redirected to Stripe\'s secure payment page where you can choose PayPal, credit card, or other methods.'}
                       </p>
-                      <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                        <Lock className="w-3 h-3" />
-                        <span>{language === 'de' ? 'SSL-verschlüsselt' : 'SSL encrypted'}</span>
+                      <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1.5">
+                          <Lock className="w-3.5 h-3.5" />
+                          <span>SSL</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <Shield className="w-3.5 h-3.5" />
+                          <span>PCI DSS</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <Check className="w-3.5 h-3.5" />
+                          <span>{language === 'de' ? 'Käuferschutz' : 'Buyer Protection'}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -434,39 +466,52 @@ const Checkout = () => {
 
 
               {/* Navigation Buttons */}
-              <div className="flex items-center gap-4 mt-8">
-                {currentStep !== 'shipping' && (
-                  <button 
-                    type="button"
-                    onClick={goBack}
-                    className="flex items-center gap-2 px-6 py-4 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    <ArrowLeft className="w-4 h-4" />
-                    {t('checkout.back')}
-                  </button>
-                )}
-                <button 
-                  type="submit" 
-                  disabled={isSubmitting}
-                  className="flex-1 btn-primary py-4 flex items-center justify-center gap-3 disabled:opacity-50"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      {language === 'de' ? 'Wird verarbeitet...' : 'Processing...'}
-                    </>
-                  ) : currentStep === 'payment' ? (
-                    <>
-                      <Lock className="w-4 h-4" />
-                      {language === 'de' ? 'Zur Zahlung' : 'Proceed to Payment'}
-                    </>
-                  ) : (
-                    <>
-                      {t('checkout.continue')}
-                      <ArrowRight className="w-4 h-4" />
-                    </>
+              <div className="mt-8 space-y-4">
+                <div className="flex items-center gap-4">
+                  {currentStep !== 'shipping' && (
+                    <button 
+                      type="button"
+                      onClick={goBack}
+                      className="flex items-center gap-2 px-6 py-4 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                      {t('checkout.back')}
+                    </button>
                   )}
-                </button>
+                  <button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="flex-1 btn-primary py-4 flex items-center justify-center gap-3 disabled:opacity-50 relative"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        {language === 'de' ? 'Wird verarbeitet...' : 'Processing...'}
+                      </>
+                    ) : currentStep === 'payment' ? (
+                      <>
+                        <Lock className="w-4 h-4" />
+                        {language === 'de' ? 'Zur Zahlung' : 'Proceed to Payment'}
+                        {/* PayPal Badge next to button */}
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 bg-[#003087] text-white text-[10px] font-bold px-2 py-0.5 rounded">
+                          Pay<span className="text-[#009cde]">Pal</span>
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        {t('checkout.continue')}
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                </div>
+                
+                {/* Payment Badges under button on payment step */}
+                {currentStep === 'payment' && (
+                  <div className="flex items-center justify-center gap-2 pt-2">
+                    <PaymentBadges size="sm" />
+                  </div>
+                )}
               </div>
             </form>
           </div>

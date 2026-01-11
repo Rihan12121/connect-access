@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Heart, ShoppingCart, Globe, User, LogOut, LayoutDashboard, Package, ChevronDown } from 'lucide-react';
+import { Heart, ShoppingCart, Globe, User, LogOut, LayoutDashboard, Package, ChevronDown, Truck } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
@@ -147,6 +147,14 @@ const Header = () => {
                       >
                         <Package className="w-4 h-4" />
                         {language === 'de' ? 'Meine Bestellungen' : 'My Orders'}
+                      </Link>
+                      <Link 
+                        to="/order-tracking"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
+                      >
+                        <Truck className="w-4 h-4" />
+                        {language === 'de' ? 'Bestellung verfolgen' : 'Track Order'}
                       </Link>
                       <Link 
                         to="/favorites"
