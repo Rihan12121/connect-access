@@ -26,6 +26,7 @@ const Terms = lazy(() => import("./pages/Terms"));
 const About = lazy(() => import("./pages/About"));
 const OrderConfirmation = lazy(() => import("./pages/OrderConfirmation"));
 const OrderHistory = lazy(() => import("./pages/OrderHistory"));
+const OrderTracking = lazy(() => import("./pages/OrderTracking"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Admin pages - lazy loaded (admin only)
@@ -75,6 +76,7 @@ export const routes: RouteRecord[] = [
   { path: "/terms", element: withSuspense(Terms) },
   { path: "/about", element: withSuspense(About) },
   { path: "/orders", element: withSuspense(OrderHistory) },
+  { path: "/order-tracking", element: withSuspense(OrderTracking) },
   
   // Admin routes - protected
   { path: "/admin", element: withAdminGuard(AdminDashboard) },
