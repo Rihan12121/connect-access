@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, LogOut, Heart, ShoppingBag, Package, Camera, Loader2, Check, MapPin, Save } from 'lucide-react';
+import { User, LogOut, Heart, ShoppingBag, Package, Camera, Loader2, Check, MapPin, Save, Settings, Star, Clock, ShieldCheck, ChevronRight } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
@@ -14,6 +15,8 @@ import SEO from '@/components/SEO';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 
 interface Profile {
   id: string;
@@ -31,6 +34,7 @@ const Account = () => {
   const { favorites } = useFavorites();
   const { getItemCount } = useCart();
   const { t, language } = useLanguage();
+  const { isAdmin, loading: adminLoading } = useIsAdmin();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -47,6 +51,10 @@ const Account = () => {
   const [country, setCountry] = useState('Deutschland');
   const [savingAddress, setSavingAddress] = useState(false);
 
+  // Orders
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+
   useEffect(() => {
     if (!loading && !user) {
       navigate('/auth');
@@ -56,6 +64,7 @@ const Account = () => {
   useEffect(() => {
     if (user) {
       fetchProfile();
+      fetchOrders();
     }
   }, [user]);
 
@@ -89,6 +98,22 @@ const Account = () => {
       }
     }
     setLoadingProfile(false);
+  };
+
+  const fetchOrders = async () => {
+    if (!user) return;
+    
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(5);
+    
+    if (!error && data) {
+      setOrders(data);
+    }
+    setLoadingOrders(false);
   };
 
   const handleSaveProfile = async () => {
@@ -181,6 +206,24 @@ const Account = () => {
     navigate('/');
   };
 
+  const getRoleBadge = () => {
+    if (adminLoading) return null;
+    if (isAdmin) {
+      return (
+        <Badge variant="default" className="bg-primary text-primary-foreground">
+          <ShieldCheck className="w-3 h-3 mr-1" />
+          Administrator
+        </Badge>
+      );
+    }
+    return (
+      <Badge variant="secondary">
+        <User className="w-3 h-3 mr-1" />
+        {language === 'de' ? 'Kunde' : 'Customer'}
+      </Badge>
+    );
+  };
+
   if (loading || loadingProfile) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -196,25 +239,19 @@ const Account = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO 
-        title={`${t('account.title')} — Noor`}
+        title={`${language === 'de' ? 'Mein Konto' : 'My Account'} — Noor`}
         description="Verwalten Sie Ihr Profil und Ihre Bestellungen"
       />
       <Header />
 
-      <div className="container max-w-4xl mx-auto px-4 py-8 md:py-12">
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-6 md:mb-8">{t('account.title')}</h1>
-
-        {/* Profile Card */}
-        <div className="bg-card border border-border rounded-2xl p-5 md:p-6 mb-5 md:mb-6">
-          <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-            <User className="w-5 h-5 text-primary" />
-            {language === 'de' ? 'Profil' : 'Profile'}
-          </h2>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 md:gap-6">
+      <div className="container max-w-5xl mx-auto px-4 py-8 md:py-12">
+        {/* Account Header */}
+        <div className="bg-card border border-border rounded-2xl p-6 md:p-8 mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
             {/* Avatar */}
             <div className="relative">
               <div 
-                className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden cursor-pointer group"
+                className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden cursor-pointer group ring-4 ring-background"
                 onClick={() => fileInputRef.current?.click()}
               >
                 {uploadingAvatar ? (
@@ -241,9 +278,181 @@ const Account = () => {
               />
             </div>
 
-            {/* Profile Info */}
-            <div className="flex-1 w-full">
-              <div className="grid gap-3 md:gap-4">
+            {/* User Info */}
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-xl md:text-2xl font-semibold text-foreground">
+                  {profile?.display_name || user.email?.split('@')[0] || 'Benutzer'}
+                </h1>
+                {getRoleBadge()}
+              </div>
+              <p className="text-muted-foreground text-sm">{user.email}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {language === 'de' ? 'Mitglied seit' : 'Member since'} {new Date(user.created_at).toLocaleDateString('de-DE', { month: 'long', year: 'numeric' })}
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-2 w-full sm:w-auto">
+              {isAdmin && (
+                <Link to="/admin" className="flex-1 sm:flex-initial">
+                  <Button variant="outline" className="w-full gap-2">
+                    <Settings className="w-4 h-4" />
+                    <span className="hidden sm:inline">Admin</span>
+                  </Button>
+                </Link>
+              )}
+              <Button variant="outline" onClick={handleSignOut} className="flex-1 sm:flex-initial gap-2 text-destructive hover:text-destructive">
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:inline">{t('auth.logout')}</span>
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-3 gap-4 mb-8">
+          <Link to="/favorites" className="bg-card border border-border rounded-xl p-4 hover:border-primary hover:shadow-md transition-all group">
+            <div className="flex items-center justify-between mb-2">
+              <Heart className="w-5 h-5 text-favorite" />
+              <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+            </div>
+            <p className="text-2xl font-semibold text-foreground">{favorites.length}</p>
+            <p className="text-xs text-muted-foreground">{language === 'de' ? 'Favoriten' : 'Favorites'}</p>
+          </Link>
+
+          <Link to="/cart" className="bg-card border border-border rounded-xl p-4 hover:border-primary hover:shadow-md transition-all group">
+            <div className="flex items-center justify-between mb-2">
+              <ShoppingBag className="w-5 h-5 text-primary" />
+              <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+            </div>
+            <p className="text-2xl font-semibold text-foreground">{getItemCount()}</p>
+            <p className="text-xs text-muted-foreground">{language === 'de' ? 'Im Warenkorb' : 'In Cart'}</p>
+          </Link>
+
+          <Link to="/orders" className="bg-card border border-border rounded-xl p-4 hover:border-primary hover:shadow-md transition-all group">
+            <div className="flex items-center justify-between mb-2">
+              <Package className="w-5 h-5 text-success" />
+              <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+            </div>
+            <p className="text-2xl font-semibold text-foreground">{orders.length}</p>
+            <p className="text-xs text-muted-foreground">{language === 'de' ? 'Bestellungen' : 'Orders'}</p>
+          </Link>
+        </div>
+
+        {/* Tabs */}
+        <Tabs defaultValue="overview" className="w-full">
+          <TabsList className="w-full justify-start mb-6 bg-transparent border-b border-border rounded-none p-0 h-auto">
+            <TabsTrigger 
+              value="overview" 
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3"
+            >
+              {language === 'de' ? 'Übersicht' : 'Overview'}
+            </TabsTrigger>
+            <TabsTrigger 
+              value="profile"
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3"
+            >
+              {language === 'de' ? 'Profil' : 'Profile'}
+            </TabsTrigger>
+            <TabsTrigger 
+              value="address"
+              className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3"
+            >
+              {language === 'de' ? 'Adresse' : 'Address'}
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Overview Tab */}
+          <TabsContent value="overview">
+            <div className="space-y-6">
+              {/* Recent Orders */}
+              <div className="bg-card border border-border rounded-xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-foreground flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-muted-foreground" />
+                    {language === 'de' ? 'Letzte Bestellungen' : 'Recent Orders'}
+                  </h3>
+                  <Link to="/orders" className="text-sm text-primary hover:underline">
+                    {language === 'de' ? 'Alle anzeigen' : 'View all'}
+                  </Link>
+                </div>
+                
+                {loadingOrders ? (
+                  <div className="flex justify-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                  </div>
+                ) : orders.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Package className="w-12 h-12 mx-auto text-muted-foreground mb-3" />
+                    <p className="text-muted-foreground">
+                      {language === 'de' ? 'Noch keine Bestellungen' : 'No orders yet'}
+                    </p>
+                    <Link to="/products" className="text-sm text-primary hover:underline mt-2 inline-block">
+                      {language === 'de' ? 'Jetzt einkaufen' : 'Start shopping'}
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {orders.slice(0, 3).map((order) => (
+                      <Link 
+                        key={order.id} 
+                        to={`/order-tracking?orderId=${order.id}`}
+                        className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg hover:bg-secondary transition-colors"
+                      >
+                        <div>
+                          <p className="font-medium text-foreground text-sm">
+                            {language === 'de' ? 'Bestellung' : 'Order'} #{order.id.slice(0, 8)}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(order.created_at).toLocaleDateString('de-DE')}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-foreground">{order.total.toFixed(2)} €</p>
+                          <Badge variant={order.status === 'completed' ? 'default' : 'secondary'} className="text-xs">
+                            {order.status}
+                          </Badge>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Quick Actions */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Link to="/favorites" className="flex items-center gap-4 bg-card border border-border rounded-xl p-4 hover:border-primary hover:shadow-md transition-all">
+                  <div className="w-12 h-12 rounded-full bg-favorite/20 flex items-center justify-center">
+                    <Heart className="w-6 h-6 text-favorite" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-foreground">{language === 'de' ? 'Meine Favoriten' : 'My Favorites'}</h4>
+                    <p className="text-sm text-muted-foreground">{favorites.length} {language === 'de' ? 'Artikel gespeichert' : 'items saved'}</p>
+                  </div>
+                </Link>
+                <Link to="/order-tracking" className="flex items-center gap-4 bg-card border border-border rounded-xl p-4 hover:border-primary hover:shadow-md transition-all">
+                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                    <Package className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-foreground">{language === 'de' ? 'Bestellung verfolgen' : 'Track Order'}</h4>
+                    <p className="text-sm text-muted-foreground">{language === 'de' ? 'Status prüfen' : 'Check status'}</p>
+                  </div>
+                </Link>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Profile Tab */}
+          <TabsContent value="profile">
+            <div className="bg-card border border-border rounded-xl p-6">
+              <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+                <User className="w-4 h-4 text-muted-foreground" />
+                {language === 'de' ? 'Profilinformationen' : 'Profile Information'}
+              </h3>
+              
+              <div className="grid gap-4 max-w-md">
                 <div className="grid gap-2">
                   <Label htmlFor="displayName" className="text-xs uppercase tracking-wider text-muted-foreground">
                     {language === 'de' ? 'Anzeigename' : 'Display Name'}
@@ -253,14 +462,12 @@ const Account = () => {
                       id="displayName"
                       value={displayName}
                       onChange={(e) => setDisplayName(e.target.value)}
-                      placeholder={language === 'de' ? 'Dein Name' : 'Your name'}
-                      className="max-w-xs"
+                      placeholder={language === 'de' ? 'Ihr Name' : 'Your name'}
                     />
                     <Button 
                       onClick={handleSaveProfile} 
                       disabled={saving || displayName === (profile?.display_name || '')}
-                      size="sm"
-                      className="shrink-0"
+                      size="icon"
                     >
                       {saving ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
@@ -270,144 +477,92 @@ const Account = () => {
                     </Button>
                   </div>
                 </div>
-                <p className="text-muted-foreground text-sm">{user.email}</p>
+                
+                <div className="grid gap-2">
+                  <Label className="text-xs uppercase tracking-wider text-muted-foreground">
+                    E-Mail
+                  </Label>
+                  <Input value={user.email || ''} disabled className="bg-muted" />
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          </TabsContent>
 
-        {/* Address Card */}
-        <div className="bg-card border border-border rounded-2xl p-5 md:p-6 mb-5 md:mb-6">
-          <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-primary" />
-            {language === 'de' ? 'Standard-Lieferadresse' : 'Default Shipping Address'}
-          </h2>
-          
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="streetAddress" className="text-xs uppercase tracking-wider text-muted-foreground">
-                {language === 'de' ? 'Straße und Hausnummer' : 'Street Address'}
-              </Label>
-              <Input
-                id="streetAddress"
-                value={streetAddress}
-                onChange={(e) => setStreetAddress(e.target.value)}
-                placeholder={language === 'de' ? 'Musterstraße 123' : '123 Main St'}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 md:gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="postalCode" className="text-xs uppercase tracking-wider text-muted-foreground">
-                  {language === 'de' ? 'PLZ' : 'Postal Code'}
-                </Label>
-                <Input
-                  id="postalCode"
-                  value={postalCode}
-                  onChange={(e) => setPostalCode(e.target.value)}
-                  placeholder="12345"
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="city" className="text-xs uppercase tracking-wider text-muted-foreground">
-                  {language === 'de' ? 'Stadt' : 'City'}
-                </Label>
-                <Input
-                  id="city"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  placeholder={language === 'de' ? 'Berlin' : 'City'}
-                />
-              </div>
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="country" className="text-xs uppercase tracking-wider text-muted-foreground">
-                {language === 'de' ? 'Land' : 'Country'}
-              </Label>
-              <Input
-                id="country"
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
-                placeholder="Deutschland"
-              />
-            </div>
-
-            <Button 
-              onClick={handleSaveAddress} 
-              disabled={savingAddress}
-              className="w-full sm:w-auto mt-2"
-            >
-              {savingAddress ? (
-                <Loader2 className="w-4 h-4 animate-spin mr-2" />
-              ) : (
-                <Save className="w-4 h-4 mr-2" />
-              )}
-              {language === 'de' ? 'Adresse speichern' : 'Save Address'}
-            </Button>
-          </div>
-        </div>
-
-        {/* Quick Links */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
-          <Link 
-            to="/favorites"
-            className="flex items-center gap-4 bg-card border border-border rounded-xl p-4 hover:border-primary hover:shadow-md transition-all"
-          >
-            <div className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-favorite/20 flex items-center justify-center shrink-0">
-              <Heart className="w-5 h-5 md:w-6 md:h-6 text-favorite" />
-            </div>
-            <div>
-              <h3 className="font-medium text-foreground text-sm md:text-base">{t('favorites.title')}</h3>
-              <p className="text-muted-foreground text-xs md:text-sm">
-                {favorites.length} {t('account.items')}
-              </p>
-            </div>
-          </Link>
-
-          <Link 
-            to="/cart"
-            className="flex items-center gap-4 bg-card border border-border rounded-xl p-4 hover:border-primary hover:shadow-md transition-all"
-          >
-            <div className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-              <ShoppingBag className="w-5 h-5 md:w-6 md:h-6 text-primary" />
-            </div>
-            <div>
-              <h3 className="font-medium text-foreground text-sm md:text-base">{t('cart.title')}</h3>
-              <p className="text-muted-foreground text-xs md:text-sm">
-                {getItemCount()} {t('account.items')}
-              </p>
-            </div>
-          </Link>
-
-          <Link 
-            to="/orders"
-            className="flex items-center gap-4 bg-card border border-border rounded-xl p-4 hover:border-primary hover:shadow-md transition-all"
-          >
-            <div className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-success/20 flex items-center justify-center shrink-0">
-              <Package className="w-5 h-5 md:w-6 md:h-6 text-success" />
-            </div>
-            <div>
-              <h3 className="font-medium text-foreground text-sm md:text-base">
-                {language === 'de' ? 'Bestellungen' : 'Orders'}
+          {/* Address Tab */}
+          <TabsContent value="address">
+            <div className="bg-card border border-border rounded-xl p-6">
+              <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-muted-foreground" />
+                {language === 'de' ? 'Standard-Lieferadresse' : 'Default Shipping Address'}
               </h3>
-              <p className="text-muted-foreground text-xs md:text-sm">
-                {language === 'de' ? 'Bestellungen anzeigen' : 'View orders'}
-              </p>
-            </div>
-          </Link>
-        </div>
+              
+              <div className="grid gap-4 max-w-lg">
+                <div className="grid gap-2">
+                  <Label htmlFor="streetAddress" className="text-xs uppercase tracking-wider text-muted-foreground">
+                    {language === 'de' ? 'Straße und Hausnummer' : 'Street Address'}
+                  </Label>
+                  <Input
+                    id="streetAddress"
+                    value={streetAddress}
+                    onChange={(e) => setStreetAddress(e.target.value)}
+                    placeholder={language === 'de' ? 'Musterstraße 123' : '123 Main St'}
+                  />
+                </div>
 
-        {/* Actions */}
-        <div className="bg-card border border-border rounded-2xl overflow-hidden">
-          <button
-            onClick={handleSignOut}
-            className="w-full flex items-center gap-4 p-4 hover:bg-secondary transition-colors text-left"
-          >
-            <LogOut className="w-5 h-5 text-destructive" />
-            <span className="text-foreground">{t('auth.logout')}</span>
-          </button>
-        </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="postalCode" className="text-xs uppercase tracking-wider text-muted-foreground">
+                      {language === 'de' ? 'PLZ' : 'Postal Code'}
+                    </Label>
+                    <Input
+                      id="postalCode"
+                      value={postalCode}
+                      onChange={(e) => setPostalCode(e.target.value)}
+                      placeholder="12345"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="city" className="text-xs uppercase tracking-wider text-muted-foreground">
+                      {language === 'de' ? 'Stadt' : 'City'}
+                    </Label>
+                    <Input
+                      id="city"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      placeholder={language === 'de' ? 'Berlin' : 'City'}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="country" className="text-xs uppercase tracking-wider text-muted-foreground">
+                    {language === 'de' ? 'Land' : 'Country'}
+                  </Label>
+                  <Input
+                    id="country"
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    placeholder="Deutschland"
+                  />
+                </div>
+
+                <Button 
+                  onClick={handleSaveAddress} 
+                  disabled={savingAddress}
+                  className="w-full sm:w-auto mt-2"
+                >
+                  {savingAddress ? (
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  ) : (
+                    <Save className="w-4 h-4 mr-2" />
+                  )}
+                  {language === 'de' ? 'Adresse speichern' : 'Save Address'}
+                </Button>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
+
         <VatNotice />
       </div>
 
