@@ -1,5 +1,5 @@
-import { useParams, Link } from 'react-router-dom';
-import { Heart, ShoppingCart, Minus, Plus, Truck, Shield, ArrowLeft, Loader2 } from 'lucide-react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Heart, ShoppingCart, Minus, Plus, Truck, Shield, ArrowLeft, Loader2, Check, Package } from 'lucide-react';
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
@@ -14,17 +14,21 @@ import VatNotice from '@/components/VatNotice';
 import SEO from '@/components/SEO';
 import ProductImageGallery from '@/components/ProductImageGallery';
 import ProductReviews from '@/components/ProductReviews';
+import { Button } from '@/components/ui/button';
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { product, isLoading } = useProduct(id);
   const [quantity, setQuantity] = useState(1);
-  const { addItem } = useCart();
+  const { addItem, getItemCount } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
-  const { t, tCategory } = useLanguage();
+  const { t, tCategory, language } = useLanguage();
 
   const { products: relatedProducts } = useCategoryProducts(product?.category || '', { limit: 4 });
   const filteredRelated = relatedProducts.filter(p => p.id !== product?.id).slice(0, 4);
+
+  const cartItemCount = getItemCount();
 
   if (isLoading) {
     return (
@@ -63,7 +67,21 @@ const ProductDetail = () => {
     toast.success(`${quantity}x ${product.name} ${t('products.addedToCart')}`);
   };
 
+  const handleBuyNow = () => {
+    for (let i = 0; i < quantity; i++) {
+      addItem(product as any);
+    }
+    navigate('/checkout');
+  };
+
   const savings = product.originalPrice ? (product.originalPrice - product.price).toFixed(2) : null;
+
+  // Professional product features
+  const productFeatures = [
+    { icon: Check, text: language === 'de' ? 'Premium-Qualität' : 'Premium Quality' },
+    { icon: Shield, text: language === 'de' ? 'Geprüft & Zertifiziert' : 'Verified & Certified' },
+    { icon: Package, text: language === 'de' ? 'Sichere Verpackung' : 'Secure Packaging' },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -97,7 +115,7 @@ const ProductDetail = () => {
             {/* Badges */}
             {product.discount && (
               <div className="absolute top-4 left-4 bg-deal text-deal-foreground text-xs font-semibold px-3 py-1.5 rounded-md uppercase tracking-wider z-10">
-                -{product.discount}% Rabatt
+                -{product.discount}%
               </div>
             )}
             
@@ -118,7 +136,7 @@ const ProductDetail = () => {
             {/* Category */}
             <Link 
               to={`/category/${product.category}`}
-              className="section-subheading text-primary hover:text-primary/80 transition-colors mb-4 w-fit"
+              className="text-xs uppercase tracking-widest text-primary font-medium hover:text-primary/80 transition-colors mb-3 w-fit"
             >
               {category ? tCategory(category.slug) : product.category}
             </Link>
@@ -147,13 +165,36 @@ const ProductDetail = () => {
               </p>
             )}
 
+            {/* Stock Status */}
+            <div className="flex items-center gap-2 mt-4">
+              <div className={`w-2.5 h-2.5 rounded-full ${product.inStock ? 'bg-success' : 'bg-destructive'}`} />
+              <span className={`text-sm font-medium ${product.inStock ? 'text-success' : 'text-destructive'}`}>
+                {product.inStock ? t('products.inStock') : t('products.outOfStock')}
+              </span>
+            </div>
+
             {/* Divider */}
-            <div className="divider my-8" />
+            <div className="divider my-6" />
 
             {/* Description */}
-            <p className="text-foreground/70 leading-relaxed">
-              {product.description}
-            </p>
+            <div className="prose prose-sm max-w-none">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                {language === 'de' ? 'Produktbeschreibung' : 'Product Description'}
+              </h3>
+              <p className="text-foreground/80 leading-relaxed">
+                {product.description}
+              </p>
+            </div>
+
+            {/* Product Features */}
+            <div className="flex flex-wrap gap-3 mt-6">
+              {productFeatures.map((feature, idx) => (
+                <div key={idx} className="flex items-center gap-2 px-3 py-1.5 bg-secondary/50 rounded-lg text-sm text-muted-foreground">
+                  <feature.icon className="w-3.5 h-3.5 text-success" />
+                  {feature.text}
+                </div>
+              ))}
+            </div>
 
             {/* Tags */}
             {product.tags && product.tags.length > 0 && (
@@ -170,42 +211,57 @@ const ProductDetail = () => {
             )}
 
             {/* Quantity & Add to Cart */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mt-10">
-              <div className="flex items-center justify-center gap-4 bg-secondary rounded-lg px-4 py-3">
+            <div className="flex flex-col gap-4 mt-8">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 bg-secondary rounded-lg px-4 py-3">
+                  <button 
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="p-1 hover:bg-background rounded-md transition-colors"
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <span className="font-display text-xl font-semibold w-10 text-center">{quantity}</span>
+                  <button 
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="p-1 hover:bg-background rounded-md transition-colors"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+
                 <button 
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="p-1 hover:bg-background rounded-md transition-colors"
+                  onClick={handleAddToCart}
+                  className="flex-1 btn-primary py-4 flex items-center justify-center gap-3"
                 >
-                  <Minus className="w-4 h-4" />
-                </button>
-                <span className="font-display text-xl font-semibold w-10 text-center">{quantity}</span>
-                <button 
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="p-1 hover:bg-background rounded-md transition-colors"
-                >
-                  <Plus className="w-4 h-4" />
+                  <ShoppingCart className="w-4 h-4" />
+                  {t('products.addToCart')}
                 </button>
               </div>
 
-              <button 
-                onClick={handleAddToCart}
-                className="flex-1 btn-primary py-4 flex items-center justify-center gap-3"
+              {/* Buy Now / Checkout Button */}
+              <Button 
+                onClick={handleBuyNow}
+                variant="outline"
+                size="lg"
+                className="w-full py-4 text-base font-medium border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
               >
-                <ShoppingCart className="w-4 h-4" />
-                {t('products.addToCart')}
-              </button>
+                {language === 'de' ? 'Jetzt kaufen' : 'Buy Now'}
+              </Button>
+
+              {/* Cart Status */}
+              {cartItemCount > 0 && (
+                <Link 
+                  to="/checkout" 
+                  className="flex items-center justify-center gap-2 text-sm text-primary hover:underline"
+                >
+                  <ShoppingCart className="w-4 h-4" />
+                  {cartItemCount} {language === 'de' ? 'Artikel im Warenkorb' : 'items in cart'} — {language === 'de' ? 'Zur Kasse' : 'Checkout'}
+                </Link>
+              )}
             </div>
 
-            {/* Stock Status */}
-            <div className="flex items-center gap-2 mt-6">
-              <div className={`w-2 h-2 rounded-full ${product.inStock ? 'bg-success' : 'bg-destructive'}`} />
-              <span className={`text-sm font-medium ${product.inStock ? 'text-success' : 'text-destructive'}`}>
-                {product.inStock ? t('products.inStock') : t('products.outOfStock')}
-              </span>
-            </div>
-
-            {/* Features */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-10 pt-8 border-t border-border">
+            {/* Shipping Info */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8 pt-6 border-t border-border">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-secondary rounded-lg">
                   <Truck className="w-4 h-4 text-foreground" />
@@ -232,10 +288,10 @@ const ProductDetail = () => {
         {filteredRelated.length > 0 && (
           <section className="mt-24">
             <div className="mb-10">
-              <p className="section-subheading mb-2">{t('ui.mayAlsoLike')}</p>
-              <h2 className="section-heading">{t('products.related')}</h2>
+              <p className="text-xs uppercase tracking-widest text-primary font-medium mb-2">{t('ui.mayAlsoLike')}</p>
+              <h2 className="text-2xl md:text-3xl font-semibold text-foreground">{t('products.related')}</h2>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6 stagger-children">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6">
               {filteredRelated.map(product => (
                 <ProductCard key={product.id} product={product} />
               ))}
