@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import type { RouteRecord } from "vite-react-ssg";
 import { PageSkeleton } from "@/components/LoadingSkeleton";
 import AdminGuard from "@/components/AdminGuard";
+import { SellerGuard } from "@/components/SellerGuard";
 
 // Core pages - loaded immediately for fast initial navigation
 import Index from "./pages/Index";
@@ -36,6 +37,10 @@ const AdminReviews = lazy(() => import("./pages/admin/Reviews"));
 const AdminProducts = lazy(() => import("./pages/admin/Products"));
 const AdminCustomers = lazy(() => import("./pages/admin/Customers"));
 
+// Seller pages - lazy loaded (seller only)
+const SellerDashboard = lazy(() => import("./pages/seller/Dashboard"));
+const SellerProductForm = lazy(() => import("./pages/seller/ProductForm"));
+
 // Wrap lazy components with Suspense
 const withSuspense = (Component: React.LazyExoticComponent<() => JSX.Element>) => (
   <Suspense fallback={<PageSkeleton />}>
@@ -50,6 +55,15 @@ const withAdminGuard = (Component: React.LazyExoticComponent<() => JSX.Element>)
       <Component />
     </Suspense>
   </AdminGuard>
+);
+
+// Wrap seller components with guard and suspense
+const withSellerGuard = (Component: React.LazyExoticComponent<() => JSX.Element>) => (
+  <SellerGuard>
+    <Suspense fallback={<PageSkeleton />}>
+      <Component />
+    </Suspense>
+  </SellerGuard>
 );
 
 export const routes: RouteRecord[] = [
@@ -84,6 +98,11 @@ export const routes: RouteRecord[] = [
   { path: "/admin/reviews", element: withAdminGuard(AdminReviews) },
   { path: "/admin/products", element: withAdminGuard(AdminProducts) },
   { path: "/admin/customers", element: withAdminGuard(AdminCustomers) },
+  
+  // Seller routes - protected
+  { path: "/seller", element: withSellerGuard(SellerDashboard) },
+  { path: "/seller/products/new", element: withSellerGuard(SellerProductForm) },
+  { path: "/seller/products/:id/edit", element: withSellerGuard(SellerProductForm) },
   
   // 404 - not pre-rendered
   { path: "*", element: withSuspense(NotFound) },
