@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Heart, ShoppingCart, Globe, User, LogOut, LayoutDashboard, Package, ChevronDown, Truck } from 'lucide-react';
+import { Heart, ShoppingCart, Globe, User, LogOut, LayoutDashboard, Package, ChevronDown, Truck, Store } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
@@ -7,6 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useState } from 'react';
 import { useScrollHeader } from '@/hooks/useScrollHeader';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
+import { useIsSeller } from '@/hooks/useIsSeller';
 import SearchBar from '@/components/SearchBar';
 import CategoryChips from '@/components/CategoryChips';
 
@@ -16,6 +17,7 @@ const Header = () => {
   const { favorites } = useFavorites();
   const { user, signOut } = useAuth();
   const { isAdmin } = useIsAdmin();
+  const { isSeller } = useIsSeller();
   
   const [langHover, setLangHover] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -46,6 +48,15 @@ const Header = () => {
 
           {/* Icons */}
           <div className="flex items-center gap-1 md:gap-2">
+            {user && isSeller && !isAdmin && (
+              <Link
+                to="/seller"
+                className="icon-btn text-header-foreground/70 hover:text-header-foreground p-2"
+                title="Seller Dashboard"
+              >
+                <Store className="w-5 h-5" />
+              </Link>
+            )}
             {user && isAdmin && (
               <Link
                 to="/admin"
@@ -164,6 +175,16 @@ const Header = () => {
                         <Heart className="w-4 h-4" />
                         {language === 'de' ? 'Wunschliste' : 'Wishlist'}
                       </Link>
+                      {isSeller && (
+                        <Link 
+                          to="/seller"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
+                        >
+                          <Store className="w-4 h-4" />
+                          {language === 'de' ? 'Verkäufer-Dashboard' : 'Seller Dashboard'}
+                        </Link>
+                      )}
                       {isAdmin && (
                         <Link 
                           to="/admin"

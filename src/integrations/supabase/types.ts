@@ -200,6 +200,7 @@ export type Database = {
           name: string
           original_price: number | null
           price: number
+          seller_id: string | null
           subcategory: string | null
           tags: string[] | null
           updated_at: string
@@ -216,6 +217,7 @@ export type Database = {
           name: string
           original_price?: number | null
           price: number
+          seller_id?: string | null
           subcategory?: string | null
           tags?: string[] | null
           updated_at?: string
@@ -232,6 +234,7 @@ export type Database = {
           name?: string
           original_price?: number | null
           price?: number
+          seller_id?: string | null
           subcategory?: string | null
           tags?: string[] | null
           updated_at?: string
@@ -352,7 +355,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "moderator" | "user"
+      app_role: "admin" | "moderator" | "user" | "seller"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -480,7 +483,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "moderator", "user"],
+      app_role: ["admin", "moderator", "user", "seller"],
     },
   },
 } as const
