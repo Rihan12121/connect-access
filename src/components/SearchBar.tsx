@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Search, X, Clock, TrendingUp } from 'lucide-react';
-import { products } from '@/data/products';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
+import { useProducts } from '@/hooks/useProducts';
 
 interface SearchBarProps {
   searchQuery: string;
@@ -14,6 +14,7 @@ const MAX_HISTORY = 5;
 
 const SearchBar = ({ searchQuery, onSearchChange }: SearchBarProps) => {
   const { t } = useLanguage();
+  const { allProducts } = useProducts({});
   const [isFocused, setIsFocused] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -47,15 +48,20 @@ const SearchBar = ({ searchQuery, onSearchChange }: SearchBarProps) => {
     localStorage.removeItem(SEARCH_HISTORY_KEY);
   };
 
-  // Get suggestions based on input
-  const suggestions = searchQuery.trim()
-    ? products
-        .filter(p => 
-          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.category.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-        .slice(0, 6)
-    : [];
+  // Get suggestions based on input - memoized for performance
+  const suggestions = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    
+    const query = searchQuery.toLowerCase();
+    return allProducts
+      .filter(p => 
+        p.name.toLowerCase().includes(query) ||
+        p.category.toLowerCase().includes(query) ||
+        p.description?.toLowerCase().includes(query) ||
+        p.tags?.some(tag => tag.toLowerCase().includes(query))
+      )
+      .slice(0, 6);
+  }, [searchQuery, allProducts]);
 
   // Handle click outside to close dropdown
   useEffect(() => {
