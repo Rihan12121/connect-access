@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Heart, ShoppingCart, Minus, Plus, Truck, Shield, ArrowLeft, Loader2, Check, Package } from 'lucide-react';
+import { Heart, ShoppingCart, Minus, Plus, Truck, Shield, ArrowLeft, Loader2, Check, Package, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
@@ -15,6 +15,7 @@ import SEO from '@/components/SEO';
 import ProductImageGallery from '@/components/ProductImageGallery';
 import ProductReviews from '@/components/ProductReviews';
 import { Button } from '@/components/ui/button';
+import { useStartConversation } from '@/hooks/useStartConversation';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -24,6 +25,7 @@ const ProductDetail = () => {
   const { addItem, getItemCount } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
   const { t, tCategory, language } = useLanguage();
+  const { startConversation } = useStartConversation();
 
   const { products: relatedProducts } = useCategoryProducts(product?.category || '', { limit: 4 });
   const filteredRelated = relatedProducts.filter(p => p.id !== product?.id).slice(0, 4);
@@ -247,6 +249,19 @@ const ProductDetail = () => {
               >
                 {language === 'de' ? 'Jetzt kaufen' : 'Buy Now'}
               </Button>
+
+              {/* Contact Seller Button */}
+              {product.seller_id && (
+                <Button 
+                  onClick={() => startConversation(product.seller_id!)}
+                  variant="outline"
+                  size="lg"
+                  className="w-full py-4 text-base font-medium"
+                >
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  {language === 'de' ? 'Verkäufer kontaktieren' : 'Contact Seller'}
+                </Button>
+              )}
 
               {/* Cart Status */}
               {cartItemCount > 0 && (

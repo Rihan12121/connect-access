@@ -12,6 +12,8 @@ export interface Product {
   inStock: boolean;
   rating?: number;
   reviews?: number;
+  seller_id?: string;
+  tags?: string[];
 }
 
 // Category Types

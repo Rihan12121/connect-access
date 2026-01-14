@@ -16,6 +16,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SEO from '@/components/SEO';
 import { AdminManagement } from '@/components/admin/AdminManagement';
+import { SellerManagement } from '@/components/admin/SellerManagement';
 
 interface Stats {
   totalOrders: number;
@@ -233,9 +234,10 @@ const AdminDashboard = () => {
               ))}
             </div>
 
-            {/* Admin Management */}
-            <div className="mb-8">
+            {/* Admin & Seller Management */}
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
               <AdminManagement />
+              <SellerManagement />
             </div>
 
             {/* Recent Orders */}

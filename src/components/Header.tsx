@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Heart, ShoppingCart, Globe, User, LogOut, LayoutDashboard, Package, ChevronDown, Truck, Store } from 'lucide-react';
+import { Heart, ShoppingCart, Globe, User, LogOut, LayoutDashboard, Package, ChevronDown, Truck, Store, MessageCircle } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
@@ -174,6 +174,14 @@ const Header = () => {
                       >
                         <Heart className="w-4 h-4" />
                         {language === 'de' ? 'Wunschliste' : 'Wishlist'}
+                      </Link>
+                      <Link 
+                        to="/messages"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
+                      >
+                        <MessageCircle className="w-4 h-4" />
+                        {language === 'de' ? 'Nachrichten' : 'Messages'}
                       </Link>
                       {isSeller && (
                         <Link 
