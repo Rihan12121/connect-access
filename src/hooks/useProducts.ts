@@ -15,6 +15,7 @@ export interface Product {
   subcategory?: string | null;
   tags?: string[] | null;
   inStock: boolean;
+  seller_id?: string | null;
 }
 
 export type SortOption = 'default' | 'price-asc' | 'price-desc' | 'discount' | 'name-asc' | 'name-desc';
@@ -45,6 +46,7 @@ const transformProduct = (dbProduct: any): Product => ({
   subcategory: dbProduct.subcategory,
   tags: dbProduct.tags,
   inStock: dbProduct.in_stock ?? true,
+  seller_id: dbProduct.seller_id,
 });
 
 // Fetch all products from Supabase

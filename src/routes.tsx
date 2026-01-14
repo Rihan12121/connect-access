@@ -29,6 +29,7 @@ const OrderConfirmation = lazy(() => import("./pages/OrderConfirmation"));
 const OrderHistory = lazy(() => import("./pages/OrderHistory"));
 const OrderTracking = lazy(() => import("./pages/OrderTracking"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const Messages = lazy(() => import("./pages/Messages"));
 
 // Admin pages - lazy loaded (admin only)
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
@@ -91,6 +92,7 @@ export const routes: RouteRecord[] = [
   { path: "/about", element: withSuspense(About) },
   { path: "/orders", element: withSuspense(OrderHistory) },
   { path: "/order-tracking", element: withSuspense(OrderTracking) },
+  { path: "/messages", element: withSuspense(Messages) },
   
   // Admin routes - protected
   { path: "/admin", element: withAdminGuard(AdminDashboard) },
