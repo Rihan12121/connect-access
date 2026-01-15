@@ -155,14 +155,18 @@ const Products = () => {
       />
       <Header />
 
-      <div className="container max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-16">
-        {/* Page Header */}
-        <div className="mb-8 md:mb-16 text-center lg:text-left">
-          <p className="section-subheading mb-3">{t('ui.collection')}</p>
-          <h1 className="section-heading">{t('products.discoverAll')}</h1>
-          <p className="text-muted-foreground text-sm mt-3">
-            {totalProducts} {t('products.count')}
-          </p>
+      <div className="container max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+        {/* Page Header - More compact and professional */}
+        <div className="mb-6 md:mb-10">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-widest text-primary font-medium mb-2">{t('ui.collection')}</p>
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground">{t('products.discoverAll')}</h1>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {totalProducts} {t('products.count')}
+            </p>
+          </div>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
@@ -222,9 +226,9 @@ const Products = () => {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 stagger-children">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
                   {paginatedProducts.map(product => (
-                    <ProductCard key={product.id} product={product} />
+                    <ProductCard key={product.id} product={product} showAddToCart />
                   ))}
                 </div>
 
