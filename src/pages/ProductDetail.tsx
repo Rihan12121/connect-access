@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Heart, ShoppingCart, Minus, Plus, Truck, Shield, ArrowLeft, Loader2, Check, Package, MessageCircle } from 'lucide-react';
-import { useState } from 'react';
+import { Heart, ShoppingCart, Minus, Plus, Truck, Shield, ArrowLeft, Loader2, Check, Package, MessageCircle, Star, Award, Clock, Users } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -16,6 +16,7 @@ import ProductImageGallery from '@/components/ProductImageGallery';
 import ProductReviews from '@/components/ProductReviews';
 import { Button } from '@/components/ui/button';
 import { useStartConversation } from '@/hooks/useStartConversation';
+import { addToRecentlyViewed } from '@/components/RecentlyViewedSection';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -31,6 +32,13 @@ const ProductDetail = () => {
   const filteredRelated = relatedProducts.filter(p => p.id !== product?.id).slice(0, 4);
 
   const cartItemCount = getItemCount();
+
+  // Track recently viewed
+  useEffect(() => {
+    if (id) {
+      addToRecentlyViewed(id);
+    }
+  }, [id]);
 
   if (isLoading) {
     return (
