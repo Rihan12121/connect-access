@@ -76,21 +76,38 @@ export const AdminManagement = () => {
   };
 
   const searchUser = async () => {
-    if (!searchEmail.trim()) return;
+    const query = searchEmail.trim();
+    if (!query) return;
 
     setSearching(true);
     setFoundUser(null);
 
     try {
-      // Search in profiles by display_name (which contains email for many users)
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('user_id, display_name')
-        .ilike('display_name', `%${searchEmail}%`)
-        .limit(1)
-        .single();
+      // Check if search query is a UUID (user_id)
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(query);
 
-      if (error && error.code !== 'PGRST116') throw error;
+      let data = null;
+
+      if (isUuid) {
+        // Search by exact user_id
+        const { data: result, error } = await supabase
+          .from('profiles')
+          .select('user_id, display_name')
+          .eq('user_id', query)
+          .single();
+        if (error && error.code !== 'PGRST116') throw error;
+        data = result;
+      } else {
+        // Search by display_name (which can contain email or name)
+        const { data: result, error } = await supabase
+          .from('profiles')
+          .select('user_id, display_name')
+          .ilike('display_name', `%${query}%`)
+          .limit(1)
+          .single();
+        if (error && error.code !== 'PGRST116') throw error;
+        data = result;
+      }
 
       if (data) {
         // Check if already admin
@@ -107,11 +124,11 @@ export const AdminManagement = () => {
         } else {
           setFoundUser({
             id: data.user_id,
-            email: data.display_name || searchEmail,
+            email: data.display_name || query,
           });
         }
       } else {
-        toast.error(language === 'de' ? 'Benutzer nicht gefunden' : 'User not found');
+        toast.error(language === 'de' ? 'Benutzer nicht gefunden. Versuche E-Mail, Name oder User-ID.' : 'User not found. Try email, name or user ID.');
       }
     } catch (error) {
       console.error('Search error:', error);
@@ -205,7 +222,7 @@ export const AdminManagement = () => {
             <div className="space-y-4 py-4">
               <div className="flex gap-2">
                 <Input
-                  placeholder={language === 'de' ? 'E-Mail oder Name suchen...' : 'Search email or name...'}
+                  placeholder={language === 'de' ? 'Name, E-Mail oder User-ID...' : 'Name, email or user ID...'}
                   value={searchEmail}
                   onChange={(e) => setSearchEmail(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && searchUser()}

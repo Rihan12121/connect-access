@@ -75,20 +75,38 @@ export const SellerManagement = () => {
   };
 
   const searchUser = async () => {
-    if (!searchEmail.trim()) return;
+    const query = searchEmail.trim();
+    if (!query) return;
 
     setSearching(true);
     setFoundUser(null);
 
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("user_id, display_name")
-      .ilike("display_name", `%${searchEmail}%`)
-      .limit(1)
-      .single();
+    // Check if search query is a UUID (user_id)
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(query);
 
-    if (error || !data) {
-      toast.error("Nutzer nicht gefunden");
+    let data = null;
+
+    if (isUuid) {
+      // Search by exact user_id
+      const { data: result } = await supabase
+        .from("profiles")
+        .select("user_id, display_name")
+        .eq("user_id", query)
+        .single();
+      data = result;
+    } else {
+      // Search by display_name (which can contain email or name)
+      const { data: result } = await supabase
+        .from("profiles")
+        .select("user_id, display_name")
+        .ilike("display_name", `%${query}%`)
+        .limit(1)
+        .single();
+      data = result;
+    }
+
+    if (!data) {
+      toast.error("Nutzer nicht gefunden. Versuche E-Mail, Name oder User-ID.");
       setSearching(false);
       return;
     }
@@ -181,7 +199,7 @@ export const SellerManagement = () => {
             <div className="space-y-4 py-4">
               <div className="flex gap-2">
                 <Input
-                  placeholder="E-Mail-Adresse suchen..."
+                  placeholder="Name, E-Mail oder User-ID suchen..."
                   value={searchEmail}
                   onChange={(e) => setSearchEmail(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && searchUser()}
