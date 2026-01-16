@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { X, SlidersHorizontal, ChevronDown, ChevronUp } from 'lucide-react';
+import { X, SlidersHorizontal, ChevronDown, ChevronUp, Sparkles, Tag, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -25,16 +25,15 @@ interface ProductFilterSidebarProps {
 }
 
 const ProductFilterSidebar = ({ allProducts, filters, onFiltersChange, maxPrice }: ProductFilterSidebarProps) => {
-  const { t } = useLanguage();
+  const { language } = useLanguage();
   const { categories } = useCategoryOrder();
   const [expandedSections, setExpandedSections] = useState({
     price: true,
     categories: true,
-    tags: true,
+    tags: false,
     availability: true,
   });
 
-  // Get unique tags from all products
   const uniqueTags = useMemo(() => {
     const tagsSet = new Set<string>();
     allProducts.forEach(product => {
@@ -94,23 +93,26 @@ const ProductFilterSidebar = ({ allProducts, filters, onFiltersChange, maxPrice 
     <div className="space-y-6">
       {/* Clear Filters */}
       {activeFiltersCount > 0 && (
-        <Button variant="outline" size="sm" onClick={clearFilters} className="w-full gap-2">
+        <button 
+          onClick={clearFilters} 
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-destructive bg-destructive/5 hover:bg-destructive/10 border border-destructive/20 rounded-xl transition-colors"
+        >
           <X className="w-4 h-4" />
-          Filter zurücksetzen ({activeFiltersCount})
-        </Button>
+          {language === 'de' ? 'Filter zurücksetzen' : 'Clear filters'} ({activeFiltersCount})
+        </button>
       )}
 
       {/* Price Range */}
-      <div className="space-y-3">
+      <div className="bg-card rounded-2xl border border-border p-4">
         <button
           onClick={() => toggleSection('price')}
-          className="flex items-center justify-between w-full text-sm font-medium"
+          className="flex items-center justify-between w-full text-sm font-semibold"
         >
-          Preisspanne
-          {expandedSections.price ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          {language === 'de' ? 'Preisspanne' : 'Price Range'}
+          {expandedSections.price ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
         </button>
         {expandedSections.price && (
-          <div className="space-y-4 pt-2">
+          <div className="space-y-4 pt-4">
             <Slider
               value={[filters.priceRange[0], filters.priceRange[1]]}
               onValueChange={handlePriceChange}
@@ -119,39 +121,47 @@ const ProductFilterSidebar = ({ allProducts, filters, onFiltersChange, maxPrice 
               step={1}
               className="w-full"
             />
-            <div className="flex items-center justify-between text-sm text-muted-foreground">
-              <span>{filters.priceRange[0]}€</span>
-              <span>{filters.priceRange[1]}€</span>
+            <div className="flex items-center justify-between">
+              <div className="px-3 py-1.5 bg-muted rounded-lg text-sm font-medium">
+                {filters.priceRange[0]} €
+              </div>
+              <span className="text-muted-foreground">—</span>
+              <div className="px-3 py-1.5 bg-muted rounded-lg text-sm font-medium">
+                {filters.priceRange[1]} €
+              </div>
             </div>
           </div>
         )}
       </div>
 
       {/* Categories */}
-      <div className="space-y-3">
+      <div className="bg-card rounded-2xl border border-border p-4">
         <button
           onClick={() => toggleSection('categories')}
-          className="flex items-center justify-between w-full text-sm font-medium"
+          className="flex items-center justify-between w-full text-sm font-semibold"
         >
-          Kategorien
-          {expandedSections.categories ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          {language === 'de' ? 'Kategorien' : 'Categories'}
+          {expandedSections.categories ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
         </button>
         {expandedSections.categories && (
-          <div className="space-y-2 pt-2 max-h-48 overflow-y-auto">
+          <div className="space-y-2 pt-4 max-h-56 overflow-y-auto">
             {categories.map(category => (
-              <div key={category.id} className="flex items-center space-x-2">
+              <label 
+                key={category.id} 
+                className={`flex items-center gap-3 p-2.5 rounded-xl cursor-pointer transition-colors ${
+                  filters.categories.includes(category.slug) 
+                    ? 'bg-primary/10 border border-primary/20' 
+                    : 'hover:bg-muted'
+                }`}
+              >
                 <Checkbox
                   id={`category-${category.slug}`}
                   checked={filters.categories.includes(category.slug)}
                   onCheckedChange={() => handleCategoryToggle(category.slug)}
+                  className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                 />
-                <Label
-                  htmlFor={`category-${category.slug}`}
-                  className="text-sm cursor-pointer flex-1"
-                >
-                  {category.name}
-                </Label>
-              </div>
+                <span className="text-sm flex-1">{category.name}</span>
+              </label>
             ))}
           </div>
         )}
@@ -159,24 +169,27 @@ const ProductFilterSidebar = ({ allProducts, filters, onFiltersChange, maxPrice 
 
       {/* Tags */}
       {uniqueTags.length > 0 && (
-        <div className="space-y-3">
+        <div className="bg-card rounded-2xl border border-border p-4">
           <button
             onClick={() => toggleSection('tags')}
-            className="flex items-center justify-between w-full text-sm font-medium"
+            className="flex items-center justify-between w-full text-sm font-semibold"
           >
-            Tags
-            {expandedSections.tags ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            <span className="flex items-center gap-2">
+              <Tag className="w-4 h-4 text-muted-foreground" />
+              Tags
+            </span>
+            {expandedSections.tags ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
           </button>
           {expandedSections.tags && (
-            <div className="flex flex-wrap gap-2 pt-2">
+            <div className="flex flex-wrap gap-2 pt-4">
               {uniqueTags.map(tag => (
                 <button
                   key={tag}
                   onClick={() => handleTagToggle(tag)}
-                  className={`px-3 py-1 text-xs rounded-full border transition-colors ${
+                  className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-all ${
                     filters.tags.includes(tag)
-                      ? 'bg-primary text-primary-foreground border-primary'
-                      : 'bg-background border-border hover:border-primary/50'
+                      ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                      : 'bg-muted border-transparent hover:border-primary/30'
                   }`}
                 >
                   {tag}
@@ -188,36 +201,45 @@ const ProductFilterSidebar = ({ allProducts, filters, onFiltersChange, maxPrice 
       )}
 
       {/* Availability */}
-      <div className="space-y-3">
+      <div className="bg-card rounded-2xl border border-border p-4">
         <button
           onClick={() => toggleSection('availability')}
-          className="flex items-center justify-between w-full text-sm font-medium"
+          className="flex items-center justify-between w-full text-sm font-semibold"
         >
-          Verfügbarkeit
-          {expandedSections.availability ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          {language === 'de' ? 'Verfügbarkeit' : 'Availability'}
+          {expandedSections.availability ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
         </button>
         {expandedSections.availability && (
-          <div className="space-y-3 pt-2">
-            <div className="flex items-center space-x-2">
+          <div className="space-y-2 pt-4">
+            <label className={`flex items-center gap-3 p-2.5 rounded-xl cursor-pointer transition-colors ${
+              filters.onlyInStock ? 'bg-success/10 border border-success/20' : 'hover:bg-muted'
+            }`}>
               <Checkbox
                 id="only-in-stock"
                 checked={filters.onlyInStock}
                 onCheckedChange={handleStockToggle}
+                className="data-[state=checked]:bg-success data-[state=checked]:border-success"
               />
-              <Label htmlFor="only-in-stock" className="text-sm cursor-pointer">
-                Nur verfügbare Artikel
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
+              <span className="text-sm flex-1">
+                {language === 'de' ? 'Nur verfügbar' : 'In stock only'}
+              </span>
+              {filters.onlyInStock && <Check className="w-4 h-4 text-success" />}
+            </label>
+            <label className={`flex items-center gap-3 p-2.5 rounded-xl cursor-pointer transition-colors ${
+              filters.onlyDeals ? 'bg-deal/10 border border-deal/20' : 'hover:bg-muted'
+            }`}>
               <Checkbox
                 id="only-deals"
                 checked={filters.onlyDeals}
                 onCheckedChange={handleDealsToggle}
+                className="data-[state=checked]:bg-deal data-[state=checked]:border-deal"
               />
-              <Label htmlFor="only-deals" className="text-sm cursor-pointer">
-                Nur Angebote
-              </Label>
-            </div>
+              <span className="text-sm flex-1 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-deal" />
+                {language === 'de' ? 'Nur Angebote' : 'Deals only'}
+              </span>
+              {filters.onlyDeals && <Check className="w-4 h-4 text-deal" />}
+            </label>
           </div>
         )}
       </div>
@@ -227,10 +249,10 @@ const ProductFilterSidebar = ({ allProducts, filters, onFiltersChange, maxPrice 
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:block w-64 flex-shrink-0">
-        <div className="sticky top-24 space-y-6">
-          <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            Filter
+      <aside className="hidden lg:block w-72 flex-shrink-0">
+        <div className="sticky top-28 space-y-4">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground px-1">
+            {language === 'de' ? 'Filter & Sortieren' : 'Filter & Sort'}
           </h3>
           <FilterContent />
         </div>
@@ -239,21 +261,21 @@ const ProductFilterSidebar = ({ allProducts, filters, onFiltersChange, maxPrice 
       {/* Mobile Filter Sheet */}
       <Sheet>
         <SheetTrigger asChild>
-          <Button variant="outline" size="sm" className="lg:hidden gap-2">
+          <Button variant="outline" className="lg:hidden gap-2 w-full justify-center rounded-xl h-12">
             <SlidersHorizontal className="w-4 h-4" />
-            Filter
+            {language === 'de' ? 'Filter' : 'Filters'}
             {activeFiltersCount > 0 && (
-              <span className="bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded-full">
+              <span className="bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full font-semibold">
                 {activeFiltersCount}
               </span>
             )}
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-80">
+        <SheetContent side="left" className="w-[320px] sm:w-[380px]">
           <SheetHeader>
-            <SheetTitle>Filter</SheetTitle>
+            <SheetTitle className="text-left">{language === 'de' ? 'Filter' : 'Filters'}</SheetTitle>
           </SheetHeader>
-          <div className="mt-6">
+          <div className="mt-6 overflow-y-auto max-h-[calc(100vh-120px)]">
             <FilterContent />
           </div>
         </SheetContent>
