@@ -122,58 +122,53 @@ const CookieConsentBanner = () => {
 
   return (
     <>
-      {/* Full-screen blocking overlay */}
+      {/* Cookie Banner (non-blocking) */}
       {showBanner && !showSettings && (
-        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm" />
-      )}
+        <div className="fixed inset-x-0 bottom-0 z-[60] p-3 md:p-4">
+          <div className="mx-auto w-full max-w-5xl">
+            <div className="bg-card border border-border rounded-2xl shadow-elevated p-4 md:p-5">
+              <div className="flex flex-col md:flex-row md:items-center gap-4">
+                <div className="flex items-start gap-3 flex-1">
+                  <div className="p-2.5 bg-primary/10 rounded-xl shrink-0">
+                    <Cookie className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-semibold text-foreground">
+                      {language === 'de' ? 'Cookie-Einstellungen' : 'Cookie Settings'}
+                    </p>
+                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                      {language === 'de'
+                        ? 'Wir verwenden Cookies für Funktionen, Analyse und Marketing. Sie können Ihre Auswahl jederzeit ändern.'
+                        : 'We use cookies for functionality, analytics and marketing. You can change your choice anytime.'}
+                    </p>
+                  </div>
+                </div>
 
-      {/* Cookie Banner */}
-      {showBanner && !showSettings && (
-        <div className="fixed inset-0 z-[101] flex items-end justify-center p-4 md:p-6 pointer-events-none">
-          <div className="container max-w-4xl mx-auto pointer-events-auto">
-            <div className="bg-card border border-border rounded-2xl shadow-elevated p-6 md:p-8">
-              <div className="flex items-start gap-4 mb-6">
-                <div className="p-3 bg-primary/10 rounded-xl shrink-0">
-                  <Cookie className="w-6 h-6 text-primary" />
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 md:gap-3 md:w-[420px]">
+                  <Button
+                    variant="outline"
+                    onClick={openSettings}
+                    className="w-full"
+                  >
+                    {language === 'de' ? 'Anpassen' : 'Customize'}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleRejectAll}
+                    className="w-full"
+                  >
+                    {language === 'de' ? 'Ablehnen' : 'Reject'}
+                  </Button>
+                  <Button onClick={handleAcceptAll} className="w-full">
+                    {language === 'de' ? 'Akzeptieren' : 'Accept'}
+                  </Button>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-lg text-foreground mb-2">
-                    {language === 'de' ? 'Cookie-Einstellungen' : 'Cookie Settings'}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {language === 'de' 
-                      ? 'Wir verwenden Cookies und ähnliche Technologien für die Verbesserung des Benutzererlebnisses und die Personalisierung von Werbung. Auf diese Weise können wir und Drittanbieter Ihnen sowohl auf als auch außerhalb unserer Websites Inhalte, Marketing und Werbung anbieten, die Ihnen gefallen könnten. Ihre Einstellungen können Sie jederzeit unter "Cookie-Einstellungen" ändern. Weitere Informationen finden Sie in unserem Cookie-Hinweis.'
-                      : 'We use cookies and similar technologies to improve user experience and personalize advertising. This allows us and third parties to offer you content, marketing and advertising that you might like, both on and off our websites. You can change your settings at any time under "Cookie Settings". For more information, see our Cookie Notice.'}
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button 
-                  variant="outline" 
-                  onClick={openSettings}
-                  className="flex-1"
-                >
-                  {language === 'de' ? 'Cookies personalisieren' : 'Customize Cookies'}
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={handleRejectAll}
-                  className="flex-1"
-                >
-                  {language === 'de' ? 'Cookies ablehnen' : 'Reject Cookies'}
-                </Button>
-                <Button 
-                  onClick={handleAcceptAll}
-                  className="flex-1"
-                >
-                  {language === 'de' ? 'Cookies akzeptieren' : 'Accept Cookies'}
-                </Button>
               </div>
             </div>
           </div>
         </div>
       )}
+
 
       {/* Settings Dialog */}
       <Dialog open={showSettings} onOpenChange={setShowSettings}>
