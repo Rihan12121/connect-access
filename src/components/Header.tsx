@@ -60,12 +60,12 @@ const Header = () => {
         {/* Promo Bar */}
         <div className="bg-primary text-primary-foreground text-center py-1.5 text-xs font-medium tracking-wide">
           <span className="hidden sm:inline">
-            {language === 'de' 
-              ? '🚚 Kostenloser Versand ab 50€ • 14 Tage kostenlose Rückgabe' 
-              : '🚚 Free shipping over €50 • 14-day free returns'}
+            {language === 'de'
+              ? 'Kostenloser Versand ab 50€ • 14 Tage kostenlose Rückgabe'
+              : 'Free shipping over €50 • 14-day free returns'}
           </span>
           <span className="sm:hidden">
-            {language === 'de' ? '🚚 Gratis Versand ab 50€' : '🚚 Free shipping over €50'}
+            {language === 'de' ? 'Gratis Versand ab 50€' : 'Free shipping over €50'}
           </span>
         </div>
 

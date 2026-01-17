@@ -27,29 +27,25 @@ const Index = () => {
 
   // Stats for social proof
   const stats = [
-    { 
-      icon: Users, 
-      value: '50.000+', 
+    {
+      icon: Users,
+      value: '50.000+',
       label: language === 'de' ? 'Zufriedene Kunden' : 'Happy Customers',
-      color: 'text-primary'
     },
-    { 
-      icon: Star, 
-      value: '4.9/5', 
+    {
+      icon: Star,
+      value: '4.9/5',
       label: language === 'de' ? 'Durchschnittliche Bewertung' : 'Average Rating',
-      color: 'text-amber-500'
     },
-    { 
-      icon: Shield, 
-      value: '100%', 
+    {
+      icon: Shield,
+      value: '100%',
       label: language === 'de' ? 'Sichere Zahlung' : 'Secure Payment',
-      color: 'text-emerald-500'
     },
-    { 
-      icon: Truck, 
-      value: '2-3', 
+    {
+      icon: Truck,
+      value: '2-3',
       label: language === 'de' ? 'Tage Lieferzeit' : 'Days Delivery',
-      color: 'text-blue-500'
     },
   ];
 
@@ -70,7 +66,9 @@ const Index = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-border">
             {stats.map((stat, index) => (
               <div key={index} className="flex items-center justify-center gap-3 py-6 md:py-8">
-                <stat.icon className={`w-6 h-6 md:w-8 md:h-8 ${stat.color}`} />
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                  <stat.icon className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                </div>
                 <div>
                   <p className="font-display text-xl md:text-2xl font-bold text-foreground">{stat.value}</p>
                   <p className="text-xs md:text-sm text-muted-foreground">{stat.label}</p>
