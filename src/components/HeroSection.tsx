@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, ChevronLeft, ArrowRight, Settings2, Plus, Pencil, Trash2 } from 'lucide-react';
+import { ChevronRight, ChevronLeft, ArrowRight, Settings2, Plus, Pencil, Trash2, Play, Pause } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { useHeroBanners, HeroBanner } from '@/hooks/useHeroBanners';
@@ -18,12 +18,13 @@ import {
 } from './ui/alert-dialog';
 
 const HeroSection = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { isAdmin } = useIsAdmin();
   const { banners, isLoading, addBanner, updateBanner, deleteBanner } = useHeroBanners();
   
   const [currentBanner, setCurrentBanner] = useState(0);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [dialogMode, setDialogMode] = useState<'add' | 'edit'>('add');
   const [showDialog, setShowDialog] = useState(false);
   const [editingBanner, setEditingBanner] = useState<HeroBanner | null>(null);
@@ -31,12 +32,12 @@ const HeroSection = () => {
 
   // Auto-rotate banners
   useEffect(() => {
-    if (banners.length <= 1 || isEditMode) return;
+    if (banners.length <= 1 || isEditMode || isPaused) return;
     const timer = setInterval(() => {
       setCurrentBanner((prev) => (prev + 1) % banners.length);
-    }, 6000);
+    }, 5000);
     return () => clearInterval(timer);
-  }, [banners.length, isEditMode]);
+  }, [banners.length, isEditMode, isPaused]);
 
   // Reset current banner if it exceeds array length
   useEffect(() => {
@@ -78,7 +79,7 @@ const HeroSection = () => {
   if (isLoading) {
     return (
       <section className="relative overflow-hidden">
-        <div className="w-full h-[40vh] md:h-[45vh] lg:h-[50vh] bg-muted animate-pulse" />
+        <div className="w-full h-[50vh] md:h-[60vh] lg:h-[70vh] bg-muted animate-pulse" />
       </section>
     );
   }
@@ -119,7 +120,7 @@ const HeroSection = () => {
 
       {banners.length === 0 ? (
         <div 
-          className="w-full h-[40vh] md:h-[45vh] lg:h-[50vh] flex items-center justify-center bg-muted cursor-pointer hover:bg-muted/80 transition-colors"
+          className="w-full h-[50vh] md:h-[60vh] lg:h-[70vh] flex items-center justify-center bg-muted cursor-pointer hover:bg-muted/80 transition-colors"
           onClick={handleAddBanner}
         >
           <div className="text-center">
@@ -133,33 +134,54 @@ const HeroSection = () => {
             className="flex transition-transform duration-700 ease-out"
             style={{ transform: `translateX(-${currentBanner * 100}%)` }}
           >
-            {banners.map((banner) => (
+            {banners.map((banner, index) => (
               <div 
                 key={banner.id}
-                className="w-full flex-shrink-0 relative h-[40vh] md:h-[45vh] lg:h-[50vh]"
+                className="w-full flex-shrink-0 relative h-[50vh] md:h-[60vh] lg:h-[70vh]"
               >
-                <Link to={banner.link} className="block w-full h-full">
+                <Link to={banner.link} className="block w-full h-full group">
                   <img 
                     src={banner.image} 
                     alt={banner.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-foreground/80 via-foreground/40 to-transparent" />
+                  {/* Premium Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20" />
+                  
+                  {/* Content */}
                   <div className="absolute inset-0 flex items-center">
-                    <div className="container max-w-6xl mx-auto px-4 md:px-6">
-                      <div className="max-w-md md:max-w-xl">
+                    <div className="container max-w-6xl mx-auto px-6 md:px-8">
+                      <div className="max-w-lg md:max-w-2xl">
+                        {/* Animated Badge */}
                         {banner.subtitle && (
-                          <p className="text-xs md:text-sm uppercase tracking-widest text-primary-foreground/80 mb-2 md:mb-4">
-                            {banner.subtitle}
-                          </p>
+                          <div 
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 mb-4 md:mb-6 animate-in"
+                            style={{ animationDelay: '0.2s' }}
+                          >
+                            <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                            <span className="text-xs md:text-sm uppercase tracking-widest text-white/90 font-medium">
+                              {banner.subtitle}
+                            </span>
+                          </div>
                         )}
-                        <h2 className="font-display text-2xl md:text-4xl lg:text-5xl font-semibold text-primary-foreground leading-tight">
+                        
+                        {/* Title */}
+                        <h2 
+                          className="font-display text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.1] mb-4 md:mb-6 animate-in"
+                          style={{ animationDelay: '0.3s' }}
+                        >
                           {banner.title}
                         </h2>
-                        <div className="mt-4 md:mt-6">
-                          <span className="inline-flex items-center gap-2 text-primary-foreground/90 text-xs md:text-sm font-medium tracking-widest uppercase hover:text-primary-foreground transition-colors group">
-                            {t('categories.viewAll')} 
-                            <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
+                        
+                        {/* CTA Button */}
+                        <div 
+                          className="animate-in"
+                          style={{ animationDelay: '0.4s' }}
+                        >
+                          <span className="inline-flex items-center gap-3 px-6 py-3 md:px-8 md:py-4 bg-primary text-primary-foreground rounded-xl text-sm md:text-base font-semibold uppercase tracking-wider group-hover:gap-4 transition-all duration-300 shadow-lg shadow-primary/30">
+                            {language === 'de' ? 'Jetzt entdecken' : 'Shop Now'} 
+                            <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
                           </span>
                         </div>
                       </div>
@@ -202,30 +224,56 @@ const HeroSection = () => {
           {/* Banner Navigation */}
           {banners.length > 1 && (
             <>
+              {/* Navigation Arrows */}
               <button 
                 onClick={prevBanner}
-                className="absolute left-6 top-1/2 -translate-y-1/2 p-3 bg-card/20 backdrop-blur-sm hover:bg-card/40 rounded-full text-primary-foreground transition-all duration-300"
+                className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 p-3 md:p-4 bg-white/10 backdrop-blur-md hover:bg-white/20 rounded-full text-white transition-all duration-300 border border-white/10"
               >
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
               </button>
               <button 
                 onClick={nextBanner}
-                className="absolute right-6 top-1/2 -translate-y-1/2 p-3 bg-card/20 backdrop-blur-sm hover:bg-card/40 rounded-full text-primary-foreground transition-all duration-300"
+                className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 p-3 md:p-4 bg-white/10 backdrop-blur-md hover:bg-white/20 rounded-full text-white transition-all duration-300 border border-white/10"
               >
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
               </button>
 
-              {/* Banner Dots */}
-              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3">
-                {banners.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setCurrentBanner(idx)}
-                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                      idx === currentBanner ? 'bg-primary-foreground w-8' : 'bg-primary-foreground/40'
-                    }`}
-                  />
-                ))}
+              {/* Bottom Controls */}
+              <div className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-4">
+                {/* Play/Pause */}
+                <button
+                  onClick={() => setIsPaused(!isPaused)}
+                  className="p-2 bg-white/10 backdrop-blur-sm rounded-full text-white hover:bg-white/20 transition-colors border border-white/10"
+                >
+                  {isPaused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
+                </button>
+                
+                {/* Progress Dots */}
+                <div className="flex gap-2 md:gap-3">
+                  {banners.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setCurrentBanner(idx)}
+                      className="relative h-1.5 md:h-2 rounded-full overflow-hidden transition-all duration-300"
+                      style={{ width: idx === currentBanner ? '2rem' : '0.5rem' }}
+                    >
+                      <div className="absolute inset-0 bg-white/30" />
+                      {idx === currentBanner && (
+                        <div 
+                          className="absolute inset-0 bg-white origin-left"
+                          style={{
+                            animation: isPaused ? 'none' : 'progress 5s linear forwards',
+                          }}
+                        />
+                      )}
+                    </button>
+                  ))}
+                </div>
+                
+                {/* Counter */}
+                <span className="text-white/80 text-sm font-medium tabular-nums">
+                  {String(currentBanner + 1).padStart(2, '0')} / {String(banners.length).padStart(2, '0')}
+                </span>
               </div>
             </>
           )}
@@ -259,6 +307,14 @@ const HeroSection = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      
+      {/* Progress Animation Keyframes */}
+      <style>{`
+        @keyframes progress {
+          from { transform: scaleX(0); }
+          to { transform: scaleX(1); }
+        }
+      `}</style>
     </section>
   );
 };
