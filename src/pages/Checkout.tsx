@@ -4,30 +4,38 @@ import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { ShoppingBag, CreditCard, Truck, Check, ArrowRight, ArrowLeft, Lock, MapPin, Package, Loader2, Ban, Shield } from 'lucide-react';
+import { ShoppingBag, CreditCard, Truck, Check, ArrowRight, ArrowLeft, Lock, MapPin, Package, Loader2, Ban, Shield, AlertCircle, Zap, RotateCcw, Clock, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import VatNotice from '@/components/VatNotice';
 import SEO from '@/components/SEO';
 import PaymentBadges from '@/components/PaymentBadges';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
-type CheckoutStep = 'shipping' | 'payment';
+type CheckoutStep = 'cart' | 'shipping' | 'payment';
 
-const steps: { id: CheckoutStep; label: string; icon: React.ElementType }[] = [
-  { id: 'shipping', label: 'Lieferung', icon: MapPin },
-  { id: 'payment', label: 'Zahlung', icon: CreditCard },
-];
+interface FormErrors {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  address?: string;
+  city?: string;
+  postalCode?: string;
+}
 
 const Checkout = () => {
-  const { state, clearCart } = useCart();
+  const { state, clearCart, updateQuantity, removeItem } = useCart();
   const { t, language } = useLanguage();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState<CheckoutStep>('shipping');
+  const [currentStep, setCurrentStep] = useState<CheckoutStep>('cart');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const [checkingBlocked, setCheckingBlocked] = useState(true);
+  const [errors, setErrors] = useState<FormErrors>({});
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -38,6 +46,12 @@ const Checkout = () => {
     postalCode: '',
     country: 'Deutschland',
   });
+
+  const steps: { id: CheckoutStep; label: string; icon: React.ElementType }[] = [
+    { id: 'cart', label: language === 'de' ? 'Warenkorb' : 'Cart', icon: ShoppingBag },
+    { id: 'shipping', label: language === 'de' ? 'Lieferung' : 'Shipping', icon: Truck },
+    { id: 'payment', label: language === 'de' ? 'Zahlung' : 'Payment', icon: CreditCard },
+  ];
 
   // Check if user is blocked
   useEffect(() => {
@@ -69,6 +83,33 @@ const Checkout = () => {
   const currentStepIndex = steps.findIndex(s => s.id === currentStep);
   const itemCount = state.items.reduce((acc, item) => acc + item.quantity, 0);
 
+  // Validation
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+    
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = language === 'de' ? 'Vorname erforderlich' : 'First name required';
+    }
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = language === 'de' ? 'Nachname erforderlich' : 'Last name required';
+    }
+    if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = language === 'de' ? 'Gültige E-Mail erforderlich' : 'Valid email required';
+    }
+    if (!formData.address.trim()) {
+      newErrors.address = language === 'de' ? 'Adresse erforderlich' : 'Address required';
+    }
+    if (!formData.city.trim()) {
+      newErrors.city = language === 'de' ? 'Stadt erforderlich' : 'City required';
+    }
+    if (!formData.postalCode.trim() || !/^\d{5}$/.test(formData.postalCode)) {
+      newErrors.postalCode = language === 'de' ? 'Gültige PLZ erforderlich (5 Ziffern)' : 'Valid postal code required (5 digits)';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   // Show blocked message
   if (isBlocked) {
     return (
@@ -99,7 +140,6 @@ const Checkout = () => {
     );
   }
 
-  // Show loading while checking blocked status
   if (checkingBlocked) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -115,13 +155,15 @@ const Checkout = () => {
         <Header />
         <div className="container max-w-6xl mx-auto px-6 py-24 text-center">
           <div className="max-w-md mx-auto">
-            <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mx-auto mb-8">
-              <ShoppingBag className="w-10 h-10 text-muted-foreground" />
+            <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center mx-auto mb-8">
+              <ShoppingBag className="w-12 h-12 text-primary" />
             </div>
             <h1 className="font-display text-3xl font-semibold text-foreground mb-4">{t('cart.empty')}</h1>
-            <p className="text-muted-foreground mb-10">Fügen Sie Produkte hinzu, um zur Kasse zu gehen.</p>
+            <p className="text-muted-foreground mb-10">
+              {language === 'de' ? 'Fügen Sie Produkte hinzu, um zur Kasse zu gehen.' : 'Add products to proceed to checkout.'}
+            </p>
             <Link to="/products" className="btn-primary inline-flex items-center gap-3">
-              Produkte entdecken
+              {language === 'de' ? 'Produkte entdecken' : 'Discover Products'}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -133,14 +175,17 @@ const Checkout = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (currentStep === 'shipping') {
-      setCurrentStep('payment');
+    
+    if (currentStep === 'cart') {
+      setCurrentStep('shipping');
+    } else if (currentStep === 'shipping') {
+      if (validateForm()) {
+        setCurrentStep('payment');
+      }
     } else if (currentStep === 'payment') {
-      // Redirect to Stripe Checkout
       setIsSubmitting(true);
       
       try {
-        // First save order to database if user is logged in
         let orderId: string | undefined;
         
         if (user) {
@@ -164,7 +209,6 @@ const Checkout = () => {
           if (orderError) throw orderError;
           orderId = orderData.id;
 
-          // Save order items
           const orderItems = state.items.map(item => ({
             order_id: orderData.id,
             product_id: item.product.id,
@@ -181,7 +225,6 @@ const Checkout = () => {
           if (itemsError) throw itemsError;
         }
 
-        // Call Stripe checkout edge function
         const { data, error } = await supabase.functions.invoke('create-checkout', {
           body: {
             items: state.items.map(item => ({
@@ -206,7 +249,6 @@ const Checkout = () => {
         if (error) throw error;
 
         if (data?.url) {
-          // Redirect to Stripe Checkout
           window.location.href = data.url;
         } else {
           throw new Error('No checkout URL received');
@@ -221,366 +263,411 @@ const Checkout = () => {
 
   const goBack = () => {
     if (currentStep === 'payment') setCurrentStep('shipping');
+    else if (currentStep === 'shipping') setCurrentStep('cart');
   };
 
+  const InputField = ({ 
+    name, 
+    label, 
+    type = 'text', 
+    required = true,
+    placeholder,
+    className = ''
+  }: { 
+    name: keyof typeof formData; 
+    label: string; 
+    type?: string; 
+    required?: boolean;
+    placeholder?: string;
+    className?: string;
+  }) => (
+    <div className={className}>
+      <Label htmlFor={name} className="text-sm font-medium text-foreground mb-2 block">
+        {label} {required && <span className="text-destructive">*</span>}
+      </Label>
+      <Input
+        id={name}
+        type={type}
+        value={formData[name]}
+        onChange={(e) => {
+          setFormData({...formData, [name]: e.target.value});
+          if (errors[name as keyof FormErrors]) {
+            setErrors({...errors, [name]: undefined});
+          }
+        }}
+        placeholder={placeholder}
+        className={`h-12 ${errors[name as keyof FormErrors] ? 'border-destructive focus:ring-destructive' : ''}`}
+      />
+      {errors[name as keyof FormErrors] && (
+        <p className="text-xs text-destructive mt-1 flex items-center gap-1">
+          <AlertCircle className="w-3 h-3" />
+          {errors[name as keyof FormErrors]}
+        </p>
+      )}
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-muted/30">
       <SEO title="Checkout — Noor" description="Schließen Sie Ihre Bestellung ab" />
       <Header />
 
-      <div className="container max-w-5xl mx-auto px-6 py-12 md:py-16">
-        {/* Page Header */}
-        <div className="text-center mb-12">
-          <p className="section-subheading mb-2">{t('ui.secureOrder')}</p>
-          <h1 className="section-heading">{t('checkout.title')}</h1>
-        </div>
-
+      <div className="container max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
         {/* Progress Steps */}
-        <div className="flex items-center justify-center mb-14">
-          {steps.map((step, index) => {
-            const isCompleted = currentStepIndex > index;
-            const isCurrent = currentStep === step.id;
-            const Icon = step.icon;
-            
-            return (
-              <div key={step.id} className="flex items-center">
-                <div className="flex flex-col items-center">
-                  <div 
-                    className={`
-                      w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300
-                      ${isCompleted 
-                        ? 'bg-success text-success-foreground' 
-                        : isCurrent 
-                          ? 'bg-primary text-primary-foreground shadow-glow' 
-                          : 'bg-secondary text-muted-foreground'
+        <div className="mb-10">
+          <div className="flex items-center justify-center">
+            {steps.map((step, index) => {
+              const isCompleted = currentStepIndex > index;
+              const isCurrent = currentStep === step.id;
+              const Icon = step.icon;
+              
+              return (
+                <div key={step.id} className="flex items-center">
+                  <button
+                    onClick={() => {
+                      if (isCompleted) {
+                        setCurrentStep(step.id);
                       }
-                    `}
+                    }}
+                    disabled={!isCompleted}
+                    className="flex flex-col items-center group"
                   >
-                    {isCompleted ? <Check className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
-                  </div>
-                  <span className={`
-                    text-xs mt-3 font-medium tracking-wide uppercase
-                    ${isCurrent ? 'text-foreground' : 'text-muted-foreground'}
-                  `}>
-                    {step.label}
-                  </span>
+                    <div 
+                      className={`
+                        w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center transition-all duration-300 border-2
+                        ${isCompleted 
+                          ? 'bg-success border-success text-success-foreground' 
+                          : isCurrent 
+                            ? 'bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/30' 
+                            : 'bg-background border-border text-muted-foreground'
+                        }
+                        ${isCompleted ? 'cursor-pointer hover:scale-105' : ''}
+                      `}
+                    >
+                      {isCompleted ? <Check className="w-5 h-5 md:w-6 md:h-6" /> : <Icon className="w-5 h-5 md:w-6 md:h-6" />}
+                    </div>
+                    <span className={`
+                      text-xs md:text-sm mt-2 font-medium transition-colors
+                      ${isCurrent ? 'text-primary' : isCompleted ? 'text-success' : 'text-muted-foreground'}
+                    `}>
+                      {step.label}
+                    </span>
+                  </button>
+                  {index < steps.length - 1 && (
+                    <div 
+                      className={`w-12 md:w-20 lg:w-32 h-0.5 mx-2 md:mx-4 mb-6 transition-colors duration-300 ${
+                        currentStepIndex > index ? 'bg-success' : 'bg-border'
+                      }`} 
+                    />
+                  )}
                 </div>
-                {index < steps.length - 1 && (
-                  <div 
-                    className={`w-16 md:w-24 h-[2px] mx-3 mb-6 transition-colors duration-300 ${
-                      currentStepIndex > index ? 'bg-success' : 'bg-border'
-                    }`} 
-                  />
-                )}
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
-          {/* Form Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Main Content */}
           <div className="lg:col-span-7">
             <form onSubmit={handleSubmit}>
-              {/* Shipping Step */}
-              {currentStep === 'shipping' && (
-                <div className="bg-card border border-border rounded-lg p-8 animate-in">
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="p-2 bg-secondary rounded-lg">
-                      <Truck className="w-5 h-5 text-foreground" />
-                    </div>
-                    <div>
-                      <h2 className="font-display text-xl font-semibold text-foreground">{t('checkout.shippingInfo')}</h2>
-                      <p className="text-sm text-muted-foreground">Wohin sollen wir liefern?</p>
-                    </div>
+              {/* Cart Step */}
+              {currentStep === 'cart' && (
+                <div className="bg-card rounded-2xl border border-border overflow-hidden animate-in fade-in">
+                  <div className="p-6 border-b border-border">
+                    <h2 className="text-xl font-semibold text-foreground flex items-center gap-3">
+                      <ShoppingBag className="w-5 h-5 text-primary" />
+                      {language === 'de' ? 'Ihr Warenkorb' : 'Your Cart'}
+                      <span className="text-muted-foreground font-normal">({itemCount} {language === 'de' ? 'Artikel' : 'items'})</span>
+                    </h2>
                   </div>
                   
-                  <div className="space-y-5">
+                  <div className="divide-y divide-border">
+                    {state.items.map((item) => (
+                      <div key={item.product.id} className="p-4 md:p-6 flex gap-4">
+                        <Link to={`/product/${item.product.id}`} className="shrink-0">
+                          <img 
+                            src={item.product.image} 
+                            alt={item.product.name}
+                            className="w-20 h-20 md:w-24 md:h-24 object-cover rounded-xl"
+                          />
+                        </Link>
+                        <div className="flex-1 min-w-0">
+                          <Link to={`/product/${item.product.id}`}>
+                            <h3 className="font-medium text-foreground hover:text-primary transition-colors line-clamp-2">
+                              {item.product.name}
+                            </h3>
+                          </Link>
+                          <div className="flex items-baseline gap-2 mt-1">
+                            <span className="font-semibold text-foreground">{item.product.price.toFixed(2)} €</span>
+                            {item.product.originalPrice && (
+                              <span className="text-sm text-muted-foreground line-through">
+                                {item.product.originalPrice.toFixed(2)} €
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center justify-between mt-3">
+                            <div className="flex items-center gap-2 bg-muted rounded-lg px-2 py-1">
+                              <button 
+                                type="button"
+                                onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                                className="w-7 h-7 flex items-center justify-center hover:bg-background rounded transition-colors"
+                              >
+                                -
+                              </button>
+                              <span className="w-8 text-center font-medium">{item.quantity}</span>
+                              <button 
+                                type="button"
+                                onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                                className="w-7 h-7 flex items-center justify-center hover:bg-background rounded transition-colors"
+                              >
+                                +
+                              </button>
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <span className="font-semibold">{(item.product.price * item.quantity).toFixed(2)} €</span>
+                              <button 
+                                type="button"
+                                onClick={() => removeItem(item.product.id)}
+                                className="text-muted-foreground hover:text-destructive transition-colors"
+                              >
+                                ×
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="p-6 bg-muted/50">
+                    <Button type="submit" size="lg" className="w-full py-6 text-base font-semibold">
+                      {language === 'de' ? 'Weiter zur Lieferung' : 'Continue to Shipping'}
+                      <ChevronRight className="w-5 h-5 ml-2" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Shipping Step */}
+              {currentStep === 'shipping' && (
+                <div className="bg-card rounded-2xl border border-border overflow-hidden animate-in fade-in">
+                  <div className="p-6 border-b border-border flex items-center justify-between">
+                    <h2 className="text-xl font-semibold text-foreground flex items-center gap-3">
+                      <Truck className="w-5 h-5 text-primary" />
+                      {language === 'de' ? 'Lieferadresse' : 'Shipping Address'}
+                    </h2>
+                    <button type="button" onClick={goBack} className="text-sm text-primary hover:underline">
+                      ← {language === 'de' ? 'Zurück' : 'Back'}
+                    </button>
+                  </div>
+                  
+                  <div className="p-6 space-y-5">
                     <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
-                          {t('checkout.firstName')}
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.firstName}
-                          onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                          required
-                          className="w-full px-4 py-3.5 bg-background text-foreground rounded-lg border border-border focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
-                          {t('checkout.lastName')}
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.lastName}
-                          onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                          required
-                          className="w-full px-4 py-3.5 bg-background text-foreground rounded-lg border border-border focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all"
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
-                          {t('auth.email')}
-                        </label>
-                        <input
-                          type="email"
-                          value={formData.email}
-                          onChange={(e) => setFormData({...formData, email: e.target.value})}
-                          required
-                          className="w-full px-4 py-3.5 bg-background text-foreground rounded-lg border border-border focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
-                          Telefon (optional)
-                        </label>
-                        <input
-                          type="tel"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                          className="w-full px-4 py-3.5 bg-background text-foreground rounded-lg border border-border focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all"
-                        />
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
-                        {t('checkout.address')}
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.address}
-                        onChange={(e) => setFormData({...formData, address: e.target.value})}
-                        required
-                        className="w-full px-4 py-3.5 bg-background text-foreground rounded-lg border border-border focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all"
+                      <InputField 
+                        name="firstName" 
+                        label={language === 'de' ? 'Vorname' : 'First Name'}
+                        placeholder="Max"
+                      />
+                      <InputField 
+                        name="lastName" 
+                        label={language === 'de' ? 'Nachname' : 'Last Name'}
+                        placeholder="Mustermann"
                       />
                     </div>
                     
-                    <div className="grid grid-cols-3 gap-4">
-                      <div>
-                        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
-                          {t('checkout.postalCode')}
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.postalCode}
-                          onChange={(e) => setFormData({...formData, postalCode: e.target.value})}
-                          required
-                          className="w-full px-4 py-3.5 bg-background text-foreground rounded-lg border border-border focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all"
-                        />
-                      </div>
-                      <div className="col-span-2">
-                        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
-                          {t('checkout.city')}
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.city}
-                          onChange={(e) => setFormData({...formData, city: e.target.value})}
-                          required
-                          className="w-full px-4 py-3.5 bg-background text-foreground rounded-lg border border-border focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all"
-                        />
-                      </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <InputField 
+                        name="email" 
+                        label="E-Mail"
+                        type="email"
+                        placeholder="max@beispiel.de"
+                      />
+                      <InputField 
+                        name="phone" 
+                        label={language === 'de' ? 'Telefon (optional)' : 'Phone (optional)'}
+                        type="tel"
+                        required={false}
+                        placeholder="+49 123 456789"
+                      />
                     </div>
+                    
+                    <InputField 
+                      name="address" 
+                      label={language === 'de' ? 'Straße & Hausnummer' : 'Street Address'}
+                      placeholder="Musterstraße 123"
+                    />
+                    
+                    <div className="grid grid-cols-3 gap-4">
+                      <InputField 
+                        name="postalCode" 
+                        label={language === 'de' ? 'PLZ' : 'Postal Code'}
+                        placeholder="12345"
+                      />
+                      <InputField 
+                        name="city" 
+                        label={language === 'de' ? 'Stadt' : 'City'}
+                        placeholder="Berlin"
+                        className="col-span-2"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="p-6 bg-muted/50">
+                    <Button type="submit" size="lg" className="w-full py-6 text-base font-semibold">
+                      {language === 'de' ? 'Weiter zur Zahlung' : 'Continue to Payment'}
+                      <ChevronRight className="w-5 h-5 ml-2" />
+                    </Button>
                   </div>
                 </div>
               )}
 
               {/* Payment Step */}
               {currentStep === 'payment' && (
-                <div className="bg-card border border-border rounded-lg p-8 animate-in">
-                  <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-secondary rounded-lg">
-                        <CreditCard className="w-5 h-5 text-foreground" />
-                      </div>
-                      <div>
-                        <h2 className="font-display text-xl font-semibold text-foreground">{t('checkout.paymentInfo')}</h2>
-                        <p className="text-sm text-muted-foreground">
-                          {language === 'de' ? 'Sichere Zahlung' : 'Secure Payment'}
-                        </p>
-                      </div>
-                    </div>
+                <div className="bg-card rounded-2xl border border-border overflow-hidden animate-in fade-in">
+                  <div className="p-6 border-b border-border flex items-center justify-between">
+                    <h2 className="text-xl font-semibold text-foreground flex items-center gap-3">
+                      <CreditCard className="w-5 h-5 text-primary" />
+                      {language === 'de' ? 'Zahlung' : 'Payment'}
+                    </h2>
+                    <button type="button" onClick={goBack} className="text-sm text-primary hover:underline">
+                      ← {language === 'de' ? 'Zurück' : 'Back'}
+                    </button>
                   </div>
                   
-                  <div className="space-y-5">
-                    {/* Available Payment Methods */}
-                    <div className="p-5 bg-gradient-to-br from-primary/5 to-accent/10 rounded-xl border border-primary/20">
-                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
-                        {language === 'de' ? 'Unterstützte Zahlungsmethoden' : 'Supported Payment Methods'}
-                      </p>
-                      <PaymentBadges size="md" />
+                  <div className="p-6">
+                    {/* Shipping Summary */}
+                    <div className="p-4 bg-muted/50 rounded-xl mb-6">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <p className="text-sm text-muted-foreground mb-1">
+                            {language === 'de' ? 'Lieferadresse' : 'Shipping to'}
+                          </p>
+                          <p className="font-medium text-foreground">
+                            {formData.firstName} {formData.lastName}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {formData.address}, {formData.postalCode} {formData.city}
+                          </p>
+                        </div>
+                        <button 
+                          type="button" 
+                          onClick={() => setCurrentStep('shipping')}
+                          className="text-sm text-primary hover:underline"
+                        >
+                          {language === 'de' ? 'Ändern' : 'Change'}
+                        </button>
+                      </div>
                     </div>
 
-                    {/* Security Notice */}
-                    <div className="p-4 bg-success/10 rounded-lg border border-success/20 flex items-start gap-3">
-                      <Shield className="w-5 h-5 text-success mt-0.5 flex-shrink-0" />
-                      <div>
-                        <p className="text-sm font-medium text-foreground">
-                          {language === 'de' ? 'Sichere Zahlung garantiert' : 'Secure Payment Guaranteed'}
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {language === 'de' 
-                            ? 'Ihre Zahlungsdaten werden verschlüsselt über Stripe verarbeitet. Wir speichern keine Kartendaten.' 
-                            : 'Your payment details are encrypted via Stripe. We never store card data.'}
-                        </p>
+                    {/* Payment Methods Info */}
+                    <div className="p-5 bg-gradient-to-br from-primary/5 to-accent/5 rounded-xl border border-primary/10">
+                      <div className="flex items-center gap-3 mb-4">
+                        <Lock className="w-5 h-5 text-primary" />
+                        <span className="font-semibold text-foreground">
+                          {language === 'de' ? 'Sichere Zahlung mit Stripe' : 'Secure Payment with Stripe'}
+                        </span>
                       </div>
-                    </div>
-                    
-                    {/* Checkout Info */}
-                    <div className="p-6 bg-muted/50 rounded-lg border border-border text-center">
-                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Lock className="w-8 h-8 text-primary" />
-                      </div>
-                      <h3 className="font-semibold text-foreground mb-2">
-                        {language === 'de' ? 'Weiter zur sicheren Zahlung' : 'Continue to Secure Payment'}
-                      </h3>
                       <p className="text-sm text-muted-foreground mb-4">
                         {language === 'de' 
-                          ? 'Sie werden zur sicheren Stripe-Zahlungsseite weitergeleitet. Dort können Sie PayPal, Kreditkarte oder andere Methoden wählen.' 
-                          : 'You will be redirected to Stripe\'s secure payment page where you can choose PayPal, credit card, or other methods.'}
+                          ? 'Sie werden zu Stripe weitergeleitet, um Ihre Zahlung sicher abzuschließen.' 
+                          : 'You will be redirected to Stripe to complete your payment securely.'}
                       </p>
-                      <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
-                        <div className="flex items-center gap-1.5">
-                          <Lock className="w-3.5 h-3.5" />
-                          <span>SSL</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <Shield className="w-3.5 h-3.5" />
-                          <span>PCI DSS</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5" />
-                          <span>{language === 'de' ? 'Käuferschutz' : 'Buyer Protection'}</span>
-                        </div>
-                      </div>
+                      <PaymentBadges />
                     </div>
+                  </div>
+
+                  <div className="p-6 bg-muted/50">
+                    <Button 
+                      type="submit" 
+                      size="lg" 
+                      disabled={isSubmitting}
+                      className="w-full py-6 text-base font-semibold bg-gradient-to-r from-primary to-primary/90"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                          {language === 'de' ? 'Wird bearbeitet...' : 'Processing...'}
+                        </>
+                      ) : (
+                        <>
+                          <Lock className="w-5 h-5 mr-2" />
+                          {language === 'de' ? 'Jetzt bezahlen' : 'Pay Now'} — {state.total.toFixed(2)} €
+                        </>
+                      )}
+                    </Button>
                   </div>
                 </div>
               )}
-
-
-              {/* Navigation Buttons */}
-              <div className="mt-8 space-y-4">
-                <div className="flex items-center gap-4">
-                  {currentStep !== 'shipping' && (
-                    <button 
-                      type="button"
-                      onClick={goBack}
-                      className="flex items-center gap-2 px-6 py-4 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      <ArrowLeft className="w-4 h-4" />
-                      {t('checkout.back')}
-                    </button>
-                  )}
-                  <button 
-                    type="submit" 
-                    disabled={isSubmitting}
-                    className="flex-1 btn-primary py-4 flex items-center justify-center gap-3 disabled:opacity-50 relative"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        {language === 'de' ? 'Wird verarbeitet...' : 'Processing...'}
-                      </>
-                    ) : currentStep === 'payment' ? (
-                      <>
-                        <Lock className="w-4 h-4" />
-                        {language === 'de' ? 'Zur Zahlung' : 'Proceed to Payment'}
-                        {/* PayPal Badge next to button */}
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 bg-[#003087] text-white text-[10px] font-bold px-2 py-0.5 rounded">
-                          Pay<span className="text-[#009cde]">Pal</span>
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        {t('checkout.continue')}
-                        <ArrowRight className="w-4 h-4" />
-                      </>
-                    )}
-                  </button>
-                </div>
-                
-                {/* Payment Badges under button on payment step */}
-                {currentStep === 'payment' && (
-                  <div className="flex items-center justify-center gap-2 pt-2">
-                    <PaymentBadges size="sm" />
-                  </div>
-                )}
-              </div>
             </form>
           </div>
 
           {/* Order Summary Sidebar */}
           <div className="lg:col-span-5">
-            <div className="bg-card border border-border rounded-lg p-8 sticky top-24">
-              <h2 className="font-display text-xl font-semibold text-foreground mb-6">
-                {t('cart.summary')}
-              </h2>
-              
-              {/* Items */}
-              <div className="space-y-4 max-h-72 overflow-y-auto pr-2">
-                {state.items.map(item => (
-                  <div key={item.product.id} className="flex gap-4">
+            <div className="bg-card rounded-2xl border border-border sticky top-24 overflow-hidden">
+              <div className="p-6 border-b border-border">
+                <h2 className="text-lg font-semibold text-foreground">
+                  {language === 'de' ? 'Bestellübersicht' : 'Order Summary'}
+                </h2>
+              </div>
+
+              {/* Items Preview */}
+              <div className="p-4 max-h-64 overflow-y-auto divide-y divide-border">
+                {state.items.map((item) => (
+                  <div key={item.product.id} className="flex gap-3 py-3 first:pt-0 last:pb-0">
                     <div className="relative">
                       <img 
                         src={item.product.image} 
-                        alt={item.product.name} 
-                        className="w-16 h-16 rounded-md object-cover" 
+                        alt={item.product.name}
+                        className="w-14 h-14 object-cover rounded-lg"
                       />
-                      <span className="absolute -top-2 -right-2 w-5 h-5 bg-foreground text-background text-xs font-semibold rounded-full flex items-center justify-center">
+                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs font-bold rounded-full flex items-center justify-center">
                         {item.quantity}
                       </span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-foreground line-clamp-2">{item.product.name}</p>
-                      <p className="font-display font-semibold text-foreground mt-1">
-                        {(item.product.price * item.quantity).toFixed(2)} €
-                      </p>
+                      <p className="text-sm font-medium text-foreground line-clamp-1">{item.product.name}</p>
+                      <p className="text-sm text-muted-foreground">{(item.product.price * item.quantity).toFixed(2)} €</p>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="divider w-full my-6" />
-
               {/* Totals */}
-              <div className="space-y-3">
+              <div className="p-6 border-t border-border space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Zwischensumme ({itemCount} Artikel)</span>
+                  <span className="text-muted-foreground">{language === 'de' ? 'Zwischensumme' : 'Subtotal'}</span>
                   <span className="text-foreground">{state.total.toFixed(2)} €</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Versand</span>
-                  <span className="text-success font-medium">Kostenlos</span>
+                  <span className="text-muted-foreground">{language === 'de' ? 'Versand' : 'Shipping'}</span>
+                  <span className="text-success font-medium">{language === 'de' ? 'Kostenlos' : 'Free'}</span>
                 </div>
+                <div className="border-t border-border pt-3 flex justify-between">
+                  <span className="font-semibold text-foreground">{language === 'de' ? 'Gesamt' : 'Total'}</span>
+                  <span className="text-2xl font-bold text-foreground">{state.total.toFixed(2)} €</span>
+                </div>
+                <p className="text-xs text-muted-foreground text-right">{t('ui.inclVat')}</p>
               </div>
 
-              <div className="divider w-full my-6" />
-
-              <div className="flex justify-between items-baseline">
-                <span className="text-foreground font-medium">Gesamt</span>
-                <div className="text-right">
-                  <span className="font-display text-3xl font-semibold text-foreground">{state.total.toFixed(2)} €</span>
-                  <p className="text-xs text-muted-foreground mt-1">{t('ui.inclVat')}</p>
+              {/* Trust Badges */}
+              <div className="p-6 border-t border-border bg-muted/30 space-y-3">
+                <div className="flex items-center gap-3 text-sm">
+                  <Truck className="w-4 h-4 text-success" />
+                  <span className="text-muted-foreground">{language === 'de' ? 'Kostenloser Versand' : 'Free Shipping'}</span>
                 </div>
-              </div>
-
-              {/* Security Badge */}
-              <div className="mt-8 pt-6 border-t border-border">
-                <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                  <Lock className="w-3 h-3" />
-                  <span>{t('ui.securePayment')}</span>
+                <div className="flex items-center gap-3 text-sm">
+                  <RotateCcw className="w-4 h-4 text-primary" />
+                  <span className="text-muted-foreground">{language === 'de' ? '14 Tage Rückgaberecht' : '14-day returns'}</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <Shield className="w-4 h-4 text-amber-500" />
+                  <span className="text-muted-foreground">{language === 'de' ? 'SSL-verschlüsselt' : 'SSL encrypted'}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
         <VatNotice />
       </div>
 
