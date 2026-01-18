@@ -10,6 +10,7 @@ import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { useIsSeller } from '@/hooks/useIsSeller';
 import SearchBar from '@/components/SearchBar';
 import CategoryChips from '@/components/CategoryChips';
+import MegaMenu from '@/components/MegaMenu';
 
 const Header = () => {
   const { t, language, setLanguage } = useLanguage();
@@ -22,6 +23,7 @@ const Header = () => {
   const [langHover, setLangHover] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [megaMenuOpen, setMegaMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [scrolled, setScrolled] = useState(false);
   const isVisible = useScrollHeader();
@@ -48,6 +50,7 @@ const Header = () => {
   // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
+    setMegaMenuOpen(false);
   }, [location.pathname]);
 
   return (
@@ -61,11 +64,11 @@ const Header = () => {
         <div className="bg-primary text-primary-foreground text-center py-1.5 text-xs font-medium tracking-wide">
           <span className="hidden sm:inline">
             {language === 'de'
-              ? 'Kostenloser Versand ab 50€ • 14 Tage kostenlose Rückgabe'
-              : 'Free shipping over €50 • 14-day free returns'}
+              ? '🚚 Kostenloser Versand ab 50€ • 14 Tage kostenlose Rückgabe • Sichere Zahlung'
+              : '🚚 Free shipping over €50 • 14-day free returns • Secure payment'}
           </span>
           <span className="sm:hidden">
-            {language === 'de' ? 'Gratis Versand ab 50€' : 'Free shipping over €50'}
+            {language === 'de' ? '🚚 Gratis Versand ab 50€' : '🚚 Free shipping over €50'}
           </span>
         </div>
 
@@ -80,24 +83,30 @@ const Header = () => {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-6">
+            <nav className="hidden lg:flex items-center gap-1">
               <Link 
                 to="/products" 
-                className="text-sm font-medium text-header-foreground/80 hover:text-header-foreground transition-colors"
+                className="px-4 py-2 text-sm font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-lg transition-colors"
               >
                 {language === 'de' ? 'Alle Produkte' : 'All Products'}
               </Link>
-              <Link 
-                to="/categories" 
-                className="text-sm font-medium text-header-foreground/80 hover:text-header-foreground transition-colors"
+              <div 
+                className="relative"
+                onMouseEnter={() => setMegaMenuOpen(true)}
               >
-                {language === 'de' ? 'Kategorien' : 'Categories'}
-              </Link>
+                <button 
+                  className="px-4 py-2 text-sm font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-lg transition-colors flex items-center gap-1"
+                >
+                  {language === 'de' ? 'Kategorien' : 'Categories'}
+                  <ChevronDown className={`w-4 h-4 transition-transform ${megaMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
+                <MegaMenu isOpen={megaMenuOpen} onClose={() => setMegaMenuOpen(false)} />
+              </div>
               <Link 
                 to="/products?filter=deals" 
-                className="text-sm font-medium text-deal hover:text-deal/80 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-deal hover:bg-deal/5 rounded-lg transition-colors flex items-center gap-1"
               >
-                {language === 'de' ? 'Angebote' : 'Deals'}
+                🔥 {language === 'de' ? 'Angebote' : 'Deals'}
               </Link>
             </nav>
 
@@ -254,6 +263,14 @@ const Header = () => {
                             <MessageCircle className="w-4 h-4 text-muted-foreground" />
                             {language === 'de' ? 'Nachrichten' : 'Messages'}
                           </Link>
+                          <Link 
+                            to="/favorites"
+                            onClick={() => setUserMenuOpen(false)}
+                            className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
+                          >
+                            <Heart className="w-4 h-4 text-muted-foreground" />
+                            {language === 'de' ? 'Wunschliste' : 'Wishlist'}
+                          </Link>
                         </div>
                         {(isSeller || isAdmin) && (
                           <div className="border-t border-border py-1">
@@ -327,8 +344,8 @@ const Header = () => {
 
         {/* Mobile Navigation Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-header-foreground/10 bg-header">
-            <nav className="container max-w-7xl mx-auto px-4 py-4 space-y-2">
+          <div className="lg:hidden border-t border-header-foreground/10 bg-header animate-in slide-in-from-top-2">
+            <nav className="container max-w-7xl mx-auto px-4 py-4 space-y-1">
               <Link 
                 to="/products" 
                 className="block px-4 py-3 text-sm font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-lg transition-colors"
@@ -349,6 +366,13 @@ const Header = () => {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 🔥 {language === 'de' ? 'Angebote' : 'Deals'}
+              </Link>
+              <Link 
+                to="/favorites" 
+                className="block px-4 py-3 text-sm font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-lg transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                ❤️ {language === 'de' ? 'Wunschliste' : 'Wishlist'}
               </Link>
               
               {/* Language Switch - Mobile */}
