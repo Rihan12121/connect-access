@@ -1,9 +1,10 @@
 import { useParams, Link } from 'react-router-dom';
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronDown, SlidersHorizontal, X, ArrowLeft, Loader2 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCategoryProducts, SortOption } from '@/hooks/useProducts';
 import { categories, subcategories } from '@/data/products';
+import { trackCategoryView } from '@/hooks/usePersonalizedRecommendations';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
@@ -22,6 +23,13 @@ const Category = () => {
   const { t, tCategory } = useLanguage();
 
   const categorySubcategories = subcategories.filter(s => s.category === slug);
+
+  // Track category view for personalized recommendations
+  useEffect(() => {
+    if (slug) {
+      trackCategoryView(slug);
+    }
+  }, [slug]);
 
   const { products: allCategoryProducts, isLoading } = useCategoryProducts(slug || '', {
     sortBy,
