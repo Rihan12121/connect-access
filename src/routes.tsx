@@ -37,6 +37,9 @@ const AdminOrders = lazy(() => import("./pages/admin/Orders"));
 const AdminReviews = lazy(() => import("./pages/admin/Reviews"));
 const AdminProducts = lazy(() => import("./pages/admin/Products"));
 const AdminCustomers = lazy(() => import("./pages/admin/Customers"));
+const AdminCategories = lazy(() => import("./pages/admin/Categories"));
+const AdminBanners = lazy(() => import("./pages/admin/Banners"));
+const AdminSettings = lazy(() => import("./pages/admin/Settings"));
 
 // Seller pages - lazy loaded (seller only)
 const SellerDashboard = lazy(() => import("./pages/seller/Dashboard"));
@@ -100,6 +103,9 @@ export const routes: RouteRecord[] = [
   { path: "/admin/reviews", element: withAdminGuard(AdminReviews) },
   { path: "/admin/products", element: withAdminGuard(AdminProducts) },
   { path: "/admin/customers", element: withAdminGuard(AdminCustomers) },
+  { path: "/admin/categories", element: withAdminGuard(AdminCategories) },
+  { path: "/admin/banners", element: withAdminGuard(AdminBanners) },
+  { path: "/admin/settings", element: withAdminGuard(AdminSettings) },
   
   // Seller routes - protected
   { path: "/seller", element: withSellerGuard(SellerDashboard) },

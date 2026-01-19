@@ -10,7 +10,10 @@ import {
   TrendingUp,
   Star,
   Loader2,
-  ArrowRight
+  ArrowRight,
+  FolderTree,
+  Image as ImageIcon,
+  Settings
 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -164,6 +167,18 @@ const AdminDashboard = () => {
       icon: ShoppingCart,
     },
     {
+      title: language === 'de' ? 'Kategorien' : 'Categories',
+      description: language === 'de' ? 'Kategorien verwalten' : 'Manage categories',
+      href: '/admin/categories',
+      icon: FolderTree,
+    },
+    {
+      title: language === 'de' ? 'Hero-Banner' : 'Hero Banners',
+      description: language === 'de' ? 'Startseiten-Banner verwalten' : 'Manage homepage banners',
+      href: '/admin/banners',
+      icon: ImageIcon,
+    },
+    {
       title: language === 'de' ? 'Kunden' : 'Customers',
       description: language === 'de' ? 'Kunden verwalten und blockieren' : 'Manage and block customers',
       href: '/admin/customers',
@@ -174,6 +189,12 @@ const AdminDashboard = () => {
       description: language === 'de' ? 'Kundenbewertungen ansehen' : 'View customer reviews',
       href: '/admin/reviews',
       icon: Star,
+    },
+    {
+      title: language === 'de' ? 'Einstellungen' : 'Settings',
+      description: language === 'de' ? 'Shop-Einstellungen anpassen' : 'Configure shop settings',
+      href: '/admin/settings',
+      icon: Settings,
     },
   ];
 

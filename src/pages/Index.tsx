@@ -14,6 +14,7 @@ import PopularCategoriesGrid from '@/components/PopularCategoriesGrid';
 import ProductShowcase from '@/components/ProductShowcase';
 import RecentlyViewedSection from '@/components/RecentlyViewedSection';
 import NewsletterSection from '@/components/NewsletterSection';
+import PersonalizedRecommendations from '@/components/PersonalizedRecommendations';
 
 const Index = () => {
   const { t, language } = useLanguage();
@@ -177,12 +178,15 @@ const Index = () => {
         />
       </div>
 
+      {/* Personalized Recommendations */}
+      <div className="mt-16 md:mt-24">
+        <PersonalizedRecommendations />
+      </div>
+
       {/* Recently Viewed - Personalized */}
       <div className="mt-16 md:mt-24">
         <RecentlyViewedSection />
       </div>
-
-      {/* Newsletter Signup */}
       <div className="mt-16 md:mt-24">
         <NewsletterSection />
       </div>
