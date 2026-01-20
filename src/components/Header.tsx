@@ -56,13 +56,16 @@ const Header = () => {
   return (
     <>
       <header 
-        className={`sticky top-0 z-50 bg-header text-header-foreground transition-all duration-300 ${
+        className={`sticky top-0 z-50 bg-header/95 backdrop-blur-xl text-header-foreground transition-all duration-300 ${
           isVisible ? 'translate-y-0' : '-translate-y-full'
-        } ${scrolled ? 'shadow-lg' : ''}`}
+        } ${scrolled ? 'shadow-premium border-b border-header-foreground/5' : ''}`}
       >
         {/* Promo Bar */}
-        <div className="bg-primary text-primary-foreground text-center py-1.5 text-xs font-medium tracking-wide">
-          <span className="hidden sm:inline">
+        <div className="bg-gradient-to-r from-primary via-primary to-primary/90 text-primary-foreground text-center py-2 text-xs font-medium tracking-wide">
+          <span className="hidden sm:inline flex items-center justify-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-primary-foreground/10 rounded-full text-[10px] font-bold uppercase tracking-wider">
+              {language === 'de' ? 'Neu' : 'New'}
+            </span>
             {language === 'de'
               ? '🚚 Kostenloser Versand ab 50€ • 14 Tage kostenlose Rückgabe • Sichere Zahlung'
               : '🚚 Free shipping over €50 • 14-day free returns • Secure payment'}
@@ -74,19 +77,22 @@ const Header = () => {
 
         <div className="container max-w-7xl mx-auto px-4">
           {/* Main Header Row */}
-          <div className="flex items-center justify-between h-14 md:h-16 gap-4">
+          <div className="flex items-center justify-between h-16 md:h-[68px] gap-4">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 group flex-shrink-0">
-              <span className="font-display text-2xl md:text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+            <Link to="/" className="flex items-center gap-2.5 group flex-shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/20 group-hover:shadow-primary/30 transition-shadow">
+                <span className="text-primary-foreground font-display font-bold text-lg">N</span>
+              </div>
+              <span className="font-display text-2xl md:text-[26px] font-bold tracking-tight text-header-foreground">
                 Noor
               </span>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-1">
+            <nav className="hidden lg:flex items-center gap-0.5">
               <Link 
                 to="/products" 
-                className="px-4 py-2 text-sm font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-lg transition-colors"
+                className="px-4 py-2.5 text-sm font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-xl transition-all duration-200"
               >
                 {language === 'de' ? 'Alle Produkte' : 'All Products'}
               </Link>
@@ -95,18 +101,24 @@ const Header = () => {
                 onMouseEnter={() => setMegaMenuOpen(true)}
               >
                 <button 
-                  className="px-4 py-2 text-sm font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-lg transition-colors flex items-center gap-1"
+                  className="px-4 py-2.5 text-sm font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-xl transition-all duration-200 flex items-center gap-1.5"
                 >
                   {language === 'de' ? 'Kategorien' : 'Categories'}
-                  <ChevronDown className={`w-4 h-4 transition-transform ${megaMenuOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${megaMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
                 <MegaMenu isOpen={megaMenuOpen} onClose={() => setMegaMenuOpen(false)} />
               </div>
               <Link 
                 to="/products?filter=deals" 
-                className="px-4 py-2 text-sm font-medium text-deal hover:bg-deal/5 rounded-lg transition-colors flex items-center gap-1"
+                className="px-4 py-2.5 text-sm font-semibold text-deal hover:bg-deal/10 rounded-xl transition-all duration-200 flex items-center gap-1.5"
               >
-                🔥 {language === 'de' ? 'Angebote' : 'Deals'}
+                <span className="flex items-center gap-1.5">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-deal opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-deal"></span>
+                  </span>
+                  {language === 'de' ? 'Angebote' : 'Deals'}
+                </span>
               </Link>
             </nav>
 
