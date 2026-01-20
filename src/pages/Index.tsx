@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Sparkles, Star, Shield, Truck, Award, Users, TrendingUp, ChevronRight } from 'lucide-react';
+import { ArrowRight, Sparkles, Star, Shield, Users, TrendingUp } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useProducts } from '@/hooks/useProducts';
 import Header from '@/components/Header';
@@ -7,13 +7,11 @@ import Footer from '@/components/Footer';
 import HeroSection from '@/components/HeroSection';
 import VatNotice from '@/components/VatNotice';
 import SEO from '@/components/SEO';
-import TrustBadges from '@/components/TrustBadges';
 import FlashDealsSection from '@/components/FlashDealsSection';
 import FeaturedBanner from '@/components/FeaturedBanner';
 import PopularCategoriesGrid from '@/components/PopularCategoriesGrid';
 import ProductShowcase from '@/components/ProductShowcase';
 import RecentlyViewedSection from '@/components/RecentlyViewedSection';
-import NewsletterSection from '@/components/NewsletterSection';
 import PersonalizedRecommendations from '@/components/PersonalizedRecommendations';
 
 const Index = () => {
@@ -26,30 +24,6 @@ const Index = () => {
   const popularProducts = allProducts.slice(0, 8);
   const newArrivals = allProducts.slice(8, 16);
 
-  // Stats for social proof
-  const stats = [
-    {
-      icon: Users,
-      value: '50.000+',
-      label: language === 'de' ? 'Zufriedene Kunden' : 'Happy Customers',
-    },
-    {
-      icon: Star,
-      value: '4.9/5',
-      label: language === 'de' ? 'Durchschnittliche Bewertung' : 'Average Rating',
-    },
-    {
-      icon: Shield,
-      value: '100%',
-      label: language === 'de' ? 'Sichere Zahlung' : 'Secure Payment',
-    },
-    {
-      icon: Truck,
-      value: '2-3',
-      label: language === 'de' ? 'Tage Lieferzeit' : 'Days Delivery',
-    },
-  ];
-
   return (
     <div className="min-h-screen bg-background">
       <SEO 
@@ -61,29 +35,6 @@ const Index = () => {
       {/* Hero Banner Carousel */}
       <HeroSection />
 
-      {/* Stats Bar - Social Proof */}
-      <section className="bg-card border-y border-border">
-        <div className="container max-w-6xl mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-border">
-            {stats.map((stat, index) => (
-              <div key={index} className="flex items-center justify-center gap-3 py-6 md:py-8">
-                <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-                  <stat.icon className="w-5 h-5 md:w-6 md:h-6 text-primary" />
-                </div>
-                <div>
-                  <p className="font-display text-xl md:text-2xl font-bold text-foreground">{stat.value}</p>
-                  <p className="text-xs md:text-sm text-muted-foreground">{stat.label}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Trust Badges - Right after hero for credibility */}
-      <section className="container max-w-6xl mx-auto mt-10 md:mt-16 px-4 md:px-6">
-        <TrustBadges />
-      </section>
 
       {/* Flash Deals with Countdown */}
       <div className="mt-12 md:mt-20">
@@ -112,52 +63,6 @@ const Index = () => {
         />
       </div>
 
-      {/* Value Proposition Section */}
-      <section className="container max-w-6xl mx-auto mt-16 md:mt-24 px-4 md:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent rounded-2xl p-8 border border-primary/20 group hover:border-primary/40 transition-all">
-            <div className="w-14 h-14 bg-primary/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <Award className="w-7 h-7 text-primary" />
-            </div>
-            <h3 className="font-display text-xl font-bold text-foreground mb-3">
-              {language === 'de' ? 'Premium Qualität' : 'Premium Quality'}
-            </h3>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              {language === 'de' 
-                ? 'Nur geprüfte Produkte von verifizierten Händlern. Jeder Artikel durchläuft unsere Qualitätskontrolle.'
-                : 'Only verified products from trusted sellers. Every item goes through our quality control.'}
-            </p>
-          </div>
-          
-          <div className="bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-transparent rounded-2xl p-8 border border-emerald-500/20 group hover:border-emerald-500/40 transition-all">
-            <div className="w-14 h-14 bg-emerald-500/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <Shield className="w-7 h-7 text-emerald-600" />
-            </div>
-            <h3 className="font-display text-xl font-bold text-foreground mb-3">
-              {language === 'de' ? 'Käuferschutz' : 'Buyer Protection'}
-            </h3>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              {language === 'de' 
-                ? 'Geld-zurück-Garantie bei allen Bestellungen. Ihr Einkauf ist bei uns vollständig abgesichert.'
-                : 'Money-back guarantee on all orders. Your purchase is fully protected with us.'}
-            </p>
-          </div>
-          
-          <div className="bg-gradient-to-br from-blue-500/10 via-blue-500/5 to-transparent rounded-2xl p-8 border border-blue-500/20 group hover:border-blue-500/40 transition-all">
-            <div className="w-14 h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <Truck className="w-7 h-7 text-blue-600" />
-            </div>
-            <h3 className="font-display text-xl font-bold text-foreground mb-3">
-              {language === 'de' ? 'Schneller Versand' : 'Fast Shipping'}
-            </h3>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              {language === 'de' 
-                ? 'Kostenloser Versand ab 50€. Express-Lieferung in 2-3 Werktagen direkt zu Ihnen.'
-                : 'Free shipping over €50. Express delivery in 2-3 business days directly to you.'}
-            </p>
-          </div>
-        </div>
-      </section>
 
       {/* Featured Banner - Trending */}
       <section className="container max-w-6xl mx-auto mt-16 md:mt-24 px-4 md:px-6">
@@ -186,9 +91,6 @@ const Index = () => {
       {/* Recently Viewed - Personalized */}
       <div className="mt-16 md:mt-24">
         <RecentlyViewedSection />
-      </div>
-      <div className="mt-16 md:mt-24">
-        <NewsletterSection />
       </div>
 
       {/* CTA Section - Premium Design */}
