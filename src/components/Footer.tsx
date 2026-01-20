@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
-import { Facebook, Instagram, Twitter, Youtube, Linkedin, Mail, Phone, MapPin, Truck, Shield, Package, CreditCard, ArrowRight, ChevronRight } from 'lucide-react';
+import { Facebook, Instagram, Twitter, Youtube, Linkedin, Mail } from 'lucide-react';
 import PaymentBadges from '@/components/PaymentBadges';
 
 const Footer = () => {
@@ -43,69 +43,9 @@ const Footer = () => {
     { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
   ];
 
-  const trustFeatures = [
-    { icon: Truck, title: language === 'de' ? 'Kostenloser Versand' : 'Free Shipping', desc: language === 'de' ? 'Ab 50€ Bestellwert' : 'Orders over €50' },
-    { icon: Shield, title: language === 'de' ? 'Käuferschutz' : 'Buyer Protection', desc: language === 'de' ? '100% abgesichert' : '100% secure' },
-    { icon: Package, title: language === 'de' ? '14 Tage Rückgabe' : '14-Day Returns', desc: language === 'de' ? 'Kostenlos' : 'Free of charge' },
-    { icon: CreditCard, title: language === 'de' ? 'Sichere Zahlung' : 'Secure Payment', desc: language === 'de' ? 'SSL-verschlüsselt' : 'SSL encrypted' },
-  ];
 
   return (
     <footer className="bg-header text-header-foreground">
-      {/* Trust Banner */}
-      <div className="border-b border-header-foreground/10">
-        <div className="container max-w-6xl mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4">
-            {trustFeatures.map((feature, index) => (
-              <div 
-                key={index} 
-                className={`flex items-center gap-4 py-8 ${
-                  index !== trustFeatures.length - 1 ? 'border-r border-header-foreground/10' : ''
-                } ${index % 2 === 1 ? 'md:border-r' : ''} ${index > 1 ? 'border-t md:border-t-0 border-header-foreground/10' : ''}`}
-                style={{ paddingLeft: index === 0 ? 0 : '1.5rem', paddingRight: index === trustFeatures.length - 1 ? 0 : '1.5rem' }}
-              >
-                <div className="p-3 bg-primary/20 rounded-xl">
-                  <feature.icon className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-header-foreground">{feature.title}</p>
-                  <p className="text-xs text-header-foreground/50">{feature.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Newsletter Section */}
-      <div className="border-b border-header-foreground/10">
-        <div className="container max-w-6xl mx-auto px-6 py-12">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="text-center md:text-left">
-              <h3 className="font-display text-2xl font-bold text-header-foreground mb-2">
-                {language === 'de' ? 'Newsletter abonnieren' : 'Subscribe to Newsletter'}
-              </h3>
-              <p className="text-header-foreground/60 text-sm">
-                {language === 'de' ? 'Erhalten Sie exklusive Angebote und Updates' : 'Get exclusive deals and updates'}
-              </p>
-            </div>
-            <form className="flex w-full max-w-md gap-3">
-              <input
-                type="email"
-                placeholder={language === 'de' ? 'Ihre E-Mail-Adresse' : 'Your email address'}
-                className="flex-1 px-5 py-3.5 bg-header-foreground/5 border border-header-foreground/10 rounded-xl text-header-foreground placeholder:text-header-foreground/40 focus:outline-none focus:border-primary transition-colors"
-              />
-              <button
-                type="submit"
-                className="px-6 py-3.5 bg-primary text-primary-foreground rounded-xl font-semibold flex items-center gap-2 hover:opacity-90 transition-opacity"
-              >
-                <Mail className="w-4 h-4" />
-                <span className="hidden sm:inline">{language === 'de' ? 'Anmelden' : 'Subscribe'}</span>
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
 
       {/* Main Footer Content */}
       <div className="container max-w-6xl mx-auto px-6 py-16">

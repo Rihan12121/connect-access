@@ -10,7 +10,6 @@ import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { useIsSeller } from '@/hooks/useIsSeller';
 import SearchBar from '@/components/SearchBar';
 import CategoryChips from '@/components/CategoryChips';
-import MegaMenu from '@/components/MegaMenu';
 
 const Header = () => {
   const { t, language, setLanguage } = useLanguage();
@@ -23,7 +22,6 @@ const Header = () => {
   const [langHover, setLangHover] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [megaMenuOpen, setMegaMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [scrolled, setScrolled] = useState(false);
   const isVisible = useScrollHeader();
@@ -50,7 +48,6 @@ const Header = () => {
   // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
-    setMegaMenuOpen(false);
   }, [location.pathname]);
 
   return (
@@ -60,20 +57,6 @@ const Header = () => {
           isVisible ? 'translate-y-0' : '-translate-y-full'
         } ${scrolled ? 'shadow-premium border-b border-header-foreground/5' : ''}`}
       >
-        {/* Promo Bar */}
-        <div className="bg-gradient-to-r from-primary via-primary to-primary/90 text-primary-foreground text-center py-2 text-xs font-medium tracking-wide">
-          <span className="hidden sm:inline flex items-center justify-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-primary-foreground/10 rounded-full text-[10px] font-bold uppercase tracking-wider">
-              {language === 'de' ? 'Neu' : 'New'}
-            </span>
-            {language === 'de'
-              ? '🚚 Kostenloser Versand ab 50€ • 14 Tage kostenlose Rückgabe • Sichere Zahlung'
-              : '🚚 Free shipping over €50 • 14-day free returns • Secure payment'}
-          </span>
-          <span className="sm:hidden">
-            {language === 'de' ? '🚚 Gratis Versand ab 50€' : '🚚 Free shipping over €50'}
-          </span>
-        </div>
 
         <div className="container max-w-7xl mx-auto px-4">
           {/* Main Header Row */}
@@ -88,39 +71,6 @@ const Header = () => {
               </span>
             </Link>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-0.5">
-              <Link 
-                to="/products" 
-                className="px-4 py-2.5 text-sm font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-xl transition-all duration-200"
-              >
-                {language === 'de' ? 'Alle Produkte' : 'All Products'}
-              </Link>
-              <div 
-                className="relative"
-                onMouseEnter={() => setMegaMenuOpen(true)}
-              >
-                <button 
-                  className="px-4 py-2.5 text-sm font-medium text-header-foreground/80 hover:text-header-foreground hover:bg-header-foreground/5 rounded-xl transition-all duration-200 flex items-center gap-1.5"
-                >
-                  {language === 'de' ? 'Kategorien' : 'Categories'}
-                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${megaMenuOpen ? 'rotate-180' : ''}`} />
-                </button>
-                <MegaMenu isOpen={megaMenuOpen} onClose={() => setMegaMenuOpen(false)} />
-              </div>
-              <Link 
-                to="/products?filter=deals" 
-                className="px-4 py-2.5 text-sm font-semibold text-deal hover:bg-deal/10 rounded-xl transition-all duration-200 flex items-center gap-1.5"
-              >
-                <span className="flex items-center gap-1.5">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-deal opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-deal"></span>
-                  </span>
-                  {language === 'de' ? 'Angebote' : 'Deals'}
-                </span>
-              </Link>
-            </nav>
 
             {/* Search Bar - Center */}
             <div className="flex-1 max-w-xl hidden md:block">
@@ -129,13 +79,6 @@ const Header = () => {
 
             {/* Right Icons */}
             <div className="flex items-center gap-1 md:gap-2">
-              {/* Mobile Search Toggle */}
-              <button 
-                className="md:hidden icon-btn text-header-foreground/70 hover:text-header-foreground p-2"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                <Search className="w-5 h-5" />
-              </button>
 
               {user && isSeller && !isAdmin && (
                 <Link
