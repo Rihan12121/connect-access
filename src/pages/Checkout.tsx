@@ -4,13 +4,14 @@ import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { ShoppingBag, CreditCard, Truck, Check, ArrowRight, ArrowLeft, Lock, MapPin, Package, Loader2, Ban, Shield, AlertCircle, Zap, RotateCcw, Clock, ChevronRight } from 'lucide-react';
+import { ShoppingBag, CreditCard, Truck, Check, ArrowRight, ArrowLeft, Lock, MapPin, Package, Loader2, Ban, Shield, AlertCircle, Zap, RotateCcw, Clock, ChevronRight, Tag } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import VatNotice from '@/components/VatNotice';
 import SEO from '@/components/SEO';
 import PaymentBadges from '@/components/PaymentBadges';
+import DiscountCodeInput from '@/components/DiscountCodeInput';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -36,6 +37,7 @@ const Checkout = () => {
   const [isBlocked, setIsBlocked] = useState(false);
   const [checkingBlocked, setCheckingBlocked] = useState(true);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [appliedDiscount, setAppliedDiscount] = useState<{ code: string; type: string; value: number; calculatedAmount: number } | null>(null);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -632,19 +634,40 @@ const Checkout = () => {
                 ))}
               </div>
 
+              {/* Discount Code */}
+              <div className="p-4 border-t border-border">
+                <DiscountCodeInput
+                  cartTotal={state.total}
+                  onApplyDiscount={setAppliedDiscount}
+                  onRemoveDiscount={() => setAppliedDiscount(null)}
+                  appliedDiscount={appliedDiscount}
+                />
+              </div>
+
               {/* Totals */}
               <div className="p-6 border-t border-border space-y-3">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{language === 'de' ? 'Zwischensumme' : 'Subtotal'}</span>
                   <span className="text-foreground">{state.total.toFixed(2)} €</span>
                 </div>
+                {appliedDiscount && (
+                  <div className="flex justify-between text-sm text-success">
+                    <span className="flex items-center gap-1">
+                      <Tag className="w-3 h-3" />
+                      {appliedDiscount.code}
+                    </span>
+                    <span>-{appliedDiscount.calculatedAmount.toFixed(2)} €</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{language === 'de' ? 'Versand' : 'Shipping'}</span>
                   <span className="text-success font-medium">{language === 'de' ? 'Kostenlos' : 'Free'}</span>
                 </div>
                 <div className="border-t border-border pt-3 flex justify-between">
                   <span className="font-semibold text-foreground">{language === 'de' ? 'Gesamt' : 'Total'}</span>
-                  <span className="text-2xl font-bold text-foreground">{state.total.toFixed(2)} €</span>
+                  <span className="text-2xl font-bold text-foreground">
+                    {(state.total - (appliedDiscount?.calculatedAmount || 0)).toFixed(2)} €
+                  </span>
                 </div>
                 <p className="text-xs text-muted-foreground text-right">{t('ui.inclVat')}</p>
               </div>
