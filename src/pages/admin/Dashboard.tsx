@@ -13,13 +13,15 @@ import {
   ArrowRight,
   FolderTree,
   Image as ImageIcon,
-  Settings
+  Settings,
+  Home
 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SEO from '@/components/SEO';
 import { AdminManagement } from '@/components/admin/AdminManagement';
 import { SellerManagement } from '@/components/admin/SellerManagement';
+import SalesChart from '@/components/admin/SalesChart';
 
 interface Stats {
   totalOrders: number;
@@ -196,6 +198,12 @@ const AdminDashboard = () => {
       href: '/admin/settings',
       icon: Settings,
     },
+    {
+      title: language === 'de' ? 'Homepage' : 'Homepage',
+      description: language === 'de' ? 'Startseite bearbeiten' : 'Edit homepage',
+      href: '/',
+      icon: Home,
+    },
   ];
 
   return (
@@ -219,7 +227,7 @@ const AdminDashboard = () => {
         ) : (
           <>
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
               {statCards.map((stat, index) => (
                 <div key={index} className="bg-card border border-border rounded-xl p-5">
                   <div className="flex items-center gap-3 mb-3">
@@ -231,6 +239,11 @@ const AdminDashboard = () => {
                   <p className="text-sm text-muted-foreground">{stat.title}</p>
                 </div>
               ))}
+            </div>
+
+            {/* Sales Chart */}
+            <div className="mb-8">
+              <SalesChart />
             </div>
 
             {/* Quick Links */}

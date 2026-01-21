@@ -10,6 +10,7 @@ import { useIsAdmin } from '@/hooks/useIsAdmin';
 import { useIsSeller } from '@/hooks/useIsSeller';
 import SearchBar from '@/components/SearchBar';
 import CategoryChips from '@/components/CategoryChips';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const Header = () => {
   const { t, language, setLanguage } = useLanguage();
@@ -125,6 +126,9 @@ const Header = () => {
                 )}
               </Link>
               
+              {/* Theme Toggle */}
+              <ThemeToggle />
+
               {/* Language Dropdown - Desktop */}
               <div className="relative hidden md:block">
                 <button 
