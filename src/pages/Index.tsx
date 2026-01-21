@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Sparkles, Star, Shield, Users, TrendingUp } from 'lucide-react';
+import { ArrowRight, Sparkles, Star, Shield, Users, TrendingUp, Settings2 } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useProducts } from '@/hooks/useProducts';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import HeroSection from '@/components/HeroSection';
@@ -13,9 +15,13 @@ import PopularCategoriesGrid from '@/components/PopularCategoriesGrid';
 import ProductShowcase from '@/components/ProductShowcase';
 import RecentlyViewedSection from '@/components/RecentlyViewedSection';
 import PersonalizedRecommendations from '@/components/PersonalizedRecommendations';
+import HomepageEditor from '@/components/admin/HomepageEditor';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const { t, language } = useLanguage();
+  const { isAdmin } = useIsAdmin();
+  const [showEditor, setShowEditor] = useState(false);
 
   // Fetch different product sets - no duplicates
   const { products: allProducts, isLoading: productsLoading } = useProducts({ limit: 24 });
@@ -31,6 +37,23 @@ const Index = () => {
         description="Entdecken Sie tausende Produkte von verifizierten Anbietern. Noor - Ihr Marktplatz für Qualität, Vielfalt und beste Preise."
       />
       <Header />
+
+      {/* Admin Edit Mode Button */}
+      {isAdmin && (
+        <div className="fixed bottom-6 right-6 z-50">
+          <Button
+            onClick={() => setShowEditor(true)}
+            size="lg"
+            className="rounded-full shadow-lg gap-2"
+          >
+            <Settings2 className="w-5 h-5" />
+            {language === 'de' ? 'Seite bearbeiten' : 'Edit Page'}
+          </Button>
+        </div>
+      )}
+
+      {/* Homepage Editor Sheet */}
+      <HomepageEditor isOpen={showEditor} onClose={() => setShowEditor(false)} />
 
       {/* Hero Banner Carousel */}
       <HeroSection />
