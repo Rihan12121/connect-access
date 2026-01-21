@@ -104,6 +104,54 @@ export type Database = {
         }
         Relationships: []
       }
+      discount_codes: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          discount_type: string
+          discount_value: number
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          min_order_amount: number | null
+          updated_at: string
+          uses_count: number
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          discount_type: string
+          discount_value: number
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          min_order_amount?: number | null
+          updated_at?: string
+          uses_count?: number
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          min_order_amount?: number | null
+          updated_at?: string
+          uses_count?: number
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
       hero_banners: {
         Row: {
           created_at: string
@@ -256,10 +304,12 @@ export type Database = {
           image: string
           images: string[] | null
           in_stock: boolean
+          low_stock_threshold: number | null
           name: string
           original_price: number | null
           price: number
           seller_id: string | null
+          stock_quantity: number | null
           subcategory: string | null
           tags: string[] | null
           updated_at: string
@@ -273,10 +323,12 @@ export type Database = {
           image: string
           images?: string[] | null
           in_stock?: boolean
+          low_stock_threshold?: number | null
           name: string
           original_price?: number | null
           price: number
           seller_id?: string | null
+          stock_quantity?: number | null
           subcategory?: string | null
           tags?: string[] | null
           updated_at?: string
@@ -290,10 +342,12 @@ export type Database = {
           image?: string
           images?: string[] | null
           in_stock?: boolean
+          low_stock_threshold?: number | null
           name?: string
           original_price?: number | null
           price?: number
           seller_id?: string | null
+          stock_quantity?: number | null
           subcategory?: string | null
           tags?: string[] | null
           updated_at?: string

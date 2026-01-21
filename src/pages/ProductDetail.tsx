@@ -11,9 +11,11 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import VatNotice from '@/components/VatNotice';
+import VatBreakdown from '@/components/VatBreakdown';
 import SEO from '@/components/SEO';
 import ProductImageGallery from '@/components/ProductImageGallery';
 import ProductReviews from '@/components/ProductReviews';
+import ReviewHistogram from '@/components/ReviewHistogram';
 import { Button } from '@/components/ui/button';
 import { useStartConversation } from '@/hooks/useStartConversation';
 import { addToRecentlyViewed } from '@/components/RecentlyViewedSection';
@@ -228,7 +230,7 @@ const ProductDetail = () => {
                   {language === 'de' ? 'Sie sparen' : 'You save'} {savings} €
                 </p>
               )}
-              <p className="text-xs text-muted-foreground mt-2">{t('ui.inclVat')}</p>
+              <VatBreakdown price={product.price} />
             </div>
 
             {/* Stock Status */}

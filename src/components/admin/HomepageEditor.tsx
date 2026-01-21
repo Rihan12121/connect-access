@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
-import { Settings2, Image, Grid3X3, Sparkles, Zap, Layout, ChevronRight, X } from 'lucide-react';
+import { Settings2, Image, Grid3X3, Sparkles, Zap, Layout, ChevronRight, X, Tag, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -62,6 +62,26 @@ const HomepageEditor = ({ isOpen, onClose }: HomepageEditorProps) => {
       icon: Sparkles,
       action: () => navigate('/admin/products'),
       color: 'text-purple-500 bg-purple-500/10',
+    },
+    {
+      id: 'discount-codes',
+      title: language === 'de' ? 'Rabattcodes' : 'Discount Codes',
+      description: language === 'de'
+        ? 'Erstellen und verwalten Sie Rabattcodes'
+        : 'Create and manage discount codes',
+      icon: Tag,
+      action: () => navigate('/admin/discount-codes'),
+      color: 'text-pink-500 bg-pink-500/10',
+    },
+    {
+      id: 'inventory',
+      title: language === 'de' ? 'Lagerverwaltung' : 'Inventory',
+      description: language === 'de'
+        ? 'Lagerbestand und Verfügbarkeit verwalten'
+        : 'Manage stock and availability',
+      icon: Package,
+      action: () => navigate('/admin/inventory'),
+      color: 'text-orange-500 bg-orange-500/10',
     },
     {
       id: 'settings',
