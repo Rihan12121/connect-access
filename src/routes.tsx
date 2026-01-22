@@ -42,6 +42,11 @@ const AdminBanners = lazy(() => import("./pages/admin/Banners"));
 const AdminSettings = lazy(() => import("./pages/admin/Settings"));
 const AdminDiscountCodes = lazy(() => import("./pages/admin/DiscountCodes"));
 const AdminInventory = lazy(() => import("./pages/admin/Inventory"));
+const AdminCustomerSegments = lazy(() => import("./pages/admin/CustomerSegments"));
+const AdminInvoices = lazy(() => import("./pages/admin/Invoices"));
+const AdminRefunds = lazy(() => import("./pages/admin/Refunds"));
+const AdminAuditLogs = lazy(() => import("./pages/admin/AuditLogs"));
+const Wishlist = lazy(() => import("./pages/Wishlist"));
 
 // Seller pages - lazy loaded (seller only)
 const SellerDashboard = lazy(() => import("./pages/seller/Dashboard"));
@@ -98,6 +103,7 @@ export const routes: RouteRecord[] = [
   { path: "/orders", element: withSuspense(OrderHistory) },
   { path: "/order-tracking", element: withSuspense(OrderTracking) },
   { path: "/messages", element: withSuspense(Messages) },
+  { path: "/wishlist", element: withSuspense(Wishlist) },
   
   // Admin routes - protected
   { path: "/admin", element: withAdminGuard(AdminDashboard) },
@@ -110,6 +116,10 @@ export const routes: RouteRecord[] = [
   { path: "/admin/settings", element: withAdminGuard(AdminSettings) },
   { path: "/admin/discount-codes", element: withAdminGuard(AdminDiscountCodes) },
   { path: "/admin/inventory", element: withAdminGuard(AdminInventory) },
+  { path: "/admin/customer-segments", element: withAdminGuard(AdminCustomerSegments) },
+  { path: "/admin/invoices", element: withAdminGuard(AdminInvoices) },
+  { path: "/admin/refunds", element: withAdminGuard(AdminRefunds) },
+  { path: "/admin/audit-logs", element: withAdminGuard(AdminAuditLogs) },
   
   // Seller routes - protected
   { path: "/seller", element: withSellerGuard(SellerDashboard) },

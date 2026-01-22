@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
-import { Settings2, Image, Grid3X3, Sparkles, Zap, Layout, ChevronRight, X, Tag, Package } from 'lucide-react';
+import { Settings2, Image, Grid3X3, Sparkles, Zap, Layout, ChevronRight, Tag, Package, Users, FileText, RotateCcw, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -82,6 +82,46 @@ const HomepageEditor = ({ isOpen, onClose }: HomepageEditorProps) => {
       icon: Package,
       action: () => navigate('/admin/inventory'),
       color: 'text-orange-500 bg-orange-500/10',
+    },
+    {
+      id: 'customer-segments',
+      title: language === 'de' ? 'Kundensegmente' : 'Customer Segments',
+      description: language === 'de'
+        ? 'Personalisierte Rabatte nach Kaufhistorie'
+        : 'Personalized discounts by purchase history',
+      icon: Users,
+      action: () => navigate('/admin/customer-segments'),
+      color: 'text-cyan-500 bg-cyan-500/10',
+    },
+    {
+      id: 'invoices',
+      title: language === 'de' ? 'Rechnungen' : 'Invoices',
+      description: language === 'de'
+        ? 'PDF Rechnungen erstellen und versenden'
+        : 'Create and send PDF invoices',
+      icon: FileText,
+      action: () => navigate('/admin/invoices'),
+      color: 'text-emerald-500 bg-emerald-500/10',
+    },
+    {
+      id: 'refunds',
+      title: language === 'de' ? 'Rückerstattungen' : 'Refunds',
+      description: language === 'de'
+        ? 'Stornos und Rückzahlungen bearbeiten'
+        : 'Process cancellations and refunds',
+      icon: RotateCcw,
+      action: () => navigate('/admin/refunds'),
+      color: 'text-rose-500 bg-rose-500/10',
+    },
+    {
+      id: 'audit-logs',
+      title: language === 'de' ? 'Audit-Logs' : 'Audit Logs',
+      description: language === 'de'
+        ? 'Wer hat was geändert'
+        : 'Who changed what',
+      icon: History,
+      action: () => navigate('/admin/audit-logs'),
+      color: 'text-slate-500 bg-slate-500/10',
     },
     {
       id: 'settings',

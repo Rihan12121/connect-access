@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          ip_address: string | null
+          new_values: Json | null
+          old_values: Json | null
+          user_id: string
+          user_role: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          ip_address?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          user_id: string
+          user_role: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          ip_address?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          user_id?: string
+          user_role?: string
+        }
+        Relationships: []
+      }
       blocked_users: {
         Row: {
           bank_account: string | null
@@ -104,6 +143,42 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_segments: {
+        Row: {
+          created_at: string
+          description: string | null
+          discount_percentage: number | null
+          id: string
+          is_active: boolean
+          min_orders: number | null
+          min_total_spent: number | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          discount_percentage?: number | null
+          id?: string
+          is_active?: boolean
+          min_orders?: number | null
+          min_total_spent?: number | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          discount_percentage?: number | null
+          id?: string
+          is_active?: boolean
+          min_orders?: number | null
+          min_total_spent?: number | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       discount_codes: {
         Row: {
           code: string
@@ -188,6 +263,59 @@ export type Database = {
         }
         Relationships: []
       }
+      invoices: {
+        Row: {
+          created_at: string
+          id: string
+          invoice_number: string
+          order_id: string
+          pdf_url: string | null
+          sent_at: string | null
+          status: string
+          subtotal: number
+          total: number
+          updated_at: string
+          user_id: string
+          vat_amount: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          invoice_number: string
+          order_id: string
+          pdf_url?: string | null
+          sent_at?: string | null
+          status?: string
+          subtotal: number
+          total: number
+          updated_at?: string
+          user_id: string
+          vat_amount: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          invoice_number?: string
+          order_id?: string
+          pdf_url?: string | null
+          sent_at?: string | null
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+          user_id?: string
+          vat_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           content: string
@@ -222,6 +350,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      newsletter_subscribers: {
+        Row: {
+          email: string
+          id: string
+          is_active: boolean
+          subscribed_at: string
+          unsubscribed_at: string | null
+        }
+        Insert: {
+          email: string
+          id?: string
+          is_active?: boolean
+          subscribed_at?: string
+          unsubscribed_at?: string | null
+        }
+        Update: {
+          email?: string
+          id?: string
+          is_active?: boolean
+          subscribed_at?: string
+          unsubscribed_at?: string | null
+        }
+        Relationships: []
       }
       order_items: {
         Row: {
@@ -266,8 +418,12 @@ export type Database = {
       }
       orders: {
         Row: {
+          cancel_reason: string | null
+          cancelled_at: string | null
           created_at: string
           id: string
+          payment_intent_id: string | null
+          payment_status: string | null
           shipping_address: Json
           status: string
           total: number
@@ -275,8 +431,12 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          cancel_reason?: string | null
+          cancelled_at?: string | null
           created_at?: string
           id?: string
+          payment_intent_id?: string | null
+          payment_status?: string | null
           shipping_address: Json
           status?: string
           total: number
@@ -284,8 +444,12 @@ export type Database = {
           user_id: string
         }
         Update: {
+          cancel_reason?: string | null
+          cancelled_at?: string | null
           created_at?: string
           id?: string
+          payment_intent_id?: string | null
+          payment_status?: string | null
           shipping_address?: Json
           status?: string
           total?: number
@@ -393,6 +557,56 @@ export type Database = {
         }
         Relationships: []
       }
+      refunds: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          order_id: string
+          processed_at: string | null
+          processed_by: string | null
+          reason: string | null
+          status: string
+          stripe_refund_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          order_id: string
+          processed_at?: string | null
+          processed_by?: string | null
+          reason?: string | null
+          status?: string
+          stripe_refund_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          order_id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          reason?: string | null
+          status?: string
+          stripe_refund_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refunds_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           content: string
@@ -429,6 +643,38 @@ export type Database = {
         }
         Relationships: []
       }
+      stock_notifications: {
+        Row: {
+          id: string
+          product_id: string
+          sent_at: string
+          sent_to: string
+          stock_level: number
+        }
+        Insert: {
+          id?: string
+          product_id: string
+          sent_at?: string
+          sent_to: string
+          stock_level: number
+        }
+        Update: {
+          id?: string
+          product_id?: string
+          sent_at?: string
+          sent_to?: string
+          stock_level?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_notifications_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -449,6 +695,41 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      wishlists: {
+        Row: {
+          created_at: string
+          id: string
+          notified_at: string | null
+          notify_when_available: boolean
+          product_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notified_at?: string | null
+          notify_when_available?: boolean
+          product_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notified_at?: string | null
+          notify_when_available?: boolean
+          product_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wishlists_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -472,6 +753,7 @@ export type Database = {
       }
     }
     Functions: {
+      generate_invoice_number: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

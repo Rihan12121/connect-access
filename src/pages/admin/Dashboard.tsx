@@ -14,7 +14,12 @@ import {
   FolderTree,
   Image as ImageIcon,
   Settings,
-  Home
+  Home,
+  Tag,
+  FileText,
+  RotateCcw,
+  History,
+  Boxes
 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -197,6 +202,42 @@ const AdminDashboard = () => {
       description: language === 'de' ? 'Shop-Einstellungen anpassen' : 'Configure shop settings',
       href: '/admin/settings',
       icon: Settings,
+    },
+    {
+      title: language === 'de' ? 'Rabattcodes' : 'Discount Codes',
+      description: language === 'de' ? 'Gutscheine verwalten' : 'Manage coupons',
+      href: '/admin/discount-codes',
+      icon: Tag,
+    },
+    {
+      title: language === 'de' ? 'Lagerverwaltung' : 'Inventory',
+      description: language === 'de' ? 'Lagerbestand prüfen' : 'Check stock levels',
+      href: '/admin/inventory',
+      icon: Boxes,
+    },
+    {
+      title: language === 'de' ? 'Kundensegmente' : 'Customer Segments',
+      description: language === 'de' ? 'Personalisierte Rabatte' : 'Personalized discounts',
+      href: '/admin/customer-segments',
+      icon: Users,
+    },
+    {
+      title: language === 'de' ? 'Rechnungen' : 'Invoices',
+      description: language === 'de' ? 'PDF Rechnungen' : 'PDF invoices',
+      href: '/admin/invoices',
+      icon: FileText,
+    },
+    {
+      title: language === 'de' ? 'Rückerstattungen' : 'Refunds',
+      description: language === 'de' ? 'Stornos bearbeiten' : 'Process refunds',
+      href: '/admin/refunds',
+      icon: RotateCcw,
+    },
+    {
+      title: language === 'de' ? 'Audit-Logs' : 'Audit Logs',
+      description: language === 'de' ? 'Änderungsprotokoll' : 'Change log',
+      href: '/admin/audit-logs',
+      icon: History,
     },
     {
       title: language === 'de' ? 'Homepage' : 'Homepage',
