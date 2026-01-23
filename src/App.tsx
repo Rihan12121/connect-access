@@ -11,6 +11,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import ScrollToTop from "@/components/ScrollToTop";
 import BackToTopButton from "@/components/BackToTopButton";
 import CookieConsentBanner from "@/components/CookieConsentBanner";
+import LiveChatWidget from "@/components/LiveChatWidget";
 import { Outlet } from "react-router-dom";
 
 // Single QueryClient instance with optimized settings
@@ -37,6 +38,7 @@ const App = () => (
                   <ScrollToTop />
                   <BackToTopButton />
                   <CookieConsentBanner />
+                  <LiveChatWidget />
                   <Outlet />
                 </FavoritesProvider>
               </CartProvider>

@@ -14,6 +14,229 @@ export type Database = {
   }
   public: {
     Tables: {
+      ab_test_impressions: {
+        Row: {
+          conversion_value: number | null
+          converted: boolean
+          created_at: string
+          id: string
+          session_id: string
+          test_id: string
+          user_id: string | null
+          variant: string
+        }
+        Insert: {
+          conversion_value?: number | null
+          converted?: boolean
+          created_at?: string
+          id?: string
+          session_id: string
+          test_id: string
+          user_id?: string | null
+          variant: string
+        }
+        Update: {
+          conversion_value?: number | null
+          converted?: boolean
+          created_at?: string
+          id?: string
+          session_id?: string
+          test_id?: string
+          user_id?: string | null
+          variant?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ab_test_impressions_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "ab_tests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ab_tests: {
+        Row: {
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          is_active: boolean
+          name: string
+          start_date: string | null
+          target_entity: string | null
+          target_id: string | null
+          test_type: string
+          traffic_split: Json
+          updated_at: string
+          variants: Json
+          winner_variant: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          start_date?: string | null
+          target_entity?: string | null
+          target_id?: string | null
+          test_type?: string
+          traffic_split?: Json
+          updated_at?: string
+          variants?: Json
+          winner_variant?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          start_date?: string | null
+          target_entity?: string | null
+          target_id?: string | null
+          test_type?: string
+          traffic_split?: Json
+          updated_at?: string
+          variants?: Json
+          winner_variant?: string | null
+        }
+        Relationships: []
+      }
+      affiliate_payouts: {
+        Row: {
+          affiliate_id: string
+          amount: number
+          created_at: string
+          id: string
+          payment_details: Json | null
+          payment_method: string | null
+          processed_at: string | null
+          processed_by: string | null
+          status: string
+        }
+        Insert: {
+          affiliate_id: string
+          amount: number
+          created_at?: string
+          id?: string
+          payment_details?: Json | null
+          payment_method?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string
+        }
+        Update: {
+          affiliate_id?: string
+          amount?: number
+          created_at?: string
+          id?: string
+          payment_details?: Json | null
+          payment_method?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_payouts_affiliate_id_fkey"
+            columns: ["affiliate_id"]
+            isOneToOne: false
+            referencedRelation: "affiliates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      affiliate_referrals: {
+        Row: {
+          affiliate_id: string
+          clicked_at: string
+          commission_amount: number | null
+          converted_at: string | null
+          id: string
+          order_id: string | null
+          status: string
+          visitor_ip: string | null
+        }
+        Insert: {
+          affiliate_id: string
+          clicked_at?: string
+          commission_amount?: number | null
+          converted_at?: string | null
+          id?: string
+          order_id?: string | null
+          status?: string
+          visitor_ip?: string | null
+        }
+        Update: {
+          affiliate_id?: string
+          clicked_at?: string
+          commission_amount?: number | null
+          converted_at?: string | null
+          id?: string
+          order_id?: string | null
+          status?: string
+          visitor_ip?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_referrals_affiliate_id_fkey"
+            columns: ["affiliate_id"]
+            isOneToOne: false
+            referencedRelation: "affiliates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "affiliate_referrals_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      affiliates: {
+        Row: {
+          code: string
+          commission_rate: number
+          created_at: string
+          id: string
+          pending_payout: number
+          status: string
+          total_earnings: number
+          total_paid: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          commission_rate?: number
+          created_at?: string
+          id?: string
+          pending_payout?: number
+          status?: string
+          total_earnings?: number
+          total_paid?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          commission_rate?: number
+          created_at?: string
+          id?: string
+          pending_payout?: number
+          status?: string
+          total_earnings?: number
+          total_paid?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           action: string
@@ -375,6 +598,44 @@ export type Database = {
         }
         Relationships: []
       }
+      order_events: {
+        Row: {
+          created_at: string
+          event_data: Json | null
+          event_type: string
+          id: string
+          order_id: string
+          processed: boolean
+          processed_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          order_id: string
+          processed?: boolean
+          processed_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          order_id?: string
+          processed?: boolean
+          processed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_events_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_items: {
         Row: {
           created_at: string
@@ -455,6 +716,33 @@ export type Database = {
           total?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      performance_metrics: {
+        Row: {
+          created_at: string
+          id: string
+          metadata: Json | null
+          metric_name: string
+          metric_type: string
+          metric_value: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          metric_name: string
+          metric_type: string
+          metric_value: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          metric_name?: string
+          metric_type?: string
+          metric_value?: number
         }
         Relationships: []
       }
@@ -557,6 +845,30 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limits: {
+        Row: {
+          endpoint: string
+          id: string
+          identifier: string
+          request_count: number
+          window_start: string
+        }
+        Insert: {
+          endpoint: string
+          id?: string
+          identifier: string
+          request_count?: number
+          window_start?: string
+        }
+        Update: {
+          endpoint?: string
+          id?: string
+          identifier?: string
+          request_count?: number
+          window_start?: string
+        }
+        Relationships: []
+      }
       refunds: {
         Row: {
           amount: number
@@ -640,6 +952,36 @@ export type Database = {
           updated_at?: string
           user_id?: string
           user_name?: string | null
+        }
+        Relationships: []
+      }
+      search_analytics: {
+        Row: {
+          clicked_product_id: string | null
+          created_at: string
+          id: string
+          query: string
+          results_count: number
+          session_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          clicked_product_id?: string | null
+          created_at?: string
+          id?: string
+          query: string
+          results_count?: number
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          clicked_product_id?: string | null
+          created_at?: string
+          id?: string
+          query?: string
+          results_count?: number
+          session_id?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }

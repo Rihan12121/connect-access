@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
-import { Settings2, Image, Grid3X3, Sparkles, Zap, Layout, ChevronRight, Tag, Package, Users, FileText, RotateCcw, History } from 'lucide-react';
+import { Settings2, Image, Grid3X3, Sparkles, Zap, Layout, ChevronRight, Tag, Package, Users, FileText, RotateCcw, History, FlaskConical, Link2, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -122,6 +122,36 @@ const HomepageEditor = ({ isOpen, onClose }: HomepageEditorProps) => {
       icon: History,
       action: () => navigate('/admin/audit-logs'),
       color: 'text-slate-500 bg-slate-500/10',
+    },
+    {
+      id: 'ab-tests',
+      title: 'A/B Tests',
+      description: language === 'de'
+        ? 'Varianten testen und optimieren'
+        : 'Test and optimize variants',
+      icon: FlaskConical,
+      action: () => navigate('/admin/ab-tests'),
+      color: 'text-violet-500 bg-violet-500/10',
+    },
+    {
+      id: 'affiliates',
+      title: language === 'de' ? 'Affiliates' : 'Affiliates',
+      description: language === 'de'
+        ? 'Partner und Provisionen verwalten'
+        : 'Manage partners and commissions',
+      icon: Link2,
+      action: () => navigate('/admin/affiliates'),
+      color: 'text-teal-500 bg-teal-500/10',
+    },
+    {
+      id: 'analytics',
+      title: 'Analytics',
+      description: language === 'de'
+        ? 'Such- und Performance-Analysen'
+        : 'Search and performance analytics',
+      icon: BarChart3,
+      action: () => navigate('/admin/analytics'),
+      color: 'text-sky-500 bg-sky-500/10',
     },
     {
       id: 'settings',

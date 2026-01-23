@@ -19,7 +19,10 @@ import {
   FileText,
   RotateCcw,
   History,
-  Boxes
+  Boxes,
+  FlaskConical,
+  Link2,
+  BarChart3
 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -238,6 +241,24 @@ const AdminDashboard = () => {
       description: language === 'de' ? 'Änderungsprotokoll' : 'Change log',
       href: '/admin/audit-logs',
       icon: History,
+    },
+    {
+      title: 'A/B Tests',
+      description: language === 'de' ? 'Varianten testen' : 'Test variants',
+      href: '/admin/ab-tests',
+      icon: FlaskConical,
+    },
+    {
+      title: language === 'de' ? 'Affiliates' : 'Affiliates',
+      description: language === 'de' ? 'Partner verwalten' : 'Manage partners',
+      href: '/admin/affiliates',
+      icon: Link2,
+    },
+    {
+      title: 'Analytics',
+      description: language === 'de' ? 'Analysen & Statistiken' : 'Analytics & Stats',
+      href: '/admin/analytics',
+      icon: BarChart3,
     },
     {
       title: language === 'de' ? 'Homepage' : 'Homepage',
