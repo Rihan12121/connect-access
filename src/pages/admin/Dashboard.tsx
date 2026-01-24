@@ -22,7 +22,9 @@ import {
   Boxes,
   FlaskConical,
   Link2,
-  BarChart3
+  BarChart3,
+  Activity,
+  Languages
 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -259,6 +261,18 @@ const AdminDashboard = () => {
       description: language === 'de' ? 'Analysen & Statistiken' : 'Analytics & Stats',
       href: '/admin/analytics',
       icon: BarChart3,
+    },
+    {
+      title: language === 'de' ? 'Echtzeit' : 'Realtime',
+      description: language === 'de' ? 'Live-Dashboard' : 'Live Dashboard',
+      href: '/admin/realtime',
+      icon: Activity,
+    },
+    {
+      title: language === 'de' ? 'Übersetzungen' : 'Translations',
+      description: language === 'de' ? 'Sprachen verwalten' : 'Manage languages',
+      href: '/admin/translations',
+      icon: Languages,
     },
     {
       title: language === 'de' ? 'Homepage' : 'Homepage',

@@ -49,6 +49,7 @@ const AdminAuditLogs = lazy(() => import("./pages/admin/AuditLogs"));
 const AdminABTests = lazy(() => import("./pages/admin/ABTests"));
 const AdminAffiliates = lazy(() => import("./pages/admin/Affiliates"));
 const AdminAnalytics = lazy(() => import("./pages/admin/Analytics"));
+const AdminRealtimeDashboard = lazy(() => import("./pages/admin/RealtimeDashboard"));
 const Wishlist = lazy(() => import("./pages/Wishlist"));
 const Affiliate = lazy(() => import("./pages/Affiliate"));
 const Install = lazy(() => import("./pages/Install"));
@@ -59,6 +60,9 @@ const AdminTranslations = lazy(() => import("./pages/admin/Translations"));
 // Seller pages - lazy loaded (seller only)
 const SellerDashboard = lazy(() => import("./pages/seller/Dashboard"));
 const SellerProductForm = lazy(() => import("./pages/seller/ProductForm"));
+const SellerOrders = lazy(() => import("./pages/seller/SellerOrders"));
+const SellerAnalytics = lazy(() => import("./pages/seller/SellerAnalytics"));
+const SellerPayouts = lazy(() => import("./pages/seller/SellerPayouts"));
 
 // Wrap lazy components with Suspense
 const withSuspense = (Component: React.LazyExoticComponent<() => JSX.Element>) => (
@@ -134,11 +138,15 @@ export const routes: RouteRecord[] = [
   { path: "/admin/affiliates", element: withAdminGuard(AdminAffiliates) },
   { path: "/admin/analytics", element: withAdminGuard(AdminAnalytics) },
   { path: "/admin/translations", element: withAdminGuard(AdminTranslations) },
+  { path: "/admin/realtime", element: withAdminGuard(AdminRealtimeDashboard) },
   
   // Seller routes - protected
   { path: "/seller", element: withSellerGuard(SellerDashboard) },
   { path: "/seller/products/new", element: withSellerGuard(SellerProductForm) },
   { path: "/seller/products/:id/edit", element: withSellerGuard(SellerProductForm) },
+  { path: "/seller/orders", element: withSellerGuard(SellerOrders) },
+  { path: "/seller/analytics", element: withSellerGuard(SellerAnalytics) },
+  { path: "/seller/payouts", element: withSellerGuard(SellerPayouts) },
   
   // 404 - not pre-rendered
   { path: "*", element: withSuspense(NotFound) },

@@ -15,6 +15,7 @@ import PopularCategoriesGrid from '@/components/PopularCategoriesGrid';
 import ProductShowcase from '@/components/ProductShowcase';
 import RecentlyViewedSection from '@/components/RecentlyViewedSection';
 import PersonalizedRecommendations from '@/components/PersonalizedRecommendations';
+import AIRecommendations from '@/components/AIRecommendations';
 import HomepageEditor from '@/components/admin/HomepageEditor';
 import { Button } from '@/components/ui/button';
 
@@ -104,6 +105,11 @@ const Index = () => {
           isLoading={productsLoading}
           viewAllLink="/products"
         />
+      </div>
+
+      {/* AI-Powered Recommendations */}
+      <div className="mt-16 md:mt-24">
+        <AIRecommendations />
       </div>
 
       {/* Personalized Recommendations */}
