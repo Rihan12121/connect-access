@@ -154,12 +154,22 @@ const HomepageEditor = ({ isOpen, onClose }: HomepageEditorProps) => {
       color: 'text-sky-500 bg-sky-500/10',
     },
     {
+      id: 'translations',
+      title: language === 'de' ? 'Übersetzungen' : 'Translations',
+      description: language === 'de'
+        ? 'Alle Texte in DE/EN bearbeiten'
+        : 'Edit all texts in DE/EN',
+      icon: Layout,
+      action: () => navigate('/admin/translations'),
+      color: 'text-lime-500 bg-lime-500/10',
+    },
+    {
       id: 'settings',
       title: language === 'de' ? 'Seiteneinstellungen' : 'Page Settings',
       description: language === 'de'
         ? 'Globale Einstellungen und Texte'
         : 'Global settings and texts',
-      icon: Layout,
+      icon: Settings2,
       action: () => navigate('/admin/settings'),
       color: 'text-indigo-500 bg-indigo-500/10',
     },
