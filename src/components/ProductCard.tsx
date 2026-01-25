@@ -117,10 +117,10 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
                 <Heart className={`w-4 h-4 transition-colors ${isFavorite(product.id) ? 'fill-favorite text-favorite' : 'text-foreground/60'}`} />
               </button>
               
-              {/* Compare Button - Desktop */}
+              {/* Compare Button - Always visible */}
               <button 
                 onClick={handleAddToCompare}
-                className={`hidden md:flex p-2 rounded-xl backdrop-blur-md shadow-lg transition-all duration-300 hover:scale-110 opacity-0 group-hover:opacity-100 ${
+                className={`p-2 rounded-xl backdrop-blur-md shadow-lg transition-all duration-300 hover:scale-110 touch-manipulation active:scale-95 ${
                   isInCompare(product.id) 
                     ? 'bg-primary/15 border border-primary/30' 
                     : 'bg-card/95 hover:bg-card border border-border/50'
