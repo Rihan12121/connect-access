@@ -7,11 +7,13 @@ import { CartProvider } from "@/context/CartContext";
 import { FavoritesProvider } from "@/context/FavoritesContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { CompareProvider } from "@/context/CompareContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ScrollToTop from "@/components/ScrollToTop";
 import BackToTopButton from "@/components/BackToTopButton";
 import CookieConsentBanner from "@/components/CookieConsentBanner";
 import LiveChatWidget from "@/components/LiveChatWidget";
+import CompareFloatingBar from "@/components/CompareFloatingBar";
 import { Outlet } from "react-router-dom";
 
 // Single QueryClient instance with optimized settings
@@ -33,13 +35,16 @@ const App = () => (
             <AuthProvider>
               <CartProvider>
                 <FavoritesProvider>
-                  <Toaster />
-                  <Sonner position="top-center" />
-                  <ScrollToTop />
-                  <BackToTopButton />
-                  <CookieConsentBanner />
-                  <LiveChatWidget />
-                  <Outlet />
+                  <CompareProvider>
+                    <Toaster />
+                    <Sonner position="top-center" />
+                    <ScrollToTop />
+                    <BackToTopButton />
+                    <CookieConsentBanner />
+                    <LiveChatWidget />
+                    <CompareFloatingBar />
+                    <Outlet />
+                  </CompareProvider>
                 </FavoritesProvider>
               </CartProvider>
             </AuthProvider>

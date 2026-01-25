@@ -566,9 +566,39 @@ const Checkout = () => {
                       <div className="flex items-center gap-3 mb-4">
                         <Lock className="w-5 h-5 text-primary" />
                         <span className="font-semibold text-foreground">
-                          {language === 'de' ? 'Sichere Zahlung mit Stripe' : 'Secure Payment with Stripe'}
+                          {language === 'de' ? 'Sichere Zahlungsoptionen' : 'Secure Payment Options'}
                         </span>
                       </div>
+                      
+                      {/* Payment Options */}
+                      <div className="space-y-3 mb-4">
+                        <div className="flex items-center gap-3 p-3 bg-card rounded-lg border border-border">
+                          <div className="w-10 h-6 bg-[#003087] rounded flex items-center justify-center">
+                            <span className="text-white font-bold text-[9px] tracking-tight">
+                              Pay<span className="text-[#009cde]">Pal</span>
+                            </span>
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-foreground">PayPal</p>
+                            <p className="text-xs text-muted-foreground">
+                              {language === 'de' ? 'Schnell & sicher bezahlen' : 'Fast & secure payment'}
+                            </p>
+                          </div>
+                          <Check className="w-4 h-4 text-success" />
+                        </div>
+                        
+                        <div className="flex items-center gap-3 p-3 bg-card rounded-lg border border-border">
+                          <CreditCard className="w-6 h-6 text-muted-foreground" />
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-foreground">
+                              {language === 'de' ? 'Kreditkarte' : 'Credit Card'}
+                            </p>
+                            <p className="text-xs text-muted-foreground">Visa, Mastercard, AMEX</p>
+                          </div>
+                          <Check className="w-4 h-4 text-success" />
+                        </div>
+                      </div>
+                      
                       <p className="text-sm text-muted-foreground mb-4">
                         {language === 'de' 
                           ? 'Sie werden zu Stripe weitergeleitet, um Ihre Zahlung sicher abzuschließen.' 

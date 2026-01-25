@@ -1,10 +1,11 @@
 import { forwardRef } from 'react';
-import { Heart, ShoppingCart, Star, Eye } from 'lucide-react';
+import { Heart, ShoppingCart, Star, Eye, GitCompare } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Product } from '@/hooks/useProducts';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useCart } from '@/context/CartContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { useCompare } from '@/context/CompareContext';
 import { toast } from 'sonner';
 import { addToRecentlyViewed } from './RecentlyViewedSection';
 
@@ -19,6 +20,7 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
     const { toggleFavorite, isFavorite } = useFavorites();
     const { addItem } = useCart();
     const { t, language } = useLanguage();
+    const { addToCompare, isInCompare, canAddMore } = useCompare();
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -39,6 +41,26 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
       e.stopPropagation();
       toggleFavorite(product);
       toast.success(isFavorite(product.id) ? t('favorites.removed') : t('favorites.added'));
+    };
+
+    const handleAddToCompare = (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (isInCompare(product.id)) {
+        toast.info(language === 'de' ? 'Bereits im Vergleich' : 'Already in comparison');
+        return;
+      }
+      addToCompare({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        original_price: product.originalPrice,
+        image: product.image,
+        category: product.category,
+        description: product.description,
+        in_stock: product.inStock,
+        discount: product.discount,
+      });
     };
 
     // Calculate discount percentage display
@@ -95,6 +117,19 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
                 <Heart className={`w-4 h-4 transition-colors ${isFavorite(product.id) ? 'fill-favorite text-favorite' : 'text-foreground/60'}`} />
               </button>
               
+              {/* Compare Button - Desktop */}
+              <button 
+                onClick={handleAddToCompare}
+                className={`hidden md:flex p-2 rounded-xl backdrop-blur-md shadow-lg transition-all duration-300 hover:scale-110 opacity-0 group-hover:opacity-100 ${
+                  isInCompare(product.id) 
+                    ? 'bg-primary/15 border border-primary/30' 
+                    : 'bg-card/95 hover:bg-card border border-border/50'
+                }`}
+                title={language === 'de' ? 'Zum Vergleich hinzufügen' : 'Add to compare'}
+              >
+                <GitCompare className={`w-4 h-4 transition-colors ${isInCompare(product.id) ? 'text-primary' : 'text-foreground/60'}`} />
+              </button>
+
               {/* Quick View Button - Desktop */}
               <button 
                 onClick={handleClick}

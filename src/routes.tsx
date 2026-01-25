@@ -53,6 +53,7 @@ const AdminRealtimeDashboard = lazy(() => import("./pages/admin/RealtimeDashboar
 const Wishlist = lazy(() => import("./pages/Wishlist"));
 const Affiliate = lazy(() => import("./pages/Affiliate"));
 const Install = lazy(() => import("./pages/Install"));
+const Compare = lazy(() => import("./pages/Compare"));
 
 // Admin pages - translations
 const AdminTranslations = lazy(() => import("./pages/admin/Translations"));
@@ -118,6 +119,7 @@ export const routes: RouteRecord[] = [
   { path: "/wishlist", element: withSuspense(Wishlist) },
   { path: "/affiliate", element: withSuspense(Affiliate) },
   { path: "/install", element: withSuspense(Install) },
+  { path: "/compare", element: withSuspense(Compare) },
   
   // Admin routes - protected
   { path: "/admin", element: withAdminGuard(AdminDashboard) },
