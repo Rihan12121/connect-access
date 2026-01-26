@@ -54,10 +54,17 @@ const Wishlist = lazy(() => import("./pages/Wishlist"));
 const Affiliate = lazy(() => import("./pages/Affiliate"));
 const Install = lazy(() => import("./pages/Install"));
 const Compare = lazy(() => import("./pages/Compare"));
+const DataPrivacy = lazy(() => import("./pages/account/DataPrivacy"));
 
-// Admin pages - translations
+// Admin pages - translations & new enterprise features
 const AdminTranslations = lazy(() => import("./pages/admin/Translations"));
-
+const AdminReturns = lazy(() => import("./pages/admin/Returns"));
+const AdminGDPR = lazy(() => import("./pages/admin/GDPR"));
+const AdminTaxSettings = lazy(() => import("./pages/admin/TaxSettings"));
+const AdminDisputes = lazy(() => import("./pages/admin/Disputes"));
+const AdminMonitoring = lazy(() => import("./pages/admin/Monitoring"));
+const AdminSellerPayouts = lazy(() => import("./pages/admin/SellerPayouts"));
+const AdminSellerRatings = lazy(() => import("./pages/admin/SellerRatings"));
 // Seller pages - lazy loaded (seller only)
 const SellerDashboard = lazy(() => import("./pages/seller/Dashboard"));
 const SellerProductForm = lazy(() => import("./pages/seller/ProductForm"));
@@ -120,6 +127,7 @@ export const routes: RouteRecord[] = [
   { path: "/affiliate", element: withSuspense(Affiliate) },
   { path: "/install", element: withSuspense(Install) },
   { path: "/compare", element: withSuspense(Compare) },
+  { path: "/account/data-privacy", element: withSuspense(DataPrivacy) },
   
   // Admin routes - protected
   { path: "/admin", element: withAdminGuard(AdminDashboard) },
@@ -141,6 +149,13 @@ export const routes: RouteRecord[] = [
   { path: "/admin/analytics", element: withAdminGuard(AdminAnalytics) },
   { path: "/admin/translations", element: withAdminGuard(AdminTranslations) },
   { path: "/admin/realtime", element: withAdminGuard(AdminRealtimeDashboard) },
+  { path: "/admin/returns", element: withAdminGuard(AdminReturns) },
+  { path: "/admin/gdpr", element: withAdminGuard(AdminGDPR) },
+  { path: "/admin/tax-settings", element: withAdminGuard(AdminTaxSettings) },
+  { path: "/admin/disputes", element: withAdminGuard(AdminDisputes) },
+  { path: "/admin/monitoring", element: withAdminGuard(AdminMonitoring) },
+  { path: "/admin/seller-payouts", element: withAdminGuard(AdminSellerPayouts) },
+  { path: "/admin/seller-ratings", element: withAdminGuard(AdminSellerRatings) },
   
   // Seller routes - protected
   { path: "/seller", element: withSellerGuard(SellerDashboard) },

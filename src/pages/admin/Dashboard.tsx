@@ -24,7 +24,12 @@ import {
   Link2,
   BarChart3,
   Activity,
-  Languages
+  Languages,
+  Shield,
+  Receipt,
+  AlertTriangle,
+  Wallet,
+  Globe
 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -279,6 +284,48 @@ const AdminDashboard = () => {
       description: language === 'de' ? 'Startseite bearbeiten' : 'Edit homepage',
       href: '/',
       icon: Home,
+    },
+    {
+      title: language === 'de' ? 'Rücksendungen' : 'Returns',
+      description: language === 'de' ? 'Retouren verwalten' : 'Manage returns',
+      href: '/admin/returns',
+      icon: RotateCcw,
+    },
+    {
+      title: language === 'de' ? 'DSGVO' : 'GDPR',
+      description: language === 'de' ? 'Datenanfragen' : 'Data requests',
+      href: '/admin/gdpr',
+      icon: Shield,
+    },
+    {
+      title: language === 'de' ? 'Steuern (EU-OSS)' : 'Tax (EU-OSS)',
+      description: language === 'de' ? 'MwSt.-Sätze' : 'VAT rates',
+      href: '/admin/tax-settings',
+      icon: Receipt,
+    },
+    {
+      title: language === 'de' ? 'Streitfälle' : 'Disputes',
+      description: language === 'de' ? 'Konflikte lösen' : 'Resolve conflicts',
+      href: '/admin/disputes',
+      icon: AlertTriangle,
+    },
+    {
+      title: language === 'de' ? 'Monitoring' : 'Monitoring',
+      description: language === 'de' ? 'SLA & System' : 'SLA & System',
+      href: '/admin/monitoring',
+      icon: Activity,
+    },
+    {
+      title: language === 'de' ? 'Seller-Auszahlungen' : 'Seller Payouts',
+      description: language === 'de' ? '15% Provision' : '15% Commission',
+      href: '/admin/seller-payouts',
+      icon: Wallet,
+    },
+    {
+      title: language === 'de' ? 'Seller-Ratings' : 'Seller Ratings',
+      description: language === 'de' ? 'Verkäuferbewertungen' : 'Seller reviews',
+      href: '/admin/seller-ratings',
+      icon: Star,
     },
   ];
 
