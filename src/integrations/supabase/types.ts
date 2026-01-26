@@ -450,6 +450,39 @@ export type Database = {
         }
         Relationships: []
       }
+      gdpr_requests: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          download_url: string | null
+          expires_at: string | null
+          id: string
+          request_type: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          download_url?: string | null
+          expires_at?: string | null
+          id?: string
+          request_type: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          download_url?: string | null
+          expires_at?: string | null
+          id?: string
+          request_type?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       hero_banners: {
         Row: {
           created_at: string
@@ -746,6 +779,39 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_metrics: {
+        Row: {
+          id: string
+          metadata: Json | null
+          metric_name: string
+          metric_type: string
+          metric_value: number
+          recorded_at: string
+          threshold_critical: number | null
+          threshold_warning: number | null
+        }
+        Insert: {
+          id?: string
+          metadata?: Json | null
+          metric_name: string
+          metric_type: string
+          metric_value: number
+          recorded_at?: string
+          threshold_critical?: number | null
+          threshold_warning?: number | null
+        }
+        Update: {
+          id?: string
+          metadata?: Json | null
+          metric_name?: string
+          metric_type?: string
+          metric_value?: number
+          recorded_at?: string
+          threshold_critical?: number | null
+          threshold_warning?: number | null
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category: string
@@ -919,6 +985,62 @@ export type Database = {
           },
         ]
       }
+      returns: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          order_id: string
+          processed_at: string | null
+          processed_by: string | null
+          reason: string
+          refund_amount: number | null
+          return_label_url: string | null
+          status: string
+          tracking_number: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          order_id: string
+          processed_at?: string | null
+          processed_by?: string | null
+          reason: string
+          refund_amount?: number | null
+          return_label_url?: string | null
+          status?: string
+          tracking_number?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          order_id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          reason?: string
+          refund_amount?: number | null
+          return_label_url?: string | null
+          status?: string
+          tracking_number?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "returns_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           content: string
@@ -985,6 +1107,148 @@ export type Database = {
         }
         Relationships: []
       }
+      seller_disputes: {
+        Row: {
+          buyer_id: string
+          created_at: string
+          description: string | null
+          id: string
+          order_id: string
+          reason: string
+          resolution: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          seller_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          buyer_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          order_id: string
+          reason: string
+          resolution?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          seller_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          buyer_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          order_id?: string
+          reason?: string
+          resolution?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          seller_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seller_disputes_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seller_payouts: {
+        Row: {
+          amount: number
+          bank_details: Json | null
+          created_at: string
+          id: string
+          net_amount: number
+          payout_method: string | null
+          platform_fee: number
+          processed_at: string | null
+          scheduled_for: string | null
+          seller_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          bank_details?: Json | null
+          created_at?: string
+          id?: string
+          net_amount: number
+          payout_method?: string | null
+          platform_fee?: number
+          processed_at?: string | null
+          scheduled_for?: string | null
+          seller_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          bank_details?: Json | null
+          created_at?: string
+          id?: string
+          net_amount?: number
+          payout_method?: string | null
+          platform_fee?: number
+          processed_at?: string | null
+          scheduled_for?: string | null
+          seller_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      seller_ratings: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          is_verified_purchase: boolean | null
+          order_id: string | null
+          rating: number
+          seller_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          is_verified_purchase?: boolean | null
+          order_id?: string | null
+          rating: number
+          seller_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          is_verified_purchase?: boolean | null
+          order_id?: string | null
+          rating?: number
+          seller_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seller_ratings_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stock_notifications: {
         Row: {
           id: string
@@ -1016,6 +1280,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      tax_settings: {
+        Row: {
+          country_code: string
+          country_name: string
+          created_at: string
+          id: string
+          is_active: boolean | null
+          is_eu_member: boolean | null
+          oss_applicable: boolean | null
+          threshold_amount: number | null
+          updated_at: string
+          vat_rate: number
+        }
+        Insert: {
+          country_code: string
+          country_name: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          is_eu_member?: boolean | null
+          oss_applicable?: boolean | null
+          threshold_amount?: number | null
+          updated_at?: string
+          vat_rate: number
+        }
+        Update: {
+          country_code?: string
+          country_name?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          is_eu_member?: boolean | null
+          oss_applicable?: boolean | null
+          threshold_amount?: number | null
+          updated_at?: string
+          vat_rate?: number
+        }
+        Relationships: []
       }
       translations: {
         Row: {
