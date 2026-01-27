@@ -679,6 +679,7 @@ export type Database = {
           product_image: string | null
           product_name: string
           quantity: number
+          seller_id: string | null
         }
         Insert: {
           created_at?: string
@@ -689,6 +690,7 @@ export type Database = {
           product_image?: string | null
           product_name: string
           quantity?: number
+          seller_id?: string | null
         }
         Update: {
           created_at?: string
@@ -699,6 +701,7 @@ export type Database = {
           product_image?: string | null
           product_name?: string
           quantity?: number
+          seller_id?: string | null
         }
         Relationships: [
           {
@@ -1167,6 +1170,7 @@ export type Database = {
           created_at: string
           id: string
           net_amount: number
+          order_id: string | null
           payout_method: string | null
           platform_fee: number
           processed_at: string | null
@@ -1181,6 +1185,7 @@ export type Database = {
           created_at?: string
           id?: string
           net_amount: number
+          order_id?: string | null
           payout_method?: string | null
           platform_fee?: number
           processed_at?: string | null
@@ -1195,6 +1200,7 @@ export type Database = {
           created_at?: string
           id?: string
           net_amount?: number
+          order_id?: string | null
           payout_method?: string | null
           platform_fee?: number
           processed_at?: string | null

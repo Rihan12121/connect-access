@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SEO from '@/components/SEO';
+import { RequestReturnDialog } from '@/components/RequestReturnDialog';
 import { Package, ChevronRight, ShoppingBag, Loader2 } from 'lucide-react';
 
 interface OrderItem {
@@ -37,6 +38,7 @@ const OrderHistory = () => {
   const { user } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [existingReturns, setExistingReturns] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -63,6 +65,18 @@ const OrderHistory = () => {
           order_items: order.order_items || []
         }));
         setOrders(typedOrders);
+
+        // Check which orders already have a return request
+        const orderIds = typedOrders.map(o => o.id);
+        const { data: returnsData } = await supabase
+          .from('returns')
+          .select('order_id')
+          .in('order_id', orderIds);
+        const map: Record<string, boolean> = {};
+        (returnsData || []).forEach((r) => {
+          map[r.order_id as string] = true;
+        });
+        setExistingReturns(map);
       }
       setLoading(false);
     };
@@ -83,6 +97,7 @@ const OrderHistory = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
+      case 'open': return 'bg-muted text-muted-foreground';
       case 'delivered': return 'bg-green-100 text-green-800';
       case 'shipped': return 'bg-blue-100 text-blue-800';
       case 'confirmed': return 'bg-yellow-100 text-yellow-800';
@@ -199,6 +214,16 @@ const OrderHistory = () => {
 
                 {/* Order Items */}
                 <div className="p-6">
+                  {/* Actions */}
+                  <div className="flex flex-wrap gap-2 justify-end mb-4">
+                    <RequestReturnDialog
+                      orderId={order.id}
+                      userId={user.id}
+                      disabled={Boolean(existingReturns[order.id]) || order.status === 'cancelled'}
+                      onCreated={() => setExistingReturns(prev => ({ ...prev, [order.id]: true }))}
+                    />
+                  </div>
+
                   <div className="space-y-4">
                     {order.order_items.map((item) => (
                       <div key={item.id} className="flex items-center gap-4">
