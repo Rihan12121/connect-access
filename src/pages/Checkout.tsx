@@ -218,6 +218,7 @@ const Checkout = () => {
             product_image: item.product.image,
             price: item.product.price,
             quantity: item.quantity,
+            seller_id: (item.product as any).seller_id ?? null,
           }));
 
           const { error: itemsError } = await supabase
