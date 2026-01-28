@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { FileText, Download, Mail, Eye, Check, Clock, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { FileText, Download, Mail, Eye, Check, Clock, X, ArrowLeft, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -25,7 +26,6 @@ import AdminGuard from '@/components/AdminGuard';
 import { useLanguage } from '@/context/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
 
 interface Invoice {
   id: string;
@@ -160,12 +160,17 @@ Vielen Dank für Ihren Einkauf!
       <main className="min-h-screen bg-background py-8">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-3">
-              <FileText className="h-8 w-8 text-primary" />
-              <h1 className="text-3xl font-bold">
-                {language === 'de' ? 'Rechnungen' : 'Invoices'}
-              </h1>
-              <Badge variant="secondary">{invoices.length}</Badge>
+            <div className="flex items-center gap-4">
+              <Link to="/admin" className="p-2 hover:bg-muted rounded-lg transition-colors">
+                <ArrowLeft className="w-5 h-5" />
+              </Link>
+              <div className="flex items-center gap-3">
+                <FileText className="h-8 w-8 text-primary" />
+                <h1 className="text-3xl font-bold">
+                  {language === 'de' ? 'Rechnungen' : 'Invoices'}
+                </h1>
+                <Badge variant="secondary">{invoices.length}</Badge>
+              </div>
             </div>
           </div>
 

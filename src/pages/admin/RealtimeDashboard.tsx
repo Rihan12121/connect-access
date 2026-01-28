@@ -189,6 +189,29 @@ const RealtimeDashboard = () => {
           </Card>
         </div>
 
+        {/* Open Orders Card */}
+        <Card className="mb-8 border-purple-200 dark:border-purple-800">
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2">
+              <Package className="w-5 h-5 text-purple-500" />
+              {language === 'de' ? 'Offene Bestellungen' : 'Open Orders'}
+              <Badge variant="secondary" className="ml-2">{stats.openOrders}</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              {language === 'de' 
+                ? 'Bestellungen mit Status: Pending, Bestätigt, oder Versendet (ohne Cancelled)' 
+                : 'Orders with status: Pending, Confirmed, or Shipped (excluding Cancelled)'}
+            </p>
+            <Link to="/admin/orders">
+              <Button variant="outline" size="sm" className="mt-3">
+                {language === 'de' ? 'Alle offenen Bestellungen anzeigen' : 'View all open orders'}
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+
         {/* Main Content Grid */}
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Recent Orders */}
