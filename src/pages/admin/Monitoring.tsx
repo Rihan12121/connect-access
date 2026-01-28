@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Activity, Server, Database, Zap, AlertTriangle, Check, TrendingUp, TrendingDown, Loader2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Activity, Server, Database, Zap, AlertTriangle, Check, TrendingUp, TrendingDown, Loader2, ArrowLeft } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -112,6 +113,9 @@ const AdminMonitoring = () => {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
+              <Link to="/admin" className="p-2 hover:bg-muted rounded-lg transition-colors">
+                <ArrowLeft className="h-5 w-5" />
+              </Link>
               <Activity className="h-8 w-8 text-primary" />
               <div>
                 <h1 className="text-3xl font-bold">

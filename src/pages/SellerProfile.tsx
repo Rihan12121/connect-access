@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Star, Loader2, ArrowLeft } from "lucide-react";
+import { Star, Loader2, ArrowLeft, Package } from "lucide-react";
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import ProductCard from "@/components/ProductCard";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,6 +35,17 @@ type SellerRating = {
   is_verified_purchase: boolean;
 };
 
+type SellerProduct = {
+  id: string;
+  name: string;
+  price: number;
+  original_price: number | null;
+  discount: number | null;
+  image: string;
+  category: string;
+  in_stock: boolean;
+};
+
 const SellerProfile = () => {
   const { id } = useParams();
   const sellerId = id || "";
@@ -42,6 +54,7 @@ const SellerProfile = () => {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<SellerPublicProfile | null>(null);
   const [ratings, setRatings] = useState<SellerRating[]>([]);
+  const [products, setProducts] = useState<SellerProduct[]>([]);
   const [ratingValue, setRatingValue] = useState("5");
   const [comment, setComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -58,23 +71,33 @@ const SellerProfile = () => {
       if (!sellerId) return;
       setLoading(true);
 
-      const { data: p, error: pErr } = await supabase
-        .from("profiles_public")
-        .select("user_id, display_name, avatar_url")
-        .eq("user_id", sellerId)
-        .maybeSingle();
+      const [profileRes, ratingsRes, productsRes] = await Promise.all([
+        supabase
+          .from("profiles_public")
+          .select("user_id, display_name, avatar_url")
+          .eq("user_id", sellerId)
+          .maybeSingle(),
+        supabase
+          .from("seller_ratings")
+          .select("id, rating, comment, created_at, is_verified_purchase")
+          .eq("seller_id", sellerId)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("products")
+          .select("id, name, price, original_price, discount, image, category, in_stock")
+          .eq("seller_id", sellerId)
+          .order("created_at", { ascending: false })
+          .limit(12),
+      ]);
 
-      if (pErr) console.error("Error loading seller profile:", pErr);
-      setProfile((p as SellerPublicProfile) || null);
+      if (profileRes.error) console.error("Error loading seller profile:", profileRes.error);
+      setProfile((profileRes.data as SellerPublicProfile) || null);
 
-      const { data: r, error: rErr } = await supabase
-        .from("seller_ratings")
-        .select("id, rating, comment, created_at, is_verified_purchase")
-        .eq("seller_id", sellerId)
-        .order("created_at", { ascending: false });
+      if (ratingsRes.error) console.error("Error loading seller ratings:", ratingsRes.error);
+      setRatings((ratingsRes.data as SellerRating[]) || []);
 
-      if (rErr) console.error("Error loading seller ratings:", rErr);
-      setRatings((r as SellerRating[]) || []);
+      if (productsRes.error) console.error("Error loading seller products:", productsRes.error);
+      setProducts((productsRes.data as SellerProduct[]) || []);
 
       setLoading(false);
     };
@@ -176,6 +199,49 @@ const SellerProfile = () => {
                 <div className="text-sm text-muted-foreground">
                   {language === "de" ? "Verifiziert:" : "Verified:"} {stats.verified}
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Seller Products */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Package className="w-5 h-5" />
+                  {language === "de" ? "Produkte dieses Verkäufers" : "Products by this seller"}
+                  {products.length > 0 && (
+                    <span className="text-sm font-normal text-muted-foreground">
+                      ({products.length})
+                    </span>
+                  )}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {products.length === 0 ? (
+                  <div className="text-sm text-muted-foreground text-center py-8">
+                    {language === "de"
+                      ? "Keine Produkte vorhanden."
+                      : "No products available."}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {products.map((product) => (
+                      <ProductCard
+                        key={product.id}
+                        product={{
+                          id: product.id,
+                          name: product.name,
+                          price: product.price,
+                          originalPrice: product.original_price || undefined,
+                          discount: product.discount || undefined,
+                          image: product.image,
+                          category: product.category,
+                          inStock: product.in_stock,
+                          description: "",
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
 
