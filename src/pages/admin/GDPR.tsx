@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Shield, Download, Trash2, Clock, Check, Loader2, AlertTriangle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Shield, Download, Trash2, Clock, Check, Loader2, AlertTriangle, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -185,6 +186,9 @@ const AdminGDPR = () => {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
+              <Link to="/admin" className="p-2 hover:bg-muted rounded-lg transition-colors">
+                <ArrowLeft className="h-5 w-5" />
+              </Link>
               <Shield className="h-8 w-8 text-primary" />
               <h1 className="text-3xl font-bold">
                 {language === 'de' ? 'DSGVO-Anfragen' : 'GDPR Requests'}
