@@ -8,6 +8,7 @@ interface RealtimeStats {
   lowStockAlerts: number;
   pendingRefunds: number;
   activeConversations: number;
+  openOrders: number;
 }
 
 interface RealtimeOrder {
@@ -33,6 +34,7 @@ export const useRealtimeDashboard = () => {
     lowStockAlerts: 0,
     pendingRefunds: 0,
     activeConversations: 0,
+    openOrders: 0,
   });
   const [recentOrders, setRecentOrders] = useState<RealtimeOrder[]>([]);
   const [events, setEvents] = useState<RealtimeEvent[]>([]);
@@ -50,12 +52,20 @@ export const useRealtimeDashboard = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Fetch today's orders
+    // Fetch today's orders - only count paid/completed for revenue, exclude cancelled
     const { data: todayOrders } = await supabase
       .from('orders')
-      .select('id, total, status, created_at, user_id')
+      .select('id, total, status, payment_status, created_at, user_id')
       .gte('created_at', today.toISOString())
+      .neq('status', 'cancelled')
       .order('created_at', { ascending: false });
+
+    // Fetch open/pending orders (not cancelled, not delivered)
+    const { data: openOrdersData } = await supabase
+      .from('orders')
+      .select('id')
+      .in('status', ['pending', 'confirmed', 'shipped'])
+      .neq('status', 'cancelled');
 
     // Fetch low stock products
     const { data: lowStock } = await supabase
@@ -70,20 +80,23 @@ export const useRealtimeDashboard = () => {
       .select('id')
       .eq('status', 'pending');
 
-    // Fetch recent orders
+    // Fetch recent orders (exclude cancelled from main view)
     const { data: recent } = await supabase
       .from('orders')
-      .select('id, total, status, created_at, user_id')
+      .select('id, total, status, payment_status, created_at, user_id')
       .order('created_at', { ascending: false })
       .limit(10);
 
     if (todayOrders) {
+      // Only count revenue from paid orders
+      const paidOrders = todayOrders.filter(o => o.payment_status === 'paid');
       setStats(prev => ({
         ...prev,
         newOrdersToday: todayOrders.length,
-        revenueToday: todayOrders.reduce((sum, o) => sum + Number(o.total), 0),
+        revenueToday: paidOrders.reduce((sum, o) => sum + Number(o.total), 0),
         lowStockAlerts: lowStock?.length || 0,
         pendingRefunds: pendingRefunds?.length || 0,
+        openOrders: openOrdersData?.length || 0,
       }));
     }
 

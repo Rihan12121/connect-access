@@ -100,22 +100,24 @@ const Messages = () => {
       return;
     }
 
-    // Get other participants' profiles
+    // Get other participants' profiles using public view
     const otherUserIds = (data || []).map((c) =>
       c.participant_1 === user.id ? c.participant_2 : c.participant_1
     );
 
     const { data: profiles } = await supabase
-      .from("profiles")
+      .from("profiles_public")
       .select("user_id, display_name")
       .in("user_id", otherUserIds);
 
     const conversationsWithProfiles = (data || []).map((conv) => {
       const otherUserId = conv.participant_1 === user.id ? conv.participant_2 : conv.participant_1;
       const profile = profiles?.find((p) => p.user_id === otherUserId);
+      // Use display_name, fallback to truncated user_id
+      const displayName = profile?.display_name || `Benutzer ${otherUserId.slice(0, 8)}`;
       return {
         ...conv,
-        other_user: profile || { user_id: otherUserId, display_name: null },
+        other_user: { user_id: otherUserId, display_name: displayName },
       };
     });
 

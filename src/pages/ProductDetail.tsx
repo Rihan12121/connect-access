@@ -340,17 +340,38 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {/* Contact Seller */}
+            {/* Seller Info Box */}
             {product.seller_id && (
-              <Button 
-                onClick={() => startConversation(product.seller_id!)}
-                variant="outline"
-                size="lg"
-                className="w-full py-4 mb-6"
-              >
-                <MessageCircle className="w-4 h-4 mr-2" />
-                {language === 'de' ? 'Verkäufer kontaktieren' : 'Contact Seller'}
-              </Button>
+              <div className="border border-border rounded-xl p-4 mb-6 space-y-3">
+                <Link 
+                  to={`/seller/${product.seller_id}`}
+                  className="flex items-center justify-between group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Users className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-semibold group-hover:text-primary transition-colors">
+                        {language === 'de' ? 'Verkäufer ansehen' : 'View Seller'}
+                      </p>
+                      <p className="text-xs text-muted-foreground font-mono">
+                        ID: {product.seller_id.slice(0, 8)}...
+                      </p>
+                    </div>
+                  </div>
+                  <ArrowLeft className="w-4 h-4 rotate-180 text-muted-foreground group-hover:text-primary transition-colors" />
+                </Link>
+                <Button 
+                  onClick={() => startConversation(product.seller_id!)}
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                >
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  {language === 'de' ? 'Verkäufer kontaktieren' : 'Contact Seller'}
+                </Button>
+              </div>
             )}
 
             {/* Accordions */}
