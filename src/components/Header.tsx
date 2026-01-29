@@ -223,6 +223,14 @@ const Header = () => {
                             {language === 'de' ? 'Nachrichten' : 'Messages'}
                           </Link>
                           <Link 
+                            to="/sellers"
+                            onClick={() => setUserMenuOpen(false)}
+                            className="flex items-center gap-3 px-4 py-2.5 text-sm text-primary font-medium hover:bg-primary/5 transition-colors"
+                          >
+                            <Store className="w-4 h-4 text-primary" />
+                            {language === 'de' ? 'Jetzt Verkäufer werden' : 'Become a Seller'}
+                          </Link>
+                          <Link 
                             to="/favorites"
                             onClick={() => setUserMenuOpen(false)}
                             className="flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-muted transition-colors"
@@ -351,6 +359,14 @@ const Header = () => {
                 </button>
               </div>
 
+              <Link 
+                to="/sellers" 
+                className="block px-4 py-3 text-sm font-medium text-primary hover:bg-primary/5 rounded-lg transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                🏪 {language === 'de' ? 'Jetzt Verkäufer werden' : 'Become a Seller'}
+              </Link>
+              
               {!user && (
                 <Link 
                   to="/auth" 

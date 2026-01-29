@@ -14,6 +14,7 @@ import BackToTopButton from "@/components/BackToTopButton";
 import CookieConsentBanner from "@/components/CookieConsentBanner";
 import LiveChatWidget from "@/components/LiveChatWidget";
 import CompareFloatingBar from "@/components/CompareFloatingBar";
+import MobileBottomNav from "@/components/MobileBottomNav";
 import { Outlet } from "react-router-dom";
 
 // Single QueryClient instance with optimized settings
@@ -43,6 +44,7 @@ const App = () => (
                     <CookieConsentBanner />
                     <LiveChatWidget />
                     <CompareFloatingBar />
+                    <MobileBottomNav />
                     <Outlet />
                   </CompareProvider>
                 </FavoritesProvider>

@@ -55,9 +55,13 @@ const SellerProfile = () => {
   const [profile, setProfile] = useState<SellerPublicProfile | null>(null);
   const [ratings, setRatings] = useState<SellerRating[]>([]);
   const [products, setProducts] = useState<SellerProduct[]>([]);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [ratingValue, setRatingValue] = useState("5");
   const [comment, setComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  const PRODUCTS_PER_PAGE = 12;
 
   const stats = useMemo(() => {
     if (ratings.length === 0) return { avg: null as number | null, count: 0, verified: 0 };
@@ -71,7 +75,7 @@ const SellerProfile = () => {
       if (!sellerId) return;
       setLoading(true);
 
-      const [profileRes, ratingsRes, productsRes] = await Promise.all([
+      const [profileRes, ratingsRes, productsRes, countRes] = await Promise.all([
         supabase
           .from("profiles_public")
           .select("user_id, display_name, avatar_url")
@@ -87,7 +91,11 @@ const SellerProfile = () => {
           .select("id, name, price, original_price, discount, image, category, in_stock")
           .eq("seller_id", sellerId)
           .order("created_at", { ascending: false })
-          .limit(12),
+          .limit(PRODUCTS_PER_PAGE),
+        supabase
+          .from("products")
+          .select("id", { count: "exact", head: true })
+          .eq("seller_id", sellerId),
       ]);
 
       if (profileRes.error) console.error("Error loading seller profile:", profileRes.error);
@@ -99,10 +107,32 @@ const SellerProfile = () => {
       if (productsRes.error) console.error("Error loading seller products:", productsRes.error);
       setProducts((productsRes.data as SellerProduct[]) || []);
 
+      setTotalProducts(countRes.count || 0);
+
       setLoading(false);
     };
     run();
   }, [sellerId]);
+
+  const loadMoreProducts = async () => {
+    if (loadingMore) return;
+    setLoadingMore(true);
+
+    const { data, error } = await supabase
+      .from("products")
+      .select("id, name, price, original_price, discount, image, category, in_stock")
+      .eq("seller_id", sellerId)
+      .order("created_at", { ascending: false })
+      .range(products.length, products.length + PRODUCTS_PER_PAGE - 1);
+
+    if (error) {
+      console.error("Error loading more products:", error);
+    } else if (data) {
+      setProducts((prev) => [...prev, ...(data as SellerProduct[])]);
+    }
+
+    setLoadingMore(false);
+  };
 
   const submitRating = async () => {
     if (!user) {
@@ -223,24 +253,41 @@ const SellerProfile = () => {
                       : "No products available."}
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {products.map((product) => (
-                      <ProductCard
-                        key={product.id}
-                        product={{
-                          id: product.id,
-                          name: product.name,
-                          price: product.price,
-                          originalPrice: product.original_price || undefined,
-                          discount: product.discount || undefined,
-                          image: product.image,
-                          category: product.category,
-                          inStock: product.in_stock,
-                          description: "",
-                        }}
-                      />
-                    ))}
-                  </div>
+                  <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {products.map((product) => (
+                        <ProductCard
+                          key={product.id}
+                          product={{
+                            id: product.id,
+                            name: product.name,
+                            price: product.price,
+                            originalPrice: product.original_price || undefined,
+                            discount: product.discount || undefined,
+                            image: product.image,
+                            category: product.category,
+                            inStock: product.in_stock,
+                            description: "",
+                          }}
+                        />
+                      ))}
+                    </div>
+                    {products.length < totalProducts && (
+                      <div className="flex justify-center mt-6">
+                        <Button
+                          onClick={loadMoreProducts}
+                          disabled={loadingMore}
+                          variant="outline"
+                        >
+                          {loadingMore ? (
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          ) : null}
+                          {language === "de" ? "Mehr Produkte laden" : "Load More Products"}
+                          {" "}({products.length}/{totalProducts})
+                        </Button>
+                      </div>
+                    )}
+                  </>
                 )}
               </CardContent>
             </Card>
