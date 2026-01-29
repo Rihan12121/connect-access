@@ -12,6 +12,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import VatNotice from '@/components/VatNotice';
 import SEO from '@/components/SEO';
+import LoyaltyBadge from '@/components/LoyaltyBadge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -308,10 +309,15 @@ const Account = () => {
               </Button>
             </div>
           </div>
-        </div>
+          </div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
+          {/* Loyalty Status */}
+          <div className="mb-8">
+            <LoyaltyBadge />
+          </div>
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-3 gap-4 mb-8">
           <Link to="/favorites" className="bg-card border border-border rounded-xl p-4 hover:border-primary hover:shadow-md transition-all group">
             <div className="flex items-center justify-between mb-2">
               <Heart className="w-5 h-5 text-favorite" />
