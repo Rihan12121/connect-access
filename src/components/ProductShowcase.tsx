@@ -38,7 +38,7 @@ const ProductShowcase = ({
   if (products.length === 0 && !isLoading) return null;
 
   return (
-    <section className="container max-w-6xl mx-auto px-4 md:px-6">
+    <section className="container max-w-[1400px] mx-auto px-4 md:px-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6 md:mb-8">
         <div>

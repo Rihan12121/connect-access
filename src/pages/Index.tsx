@@ -71,7 +71,7 @@ const Index = () => {
       </div>
 
       {/* Featured Banner - New Arrivals */}
-      <section className="container max-w-6xl mx-auto mt-16 md:mt-24 px-4 md:px-6">
+      <section className="container max-w-[1400px] mx-auto mt-16 md:mt-24 px-4 md:px-6">
         <FeaturedBanner variant="primary" />
       </section>
 
@@ -89,7 +89,7 @@ const Index = () => {
 
 
       {/* Featured Banner - Trending */}
-      <section className="container max-w-6xl mx-auto mt-16 md:mt-24 px-4 md:px-6">
+      <section className="container max-w-[1400px] mx-auto mt-16 md:mt-24 px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           <FeaturedBanner variant="secondary" />
           <FeaturedBanner variant="accent" />
@@ -123,7 +123,7 @@ const Index = () => {
       </div>
 
       {/* CTA Section - Premium Design */}
-      <section className="container max-w-6xl mx-auto mt-16 md:mt-24 px-4 md:px-6">
+      <section className="container max-w-[1400px] mx-auto mt-16 md:mt-24 px-4 md:px-6">
         <div className="relative overflow-hidden bg-header text-header-foreground rounded-3xl">
           {/* Background Effects */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,hsl(var(--primary)/0.3),transparent_50%)]" />

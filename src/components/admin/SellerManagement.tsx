@@ -149,20 +149,25 @@ export const SellerManagement = () => {
   };
 
   const removeSeller = async (userId: string) => {
-    if (!confirm("Möchtest du diesen Verkäufer wirklich entfernen?")) return;
+    if (!confirm("Möchtest du diesen Verkäufer wirklich permanent entfernen? Dies kann nicht rückgängig gemacht werden.")) return;
 
-    const { error } = await supabase
+    // Delete the seller role
+    const { error: roleError } = await supabase
       .from("user_roles")
       .delete()
       .eq("user_id", userId)
       .eq("role", "seller");
 
-    if (error) {
+    if (roleError) {
       toast.error("Fehler beim Entfernen des Verkäufers");
+      console.error("Error removing seller role:", roleError);
       return;
     }
 
-    toast.success("Verkäufer wurde entfernt");
+    // Also remove seller's products (optional - uncomment if needed)
+    // await supabase.from("products").delete().eq("seller_id", userId);
+
+    toast.success("Verkäufer wurde permanent entfernt");
     fetchSellers();
   };
 

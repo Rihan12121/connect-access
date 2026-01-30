@@ -57,6 +57,7 @@ const Compare = lazy(() => import("./pages/Compare"));
 const DataPrivacy = lazy(() => import("./pages/account/DataPrivacy"));
 const Sellers = lazy(() => import("./pages/Sellers"));
 const SellerProfile = lazy(() => import("./pages/SellerProfile"));
+const BecomeSeller = lazy(() => import("./pages/BecomeSeller"));
 
 // Admin pages - translations & new enterprise features
 const AdminTranslations = lazy(() => import("./pages/admin/Translations"));
@@ -131,6 +132,7 @@ export const routes: RouteRecord[] = [
   { path: "/compare", element: withSuspense(Compare) },
   { path: "/sellers", element: withSuspense(Sellers) },
   { path: "/seller/:id", element: withSuspense(SellerProfile) },
+  { path: "/become-seller", element: withSuspense(BecomeSeller) },
   { path: "/account/data-privacy", element: withSuspense(DataPrivacy) },
   
   // Admin routes - protected

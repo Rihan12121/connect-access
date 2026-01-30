@@ -15,7 +15,7 @@ const PopularCategoriesGrid = () => {
   const sideCategories = gridCategories.slice(1, 4);
 
   return (
-    <section className="container max-w-6xl mx-auto px-4 md:px-6">
+    <section className="container max-w-[1400px] mx-auto px-4 md:px-6">
       <div className="flex items-center justify-between mb-6 md:mb-8">
         <div>
           <p className="text-xs uppercase tracking-widest text-primary font-medium mb-2">
