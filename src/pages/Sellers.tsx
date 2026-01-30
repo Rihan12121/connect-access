@@ -40,28 +40,32 @@ const Sellers = () => {
     const run = async () => {
       setLoading(true);
 
-      // 1) Find sellers from products
-      const { data: products, error: productsError } = await supabase
-        .from("products")
-        .select("seller_id")
-        .not("seller_id", "is", null);
+      // 1) Get all sellers from user_roles table (authoritative source)
+      const { data: sellerRoles, error: rolesError } = await supabase
+        .from("user_roles")
+        .select("user_id")
+        .eq("role", "seller");
 
-      if (productsError) {
-        console.error("Error loading sellers (products):", productsError);
+      if (rolesError) {
+        console.error("Error loading sellers (roles):", rolesError);
         setItems([]);
         setLoading(false);
         return;
       }
 
-      const sellerIds = Array.from(
-        new Set((products || []).map((p) => p.seller_id).filter(Boolean) as string[])
-      );
+      const sellerIds = (sellerRoles || []).map((r) => r.user_id).filter(Boolean) as string[];
 
       if (sellerIds.length === 0) {
         setItems([]);
         setLoading(false);
         return;
       }
+
+      // 2) Also get sellers from products for product count
+      const { data: products } = await supabase
+        .from("products")
+        .select("seller_id")
+        .in("seller_id", sellerIds);
 
       // 2) Load public profiles
       const { data: profiles, error: profilesError } = await supabase

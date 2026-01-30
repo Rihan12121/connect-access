@@ -34,7 +34,7 @@ const FlashDealsSection = () => {
   if (dealProducts.length === 0 && !isLoading) return null;
 
   return (
-    <section className="container max-w-6xl mx-auto px-4 md:px-6">
+    <section className="container max-w-[1400px] mx-auto px-4 md:px-6">
       <div className="relative overflow-hidden bg-gradient-to-br from-deal/15 via-deal/5 to-transparent rounded-3xl border border-deal/20">
         {/* Background Effects */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,hsl(var(--deal)/0.2),transparent_50%)]" />
