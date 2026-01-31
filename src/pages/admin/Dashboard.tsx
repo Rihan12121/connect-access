@@ -337,7 +337,7 @@ const AdminDashboard = () => {
       />
       <Header />
 
-      <div className="container max-w-6xl mx-auto px-4 py-8">
+      <div className="container max-w-[1400px] mx-auto px-4 py-8">
         <div className="flex items-center gap-3 mb-8">
           <LayoutDashboard className="h-8 w-8 text-primary" />
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>

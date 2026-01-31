@@ -59,24 +59,23 @@ const Index = () => {
       {/* Hero Banner Carousel */}
       <HeroSection />
 
-
       {/* Flash Deals with Countdown */}
-      <div className="mt-12 md:mt-20">
+      <section className="container max-w-[1400px] mx-auto mt-8 md:mt-12 px-4 md:px-6">
         <FlashDealsSection />
-      </div>
+      </section>
 
       {/* Popular Categories Grid - Visual hierarchy */}
-      <div className="mt-16 md:mt-24">
+      <section className="container max-w-[1400px] mx-auto mt-10 md:mt-16 px-4 md:px-6">
         <PopularCategoriesGrid />
-      </div>
+      </section>
 
       {/* Featured Banner - New Arrivals */}
-      <section className="container max-w-[1400px] mx-auto mt-16 md:mt-24 px-4 md:px-6">
+      <section className="container max-w-[1400px] mx-auto mt-10 md:mt-16 px-4 md:px-6">
         <FeaturedBanner variant="primary" />
       </section>
 
       {/* Popular Products Carousel */}
-      <div className="mt-16 md:mt-24">
+      <section className="container max-w-[1400px] mx-auto mt-10 md:mt-16 px-4 md:px-6">
         <ProductShowcase
           title={t('products.popular')}
           subtitle={language === 'de' ? 'Bestseller' : 'Bestsellers'}
@@ -85,11 +84,10 @@ const Index = () => {
           viewAllLink="/products"
           showAddToCart
         />
-      </div>
-
+      </section>
 
       {/* Featured Banner - Trending */}
-      <section className="container max-w-[1400px] mx-auto mt-16 md:mt-24 px-4 md:px-6">
+      <section className="container max-w-[1400px] mx-auto mt-10 md:mt-16 px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           <FeaturedBanner variant="secondary" />
           <FeaturedBanner variant="accent" />
@@ -97,7 +95,7 @@ const Index = () => {
       </section>
 
       {/* New Arrivals */}
-      <div className="mt-16 md:mt-24">
+      <section className="container max-w-[1400px] mx-auto mt-10 md:mt-16 px-4 md:px-6">
         <ProductShowcase
           title={language === 'de' ? 'Neu eingetroffen' : 'New Arrivals'}
           subtitle={language === 'de' ? 'Frisch für Sie' : 'Fresh for You'}
@@ -105,22 +103,22 @@ const Index = () => {
           isLoading={productsLoading}
           viewAllLink="/products"
         />
-      </div>
+      </section>
 
       {/* AI-Powered Recommendations */}
-      <div className="mt-16 md:mt-24">
+      <section className="container max-w-[1400px] mx-auto mt-10 md:mt-16 px-4 md:px-6">
         <AIRecommendations />
-      </div>
+      </section>
 
       {/* Personalized Recommendations */}
-      <div className="mt-16 md:mt-24">
+      <section className="container max-w-[1400px] mx-auto mt-10 md:mt-16 px-4 md:px-6">
         <PersonalizedRecommendations />
-      </div>
+      </section>
 
       {/* Recently Viewed - Personalized */}
-      <div className="mt-16 md:mt-24">
+      <section className="container max-w-[1400px] mx-auto mt-10 md:mt-16 px-4 md:px-6">
         <RecentlyViewedSection />
-      </div>
+      </section>
 
       {/* CTA Section - Premium Design */}
       <section className="container max-w-[1400px] mx-auto mt-16 md:mt-24 px-4 md:px-6">
