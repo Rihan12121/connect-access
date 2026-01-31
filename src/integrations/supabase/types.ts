@@ -1255,6 +1255,66 @@ export type Database = {
           },
         ]
       }
+      sellers: {
+        Row: {
+          accepts_platform_fee: boolean | null
+          accepts_return_policy: boolean | null
+          accepts_terms: boolean | null
+          account_holder: string | null
+          country: string | null
+          created_at: string
+          email: string | null
+          iban: string | null
+          id: string
+          is_small_business: boolean | null
+          owner_name: string | null
+          shipping_method: string | null
+          shop_name: string
+          status: string
+          updated_at: string
+          user_id: string
+          vat_id: string | null
+        }
+        Insert: {
+          accepts_platform_fee?: boolean | null
+          accepts_return_policy?: boolean | null
+          accepts_terms?: boolean | null
+          account_holder?: string | null
+          country?: string | null
+          created_at?: string
+          email?: string | null
+          iban?: string | null
+          id?: string
+          is_small_business?: boolean | null
+          owner_name?: string | null
+          shipping_method?: string | null
+          shop_name: string
+          status?: string
+          updated_at?: string
+          user_id: string
+          vat_id?: string | null
+        }
+        Update: {
+          accepts_platform_fee?: boolean | null
+          accepts_return_policy?: boolean | null
+          accepts_terms?: boolean | null
+          account_holder?: string | null
+          country?: string | null
+          created_at?: string
+          email?: string | null
+          iban?: string | null
+          id?: string
+          is_small_business?: boolean | null
+          owner_name?: string | null
+          shipping_method?: string | null
+          shop_name?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+          vat_id?: string | null
+        }
+        Relationships: []
+      }
       stock_notifications: {
         Row: {
           id: string

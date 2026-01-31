@@ -189,7 +189,7 @@ const SellerProfile = () => {
       />
       <Header />
 
-      <main className="container max-w-5xl mx-auto px-4 py-10">
+      <main className="container max-w-[1400px] mx-auto px-4 py-10">
         <Link to="/sellers" className="inline-flex items-center gap-2 text-sm text-primary hover:underline">
           <ArrowLeft className="w-4 h-4" />
           {language === "de" ? "Zurück zu Verkäufern" : "Back to sellers"}
@@ -239,8 +239,8 @@ const SellerProfile = () => {
                   <Package className="w-5 h-5" />
                   {language === "de" ? "Produkte dieses Verkäufers" : "Products by this seller"}
                   {products.length > 0 && (
-                    <span className="text-sm font-normal text-muted-foreground">
-                      ({products.length})
+                    <span className="text-sm font-normal text-muted-foreground ml-2">
+                      ({products.length} / {totalProducts})
                     </span>
                   )}
                 </CardTitle>

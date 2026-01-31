@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import { Heart, ShoppingCart, Star, GitCompare } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Product } from '@/hooks/useProducts';
@@ -8,6 +8,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { useCompare } from '@/context/CompareContext';
 import { toast } from 'sonner';
 import { addToRecentlyViewed } from './RecentlyViewedSection';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ProductCardProps {
   product: Product;
@@ -22,6 +23,24 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
     const { t, language } = useLanguage();
     const { addToCompare, isInCompare, canAddMore } = useCompare();
     const navigate = useNavigate();
+    
+    // Real product reviews
+    const [rating, setRating] = useState<{ avg: number | null; count: number }>({ avg: null, count: 0 });
+
+    useEffect(() => {
+      const fetchRating = async () => {
+        const { data, error } = await supabase
+          .from('reviews')
+          .select('rating')
+          .eq('product_id', product.id);
+
+        if (!error && data && data.length > 0) {
+          const sum = data.reduce((acc, r) => acc + r.rating, 0);
+          setRating({ avg: sum / data.length, count: data.length });
+        }
+      };
+      fetchRating();
+    }, [product.id]);
 
     const handleClick = () => {
       addToRecentlyViewed(product.id);
@@ -72,6 +91,9 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
     const savings = product.originalPrice && product.originalPrice > product.price 
       ? (product.originalPrice - product.price).toFixed(2) 
       : null;
+
+    const displayRating = rating.avg ?? 0;
+    const displayCount = rating.count;
 
     return (
       <div 
@@ -153,14 +175,23 @@ const ProductCard = forwardRef<HTMLDivElement, ProductCardProps>(
             </h3>
           </div>
           
-          {/* Rating */}
+          {/* Rating - Real data from reviews table */}
           <div className="flex items-center gap-1 mt-1.5">
             <div className="flex items-center">
               {[1,2,3,4,5].map(i => (
-                <Star key={i} className={`w-2.5 h-2.5 ${i <= 4 ? 'fill-amber-400 text-amber-400' : 'fill-muted text-muted'}`} />
+                <Star 
+                  key={i} 
+                  className={`w-2.5 h-2.5 ${
+                    i <= Math.round(displayRating) 
+                      ? 'fill-amber-400 text-amber-400' 
+                      : 'fill-muted text-muted'
+                  }`} 
+                />
               ))}
             </div>
-            <span className="text-[9px] text-muted-foreground">(4.8)</span>
+            <span className="text-[9px] text-muted-foreground">
+              {displayCount > 0 ? `(${displayRating.toFixed(1)})` : language === 'de' ? '(Keine)' : '(None)'}
+            </span>
           </div>
           
           {/* Price Section */}

@@ -34,13 +34,12 @@ const FlashDealsSection = () => {
   if (dealProducts.length === 0 && !isLoading) return null;
 
   return (
-    <section className="container max-w-[1400px] mx-auto px-4 md:px-6">
-      <div className="relative overflow-hidden bg-gradient-to-br from-deal/15 via-deal/5 to-transparent rounded-3xl border border-deal/20">
-        {/* Background Effects */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,hsl(var(--deal)/0.2),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_100%,hsl(var(--deal)/0.1),transparent_40%)]" />
-        
-        <div className="relative p-6 md:p-10">
+    <div className="relative overflow-hidden bg-gradient-to-br from-deal/15 via-deal/5 to-transparent rounded-3xl border border-deal/20">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,hsl(var(--deal)/0.2),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_100%_100%,hsl(var(--deal)/0.1),transparent_40%)]" />
+      
+      <div className="relative p-6 md:p-10">
           {/* Header */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
             <div className="flex items-start gap-4">
@@ -106,10 +105,9 @@ const FlashDealsSection = () => {
               {language === 'de' ? 'Alle Angebote entdecken' : 'View All Deals'}
               <ArrowRight className="w-4 h-4" />
             </Link>
-          </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
